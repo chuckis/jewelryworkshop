@@ -20,9 +20,7 @@ object NavRoutes {
     const val EDIT_TRANSACTION = "edit_transaction/{transactionId}"
 }
 
-/**
- * Компонент навигации приложения
- */
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation(

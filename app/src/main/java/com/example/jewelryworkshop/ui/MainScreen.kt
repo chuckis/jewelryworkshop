@@ -12,19 +12,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jewelryworkshop.ui.MainViewModel
 import com.jewelryworkshop.app.domain.model.Transaction
 import com.example.jewelryworkshop.ui.components.BalanceCard
 import com.example.jewelryworkshop.ui.components.TransactionItem
 
-/**
- * Главный экран приложения
- */
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel,
+    viewModel: MainViewModel = viewModel(),
     onNavigateToAddTransaction: () -> Unit,
     onNavigateToEditTransaction: (Transaction) -> Unit
 ) {
@@ -34,7 +32,6 @@ fun MainScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var transactionToDelete by remember { mutableStateOf<Long?>(null) }
 
-    // Диалог подтверждения удаления
     if (showDeleteDialog && transactionToDelete != null) {
         AlertDialog(
             onDismissRequest = {
@@ -46,7 +43,7 @@ fun MainScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        transactionToDelete?.let { viewModel.deleteTransaction(it) }
+                        transactionToDelete?.let { viewModel?.deleteTransaction(it) }
                         showDeleteDialog = false
                         transactionToDelete = null
                     }
@@ -93,17 +90,15 @@ fun MainScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp),
+                .padding(paddingValues),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             item {
-                Spacer(modifier = Modifier.height(8.dp))
-
                 // Карточка с балансом металлов/изделий
                 BalanceCard(balance = metalBalance)
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 // Заголовок списка операций
                 Text(
@@ -113,7 +108,6 @@ fun MainScreen(
                 )
             }
 
-            // Список операций с металлами/изделиями
             if (transactions.isEmpty()) {
                 item {
                     Box(
@@ -139,10 +133,6 @@ fun MainScreen(
                             showDeleteDialog = true
                         }
                     )
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(80.dp)) // Пространство внизу для FAB
                 }
             }
         }
