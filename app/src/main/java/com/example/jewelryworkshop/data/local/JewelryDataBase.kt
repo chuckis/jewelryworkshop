@@ -16,7 +16,7 @@ import com.jewelryworkshop.app.data.local.entity.TransactionEntity
  */
 @Database(
     entities = [TransactionEntity::class, MetalAlloyEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -29,23 +29,19 @@ abstract class JewelryDatabase : RoomDatabase() {
     abstract fun metalAlloyDao(): MetalAlloyDao
 
     companion object {
-        private const val DATABASE_NAME = "jewelry_workshop.db"
-
         @Volatile
         private var INSTANCE: JewelryDatabase? = null
 
-        /**
-         * Получить экземпляр базы данных
-         */
         fun getInstance(context: Context): JewelryDatabase {
             return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
+                INSTANCE ?: Room.databaseBuilder(
                     context.applicationContext,
                     JewelryDatabase::class.java,
-                    DATABASE_NAME
-                ).build()
-                INSTANCE = instance
-                instance
+                    "jewelry_database"
+                )
+                    .allowMainThreadQueries()
+                    .build()
+                    .also { INSTANCE = it }
             }
         }
     }

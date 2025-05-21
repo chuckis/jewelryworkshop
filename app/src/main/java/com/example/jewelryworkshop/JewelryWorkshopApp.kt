@@ -15,20 +15,21 @@ class JewelryWorkshopApp : Application(), ViewModelStoreOwner {
         ViewModelStore()
     }
 
-    lateinit var repository: JewelryRepository
-        private set
+    private val database: JewelryDatabase by lazy {
+        JewelryDatabase.getInstance(this)
+    }
 
-    lateinit var mainViewModel: MainViewModel
-        private set
+    val repository: JewelryRepository by lazy {
+        JewelryRepositoryImpl(database.transactionDao())
+    }
+
+    val mainViewModel: MainViewModel by lazy {
+        ViewModelProvider(this, MainViewModel.Factory(repository))[MainViewModel::class.java]
+    }
 
     override fun onCreate() {
         super.onCreate()
         Log.d("JewelryWorkshopApp", "Application created")
-        val database = JewelryDatabase.getInstance(this)
-        val transactionDao = database.transactionDao()
-        repository = JewelryRepositoryImpl(transactionDao)
-        val factory = MainViewModel.Factory(repository)
-        mainViewModel = ViewModelProvider(this, factory)[MainViewModel::class.java]
     }
 
     override val viewModelStore: ViewModelStore

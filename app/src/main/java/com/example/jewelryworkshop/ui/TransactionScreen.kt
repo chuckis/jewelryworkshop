@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.jewelryworkshop.app.domain.model.MetalAlloy
 import com.jewelryworkshop.app.domain.model.Transaction
 import com.jewelryworkshop.app.domain.model.TransactionType
 import com.jewelryworkshop.ui.MainViewModel
@@ -42,7 +43,7 @@ fun TransactionScreen(
     var selectedType by remember { mutableStateOf(existingTransaction?.type ?: TransactionType.RECEIVED) }
     var description by remember { mutableStateOf(existingTransaction?.description ?: "") }
     var itemsCount by remember { mutableStateOf((existingTransaction?.itemsCount ?: 1).toString()) }
-
+    var metalAlloy by remember { mutableStateOf(existingTransaction?.alloy ?: "") }
     // Состояние валидации
     var weightError by remember { mutableStateOf<String?>(null) }
     var descriptionError by remember { mutableStateOf<String?>(null) }
@@ -99,7 +100,8 @@ fun TransactionScreen(
                 weight = weightValue,
                 type = selectedType,
                 description = description,
-                itemsCount = itemsCountValue
+                itemsCount = itemsCountValue,
+                alloy = metalAlloy as MetalAlloy,
             )
             viewModel.updateTransaction(updatedTransaction)
         } else {
@@ -110,7 +112,8 @@ fun TransactionScreen(
                 type = selectedType,
                 description = description,
                 itemsCount = itemsCountValue,
-                metalAlloy = TODO()
+                metalAlloy = metalAlloy as MetalAlloy,
+
             )
         }
 
@@ -266,6 +269,8 @@ fun TransactionScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
+            DropdownField()
+
             // Кнопка сохранения
             Button(
                 onClick = { saveTransaction() },
@@ -282,4 +287,42 @@ fun TransactionScreen(
     // Вместо этого, в реальном приложении здесь должен быть код для отображения
     // диалога выбора даты и времени с использованием библиотеки DateTimePicker
     // или собственной реализации.
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DropdownField() {
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOption by remember { mutableStateOf("Select an option") }
+    val options = listOf("Option 1", "Option 2", "Option 3")
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+        TextField(
+            value = selectedOption,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text("Dropdown") },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            },
+            modifier = Modifier.menuAnchor()
+        )
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option) },
+                    onClick = {
+                        selectedOption = option
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
 }

@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 interface TransactionDao {
 
     @Query("SELECT * FROM transactions")
-    fun getAllTransactionsWithAlloy(): List<TransactionWithAlloy>
+    fun getAllTransactionsWithAlloy(): Flow<List<TransactionWithAlloy>>
     /**
      * Получить все транзакции, отсортированные по дате (сначала новые)
      */
