@@ -43,4 +43,5 @@ class JewelryRepositoryImpl(private val transactionDao: TransactionDao) : Jewelr
     override suspend fun updateTransaction(transaction: Transaction) {
         transactionDao.updateTransaction(TransactionEntity.fromDomain(transaction))
     }
+
 }

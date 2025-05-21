@@ -5,7 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
-import androidx.room.TypeConverters
+import com.jewelryworkshop.app.domain.model.MetalAlloy
 import com.jewelryworkshop.app.domain.model.Transaction
 import com.jewelryworkshop.app.domain.model.TransactionType
 import java.time.LocalDateTime
@@ -22,7 +22,8 @@ data class TransactionEntity(
     val weight: Double,
     val type: TransactionType,
     val description: String,
-    val itemsCount: Int
+    val itemsCount: Int?,
+    val alloy: MetalAlloy,
 ) {
     /**
      * Преобразовать Entity в доменную модель
@@ -33,7 +34,8 @@ data class TransactionEntity(
         weight = weight,
         type = type,
         description = description,
-        itemsCount = itemsCount
+        itemsCount = itemsCount,
+        alloy = alloy,
     )
 
     companion object {
@@ -46,7 +48,8 @@ data class TransactionEntity(
             weight = transaction.weight,
             type = transaction.type,
             description = transaction.description,
-            itemsCount = transaction.itemsCount
+            itemsCount = transaction.itemsCount,
+            alloy = transaction.alloy,
         )
     }
 }

@@ -19,7 +19,8 @@ data class Transaction(
     val weight: Double, // Вес металла/изделий в граммах
     val type: TransactionType, // Тип операции (получено/выдано)
     val description: String, // Описание операции
-    val itemsCount: Int // Количество изделий
+    val itemsCount: Int?,// Количество изделий
+    val alloy: MetalAlloy,
 ) {
     /**
      * Получить строковое представление транзакции в формате:
@@ -38,4 +39,9 @@ data class MetalBalance(
     val totalWeight: Double, // Общий вес металла/изделий в граммах
     val totalItems: Int, // Общее количество изделий
     val transactions: List<Transaction> = emptyList() // Связанные транзакции
+)
+
+data class MetalAlloy(
+    val id: Long,
+    val name: String,
 )

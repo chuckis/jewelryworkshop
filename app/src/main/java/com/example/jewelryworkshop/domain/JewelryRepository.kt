@@ -1,5 +1,6 @@
 package com.jewelryworkshop.app.domain.repository
 
+import com.jewelryworkshop.app.domain.model.MetalAlloy
 import com.jewelryworkshop.app.domain.model.MetalBalance
 import com.jewelryworkshop.app.domain.model.Transaction
 import kotlinx.coroutines.flow.Flow
@@ -36,4 +37,5 @@ interface JewelryRepository {
      * @param transaction обновленная транзакция
      */
     suspend fun updateTransaction(transaction: Transaction)
+
 }
