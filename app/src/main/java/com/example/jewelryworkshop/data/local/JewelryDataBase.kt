@@ -16,7 +16,7 @@ import com.jewelryworkshop.app.data.local.entity.TransactionEntity
  */
 @Database(
     entities = [TransactionEntity::class, MetalAlloyEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

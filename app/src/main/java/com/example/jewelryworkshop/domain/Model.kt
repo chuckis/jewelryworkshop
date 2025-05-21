@@ -37,7 +37,7 @@ data class Transaction(
  */
 data class MetalBalance(
     val totalWeight: Double, // Общий вес металла/изделий в граммах
-    val totalItems: Int, // Общее количество изделий
+    val totalItems: Int?, // Общее количество изделий
     val transactions: List<Transaction> = emptyList() // Связанные транзакции
 )
 

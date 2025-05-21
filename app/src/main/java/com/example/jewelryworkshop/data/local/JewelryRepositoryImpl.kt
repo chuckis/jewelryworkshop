@@ -13,10 +13,10 @@ import kotlinx.coroutines.flow.*
 class JewelryRepositoryImpl(private val transactionDao: TransactionDao) : JewelryRepository {
 
     override fun getAllTransactions(): Flow<List<Transaction>> {
-        return transactionDao.getAllTransactions().map { entities ->
-            entities.map { it.toDomain() }
-        }
+        return transactionDao.getAllTransactionsWithAlloy().map { it.toDomain()
+        } as Flow<List<Transaction>>
     }
+
 
     override fun getMetalBalance(): Flow<MetalBalance> {
         return combine(

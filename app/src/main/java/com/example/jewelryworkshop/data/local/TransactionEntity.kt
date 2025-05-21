@@ -2,9 +2,14 @@ package com.jewelryworkshop.app.data.local.entity
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import androidx.room.Relation
 import androidx.room.TypeConverter
+import com.example.jewelryworkshop.data.local.MetalAlloyEntity
 import com.jewelryworkshop.app.domain.model.MetalAlloy
 import com.jewelryworkshop.app.domain.model.Transaction
 import com.jewelryworkshop.app.domain.model.TransactionType
@@ -14,7 +19,16 @@ import java.time.format.DateTimeFormatter
 /**
  * Сущность Room для хранения транзакций в базе данных
  */
-@Entity(tableName = "transactions")
+@Entity(tableName = "transactions",
+    foreignKeys = [
+        ForeignKey(
+            entity = MetalAlloyEntity::class,
+            parentColumns = ["id"],
+            ["alloy_id"],
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
+        )
+    ])
 data class TransactionEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
@@ -23,20 +37,8 @@ data class TransactionEntity(
     val type: TransactionType,
     val description: String,
     val itemsCount: Int?,
-    val alloy: MetalAlloy,
+    @ColumnInfo(name = "alloy_id") val alloyId: Long,
 ) {
-    /**
-     * Преобразовать Entity в доменную модель
-     */
-    fun toDomain(): Transaction = Transaction(
-        id = id,
-        dateTime = dateTime,
-        weight = weight,
-        type = type,
-        description = description,
-        itemsCount = itemsCount,
-        alloy = alloy,
-    )
 
     companion object {
         /**
@@ -49,7 +51,7 @@ data class TransactionEntity(
             type = transaction.type,
             description = transaction.description,
             itemsCount = transaction.itemsCount,
-            alloy = transaction.alloy,
+            alloyId = transaction.alloy.id,
         )
     }
 }
@@ -82,5 +84,27 @@ class Converters {
     fun toTransactionType(value: String): TransactionType {
         return TransactionType.valueOf(value)
     }
+}
+
+data class TransactionWithAlloy(
+    @Embedded
+    val transaction: TransactionEntity,
+
+    @Relation(
+        parentColumn = "alloy_id",
+        entityColumn = "id",
+        entity = MetalAlloyEntity::class
+    )
+    val alloy: MetalAlloyEntity
+) {
+    fun toDomain(): Transaction = Transaction(
+        id = transaction.id,
+        dateTime = transaction.dateTime,
+        weight = transaction.weight,
+        type = transaction.type,
+        description = transaction.description,
+        itemsCount = transaction.itemsCount,
+        alloy = alloy.toMetalAlloy()
+    )
 }
 

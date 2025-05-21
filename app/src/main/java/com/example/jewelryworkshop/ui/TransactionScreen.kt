@@ -109,7 +109,8 @@ fun TransactionScreen(
                 weight = weightValue,
                 type = selectedType,
                 description = description,
-                itemsCount = itemsCountValue
+                itemsCount = itemsCountValue,
+                metalAlloy = TODO()
             )
         }
 

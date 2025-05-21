@@ -2,6 +2,7 @@ package com.jewelryworkshop.app.data.local.dao
 
 import androidx.room.*
 import com.jewelryworkshop.app.data.local.entity.TransactionEntity
+import com.jewelryworkshop.app.data.local.entity.TransactionWithAlloy
 import com.jewelryworkshop.app.domain.model.TransactionType
 import kotlinx.coroutines.flow.Flow
 
@@ -10,6 +11,9 @@ import kotlinx.coroutines.flow.Flow
  */
 @Dao
 interface TransactionDao {
+
+    @Query("SELECT * FROM transactions")
+    fun getAllTransactionsWithAlloy(): List<TransactionWithAlloy>
     /**
      * Получить все транзакции, отсортированные по дате (сначала новые)
      */
@@ -26,7 +30,7 @@ interface TransactionDao {
      * Получить общий баланс по количеству изделий
      */
     @Query("SELECT COALESCE(SUM(CASE WHEN type = 'RECEIVED' THEN itemsCount ELSE -itemsCount END), 0) FROM transactions")
-    fun getTotalItemsBalance(): Flow<Int>
+    fun getTotalItemsBalance(): Flow<Int?>
 
     /**
      * Добавить новую транзакцию
@@ -52,4 +56,5 @@ interface TransactionDao {
      */
     @Query("SELECT * FROM transactions WHERE id = :transactionId")
     suspend fun getTransactionById(transactionId: Long): TransactionEntity?
+
 }
