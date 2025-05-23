@@ -16,33 +16,29 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.jewelryworkshop.app.domain.model.Transaction
 import com.jewelryworkshop.app.domain.model.TransactionType
 import com.jewelryworkshop.ui.MainViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 /**
- * Экран добавления/редактирования транзакции
+ * Экран добавления новой транзакции
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TransactionScreen(
+fun TransactionAddScreen(
     viewModel: MainViewModel,
-    existingTransaction: Transaction? = null,
     onNavigateBack: () -> Unit
 ) {
-    val isEditing = existingTransaction != null
-    val title = if (isEditing) "Редактировать операцию" else "Новая операция"
+    // Состояние полей формы с начальными значениями
+    var dateTime by remember { mutableStateOf(LocalDateTime.now()) }
+    var weight by remember { mutableStateOf("") }
+    var selectedType by remember { mutableStateOf(TransactionType.RECEIVED) }
+    var description by remember { mutableStateOf("") }
+    var itemsCount by remember { mutableStateOf("1") }
+    var metalAlloy by remember { mutableStateOf("") } // Значение по умолчанию
 
-    // Состояние полей формы
-    var dateTime by remember { mutableStateOf(existingTransaction?.dateTime ?: LocalDateTime.now()) }
-    var weight by remember { mutableStateOf((existingTransaction?.weight ?: 0.0).toString()) }
-    var selectedType by remember { mutableStateOf(existingTransaction?.type ?: TransactionType.RECEIVED) }
-    var description by remember { mutableStateOf(existingTransaction?.description ?: "") }
-    var itemsCount by remember { mutableStateOf((existingTransaction?.itemsCount ?: 1).toString()) }
-    var metalAlloy by remember { mutableStateOf(existingTransaction?.alloy ?: "") }
     // Состояние валидации
     var weightError by remember { mutableStateOf<String?>(null) }
     var descriptionError by remember { mutableStateOf<String?>(null) }
@@ -92,29 +88,15 @@ fun TransactionScreen(
         val weightValue = weight.toDoubleOrNull() ?: return
         val itemsCountValue = itemsCount.toIntOrNull() ?: return
 
-        if (isEditing && existingTransaction != null) {
-            // Обновление существующей транзакции
-            val updatedTransaction = existingTransaction.copy(
-                dateTime = dateTime,
-                weight = weightValue,
-                type = selectedType,
-                description = description,
-                itemsCount = itemsCountValue,
-                alloy = metalAlloy,
-            )
-            viewModel.updateTransaction(updatedTransaction)
-        } else {
-            // Создание новой транзакции
-            viewModel.addTransaction(
-                dateTime = dateTime,
-                weight = weightValue,
-                type = selectedType,
-                description = description,
-                itemsCount = itemsCountValue,
-                metalAlloy = metalAlloy,
-
-            )
-        }
+        // Создание новой транзакции
+        viewModel.addTransaction(
+            dateTime = dateTime,
+            weight = weightValue,
+            type = selectedType,
+            description = description,
+            itemsCount = itemsCountValue,
+            metalAlloy = metalAlloy
+        )
 
         onNavigateBack()
     }
@@ -122,7 +104,7 @@ fun TransactionScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(title) },
+                title = { Text("Новая операция") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -268,14 +250,30 @@ fun TransactionScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
-            DropdownField()
+            // Выбор сплава
+            MetalAlloyDropdown(
+                selectedAlloy = metalAlloy,
+                onAlloySelected = { metalAlloy = it }
+            )
 
-            // Кнопка сохранения
-            Button(
-                onClick = { saveTransaction() },
-                modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
+            // Кнопки действий
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text(if (isEditing) "Сохранить изменения" else "Добавить операцию")
+                OutlinedButton(
+                    onClick = onNavigateBack,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Отмена")
+                }
+
+                Button(
+                    onClick = { saveTransaction() },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Добавить")
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -286,42 +284,4 @@ fun TransactionScreen(
     // Вместо этого, в реальном приложении здесь должен быть код для отображения
     // диалога выбора даты и времени с использованием библиотеки DateTimePicker
     // или собственной реализации.
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DropdownField() {
-    var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf("Select an option") }
-    val options = listOf("Option 1", "Option 2", "Option 3")
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
-    ) {
-        TextField(
-            value = selectedOption,
-            onValueChange = {},
-            readOnly = true,
-            label = { Text("Dropdown") },
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-            },
-            modifier = Modifier.menuAnchor()
-        )
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    text = { Text(option) },
-                    onClick = {
-                        selectedOption = option
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
 }

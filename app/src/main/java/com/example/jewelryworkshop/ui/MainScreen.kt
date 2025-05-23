@@ -1,5 +1,6 @@
 package com.example.jewelryworkshop.ui
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
@@ -22,9 +23,9 @@ import com.example.jewelryworkshop.ui.components.TransactionItem
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = viewModel(),
+    viewModel: MainViewModel,
     onNavigateToAddTransaction: () -> Unit,
-    onNavigateToEditTransaction: (Transaction) -> Unit
+    onNavigateToTransactionDetail: (Transaction) -> Unit
 ) {
     val transactions by viewModel.transactions.collectAsState()
     val metalBalance by viewModel.metalBalance.collectAsState()
@@ -43,7 +44,7 @@ fun MainScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        transactionToDelete?.let { viewModel?.deleteTransaction(it) }
+                        transactionToDelete?.let { viewModel.deleteTransaction(it) }
                         showDeleteDialog = false
                         transactionToDelete = null
                     }
@@ -85,56 +86,41 @@ fun MainScreen(
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
-        }
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            item {
-                // Карточка с балансом металлов/изделий
-                BalanceCard(balance = metalBalance)
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Заголовок списка операций
-                Text(
-                    text = "ОПЕРАЦИИ С МЕТАЛЛАМИ/ИЗДЕЛИЯМИ",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-            }
-
-            if (transactions.isEmpty()) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 32.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Нет операций. Нажмите + чтобы добавить.",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+        },
+        content = { paddingValues ->
+            LazyColumn(
+                modifier = Modifier.padding(paddingValues),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (transactions.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 32.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Нет операций. Нажмите + чтобы добавить.",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                } else {
+                    items(transactions) { transaction ->
+                        TransactionItem(
+                            transaction = transaction,
+                            onClick = { onNavigateToTransactionDetail(transaction) },
+                            onDeleteClick = { id ->
+                                transactionToDelete = id
+                                showDeleteDialog = true
+                            }
                         )
                     }
                 }
-            } else {
-                items(transactions) { transaction ->
-                    TransactionItem(
-                        transaction = transaction,
-                        onEditClick = onNavigateToEditTransaction,
-                        onDeleteClick = { id ->
-                            transactionToDelete = id
-                            showDeleteDialog = true
-                        }
-                    )
-                }
             }
         }
-    }
+    )
 }

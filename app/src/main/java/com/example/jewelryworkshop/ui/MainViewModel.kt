@@ -3,7 +3,6 @@ package com.jewelryworkshop.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.jewelryworkshop.app.domain.model.MetalAlloy
 import com.jewelryworkshop.app.domain.model.MetalBalance
 import com.jewelryworkshop.app.domain.model.Transaction
 import com.jewelryworkshop.app.domain.model.TransactionType
@@ -36,7 +35,7 @@ class MainViewModel(private val repository: JewelryRepository) : ViewModel() {
         type: TransactionType,
         description: String,
         itemsCount: Int,
-        metalAlloy: MetalAlloy,
+        metalAlloy: String,
     ) {
         viewModelScope.launch {
             val transaction = Transaction(

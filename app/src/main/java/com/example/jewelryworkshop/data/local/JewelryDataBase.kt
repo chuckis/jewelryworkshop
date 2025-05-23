@@ -1,12 +1,10 @@
 package com.jewelryworkshop.app.data.local.database
 
-import MetalAlloyDao
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.jewelryworkshop.data.local.MetalAlloyEntity
 import com.jewelryworkshop.app.data.local.dao.TransactionDao
 import com.jewelryworkshop.app.data.local.entity.Converters
 import com.jewelryworkshop.app.data.local.entity.TransactionEntity
@@ -15,8 +13,8 @@ import com.jewelryworkshop.app.data.local.entity.TransactionEntity
  * База данных Room для приложения ювелирной мастерской
  */
 @Database(
-    entities = [TransactionEntity::class, MetalAlloyEntity::class],
-    version = 3,
+    entities = [TransactionEntity::class],
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -26,7 +24,6 @@ abstract class JewelryDatabase : RoomDatabase() {
      * Получить DAO для работы с транзакциями
      */
     abstract fun transactionDao(): TransactionDao
-    abstract fun metalAlloyDao(): MetalAlloyDao
 
     companion object {
         @Volatile
@@ -40,6 +37,7 @@ abstract class JewelryDatabase : RoomDatabase() {
                     "jewelry_database"
                 )
                     .allowMainThreadQueries()
+                    .fallbackToDestructiveMigration()
                     .build()
                     .also { INSTANCE = it }
             }

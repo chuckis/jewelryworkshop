@@ -23,26 +23,24 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 /**
- * Экран добавления/редактирования транзакции
+ * Экран редактирования транзакции
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TransactionScreen(
+fun TransactionEditScreen(
     viewModel: MainViewModel,
-    existingTransaction: Transaction? = null,
+    existingTransaction: Transaction,
     onNavigateBack: () -> Unit
 ) {
-    val isEditing = existingTransaction != null
-    val title = if (isEditing) "Редактировать операцию" else "Новая операция"
+    // Состояние полей формы с начальными значениями из существующей транзакции
+    var dateTime by remember { mutableStateOf(existingTransaction.dateTime) }
+    var weight by remember { mutableStateOf(existingTransaction.weight.toString()) }
+    var selectedType by remember { mutableStateOf(existingTransaction.type) }
+    var description by remember { mutableStateOf(existingTransaction.description) }
+    var itemsCount by remember { mutableStateOf(existingTransaction.itemsCount.toString()) }
+    var metalAlloy by remember { mutableStateOf(existingTransaction.alloy) }
 
-    // Состояние полей формы
-    var dateTime by remember { mutableStateOf(existingTransaction?.dateTime ?: LocalDateTime.now()) }
-    var weight by remember { mutableStateOf((existingTransaction?.weight ?: 0.0).toString()) }
-    var selectedType by remember { mutableStateOf(existingTransaction?.type ?: TransactionType.RECEIVED) }
-    var description by remember { mutableStateOf(existingTransaction?.description ?: "") }
-    var itemsCount by remember { mutableStateOf((existingTransaction?.itemsCount ?: 1).toString()) }
-    var metalAlloy by remember { mutableStateOf(existingTransaction?.alloy ?: "") }
     // Состояние валидации
     var weightError by remember { mutableStateOf<String?>(null) }
     var descriptionError by remember { mutableStateOf<String?>(null) }
@@ -92,37 +90,23 @@ fun TransactionScreen(
         val weightValue = weight.toDoubleOrNull() ?: return
         val itemsCountValue = itemsCount.toIntOrNull() ?: return
 
-        if (isEditing && existingTransaction != null) {
-            // Обновление существующей транзакции
-            val updatedTransaction = existingTransaction.copy(
-                dateTime = dateTime,
-                weight = weightValue,
-                type = selectedType,
-                description = description,
-                itemsCount = itemsCountValue,
-                alloy = metalAlloy,
-            )
-            viewModel.updateTransaction(updatedTransaction)
-        } else {
-            // Создание новой транзакции
-            viewModel.addTransaction(
-                dateTime = dateTime,
-                weight = weightValue,
-                type = selectedType,
-                description = description,
-                itemsCount = itemsCountValue,
-                metalAlloy = metalAlloy,
-
-            )
-        }
-
+        // Обновление существующей транзакции
+        val updatedTransaction = existingTransaction.copy(
+            dateTime = dateTime,
+            weight = weightValue,
+            type = selectedType,
+            description = description,
+            itemsCount = itemsCountValue,
+            alloy = metalAlloy,
+        )
+        viewModel.updateTransaction(updatedTransaction)
         onNavigateBack()
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(title) },
+                title = { Text("Редактировать операцию") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -268,14 +252,30 @@ fun TransactionScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
-            DropdownField()
+            // Выбор сплава
+            MetalAlloyDropdown(
+                selectedAlloy = metalAlloy,
+                onAlloySelected = { metalAlloy = it }
+            )
 
-            // Кнопка сохранения
-            Button(
-                onClick = { saveTransaction() },
-                modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
+            // Кнопки действий
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text(if (isEditing) "Сохранить изменения" else "Добавить операцию")
+                OutlinedButton(
+                    onClick = onNavigateBack,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Отмена")
+                }
+
+                Button(
+                    onClick = { saveTransaction() },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Сохранить")
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -290,34 +290,44 @@ fun TransactionScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownField() {
+fun MetalAlloyDropdown(
+    selectedAlloy: String,
+    onAlloySelected: (String) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf("Select an option") }
-    val options = listOf("Option 1", "Option 2", "Option 3")
+
+    // Предполагаемые варианты сплавов
+    val alloyOptions = listOf(
+        "GOLD_585",
+        "SILVER_925",
+    )
 
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded }
     ) {
-        TextField(
-            value = selectedOption,
+        OutlinedTextField(
+            value = selectedAlloy.toString(),
             onValueChange = {},
             readOnly = true,
-            label = { Text("Dropdown") },
+            label = { Text("Сплав металла") },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
-            modifier = Modifier.menuAnchor()
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor()
         )
-        DropdownMenu(
+
+        ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            options.forEach { option ->
+            alloyOptions.forEach { alloy ->
                 DropdownMenuItem(
-                    text = { Text(option) },
+                    text = { Text(alloy.toString()) },
                     onClick = {
-                        selectedOption = option
+                        onAlloySelected(alloy)
                         expanded = false
                     }
                 )

@@ -28,7 +28,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun TransactionItem(
     transaction: Transaction,
-    onEditClick: (Transaction) -> Unit,
+    onClick: (Transaction) -> Unit,
     onDeleteClick: (Long) -> Unit
 ) {
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
@@ -42,7 +42,7 @@ fun TransactionItem(
             .padding(vertical = 4.dp),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        onClick = { onEditClick(transaction) }
+        onClick = { onClick(transaction) }
     ) {
         Row(
             modifier = Modifier
@@ -106,7 +106,7 @@ fun TransactionItem(
 
             // Кнопки управления
             Row {
-                IconButton(onClick = { onEditClick(transaction) }) {
+                IconButton(onClick = { onClick(transaction) }) {
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "Редактировать",

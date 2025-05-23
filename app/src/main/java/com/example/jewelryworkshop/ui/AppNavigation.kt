@@ -17,6 +17,7 @@ import com.jewelryworkshop.ui.MainViewModel
 object NavRoutes {
     const val MAIN = "main"
     const val ADD_TRANSACTION = "add_transaction"
+    const val TRANSACTION_DETAIL = "transaction_detail/{transactionId}"
     const val EDIT_TRANSACTION = "edit_transaction/{transactionId}"
 }
 
@@ -38,20 +39,47 @@ fun AppNavigation(
                 onNavigateToAddTransaction = {
                     navController.navigate(NavRoutes.ADD_TRANSACTION)
                 },
-                onNavigateToEditTransaction = { transaction ->
-                    navController.navigate("edit_transaction/${transaction.id}")
+                onNavigateToTransactionDetail = { transaction ->
+                    navController.navigate("transaction_detail/${transaction.id}")
                 }
             )
         }
 
         // Экран добавления новой транзакции
         composable(route = NavRoutes.ADD_TRANSACTION) {
-            TransactionScreen(
+            TransactionAddScreen(
                 viewModel = viewModel,
                 onNavigateBack = {
                     navController.popBackStack()
                 }
             )
+        }
+
+        // Экран просмотра деталей транзакции
+        composable(
+            route = NavRoutes.TRANSACTION_DETAIL,
+            arguments = listOf(
+                navArgument("transactionId") { type = NavType.LongType }
+            )
+        ) { backStackEntry ->
+            val transactionId = backStackEntry.arguments?.getLong("transactionId") ?: 0
+            val transactions = viewModel.transactions.value
+            val transaction = transactions.find { it.id == transactionId }
+
+            transaction?.let {
+                TransactionDetailScreen(
+                    transaction = it,
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onNavigateToEdit = {
+                        navController.navigate("edit_transaction/${it.id}")
+                    }
+                )
+            } ?: run {
+                // Если транзакция не найдена, возвращаемся назад
+                navController.popBackStack()
+            }
         }
 
         // Экран редактирования существующей транзакции
@@ -65,13 +93,18 @@ fun AppNavigation(
             val transactions = viewModel.transactions.value
             val transaction = transactions.find { it.id == transactionId }
 
-            TransactionScreen(
-                viewModel = viewModel,
-                existingTransaction = transaction,
-                onNavigateBack = {
-                    navController.popBackStack()
-                }
-            )
+            transaction?.let {
+                TransactionEditScreen(
+                    viewModel = viewModel,
+                    existingTransaction = it,
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    }
+                )
+            } ?: run {
+                // Если транзакция не найдена, возвращаемся назад
+                navController.popBackStack()
+            }
         }
     }
 }

@@ -2,8 +2,6 @@ package com.jewelryworkshop.app.data.local.dao
 
 import androidx.room.*
 import com.jewelryworkshop.app.data.local.entity.TransactionEntity
-import com.jewelryworkshop.app.data.local.entity.TransactionWithAlloy
-import com.jewelryworkshop.app.domain.model.TransactionType
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -13,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface TransactionDao {
 
     @Query("SELECT * FROM transactions")
-    fun getAllTransactionsWithAlloy(): Flow<List<TransactionWithAlloy>>
+    fun getAllTransactionsWithAlloy(): Flow<List<TransactionEntity>>
     /**
      * Получить все транзакции, отсортированные по дате (сначала новые)
      */

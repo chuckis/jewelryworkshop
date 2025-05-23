@@ -20,7 +20,7 @@ data class Transaction(
     val type: TransactionType, // Тип операции (получено/выдано)
     val description: String, // Описание операции
     val itemsCount: Int?,// Количество изделий
-    val alloy: MetalAlloy,
+    val alloy: String,
 ) {
     /**
      * Получить строковое представление транзакции в формате:
@@ -41,7 +41,7 @@ data class MetalBalance(
     val transactions: List<Transaction> = emptyList() // Связанные транзакции
 )
 
-data class MetalAlloy(
-    val id: Long,
-    val name: String,
-)
+//data class MetalAlloy(
+//    val id: Long,
+//    val name: String,
+//)
