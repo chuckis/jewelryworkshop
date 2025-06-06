@@ -1,8 +1,11 @@
 package com.jewelryworkshop.app.domain.repository
 
+//import com.example.jewelryworkshop.domain.TransactionRepository
+import com.jewelryworkshop.app.domain.model.MetalAlloy
 import com.jewelryworkshop.app.domain.model.MetalBalance
 import com.jewelryworkshop.app.domain.model.Transaction
 import kotlinx.coroutines.flow.Flow
+import kotlin.unaryMinus
 
 /**
  * Интерфейс репозитория для работы с данными ювелирной мастерской
@@ -37,4 +40,16 @@ interface JewelryRepository {
      */
     suspend fun updateTransaction(transaction: Transaction)
 
+    suspend fun addMetalAlloy(metalAlloy: MetalAlloy): Long
+
+    suspend fun deleteMetalAlloy(metalAlloyId: Long)
+
+    suspend fun updateMetalAlloy(metalAlloy: MetalAlloy)
+
+}
+
+enum class RepositoryType {
+    ROOM_DATABASE,
+    IN_MEMORY_TEST,
+    MOCK_DATA // для демо-данных
 }

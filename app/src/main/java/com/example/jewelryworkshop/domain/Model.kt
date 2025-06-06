@@ -8,6 +8,8 @@ import java.time.LocalDateTime
 enum class TransactionType {
     RECEIVED, // Получено
     ISSUED    // Выдано
+    ,
+    GIVEN
 }
 
 /**
@@ -20,7 +22,7 @@ data class Transaction(
     val type: TransactionType, // Тип операции (получено/выдано)
     val description: String, // Описание операции
     val itemsCount: Int?,// Количество изделий
-    val alloy: String,
+    val alloy: MetalAlloy,
 ) {
     /**
      * Получить строковое представление транзакции в формате:
@@ -41,7 +43,7 @@ data class MetalBalance(
     val transactions: List<Transaction> = emptyList() // Связанные транзакции
 )
 
-//data class MetalAlloy(
-//    val id: Long,
-//    val name: String,
-//)
+data class MetalAlloy(
+    val id: Long,
+    val name: String,
+)
