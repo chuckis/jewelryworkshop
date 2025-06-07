@@ -1,7 +1,7 @@
 package com.example.jewelryworkshop.data.local
 
-import com.example.jewelryworkshop.domain.MetalBalance
 import com.jewelryworkshop.app.domain.model.MetalAlloy
+import com.jewelryworkshop.app.domain.model.MetalBalance
 import com.jewelryworkshop.app.domain.model.Transaction
 import com.jewelryworkshop.app.domain.model.TransactionType
 import com.jewelryworkshop.app.domain.repository.JewelryRepository
@@ -11,14 +11,14 @@ import java.time.LocalDateTime
 
 class JewelryRepositoryMock : JewelryRepository {
     private val mockAlloys = listOf(
-        MetalAlloy(1, "Золото", "Au", 19.3),
-        MetalAlloy(2, "Серебро", "Ag", 10.49),
-        MetalAlloy(3, "Платина", "Pt", 21.45)
+        MetalAlloy(1, "Золото"),
+        MetalAlloy(2, "Серебро"),
+        MetalAlloy(3, "Платина")
     )
 
     private val mockTransactions = listOf(
         Transaction(1, LocalDateTime.now(), 100.0, TransactionType.RECEIVED, "Получен лом золота", 5, mockAlloys[0]),
-        Transaction(2, LocalDateTime.now().minusDays(1), 50.0, TransactionType.GIVEN, "Выдано на переплавку", 2, mockAlloys[0]),
+        Transaction(2, LocalDateTime.now().minusDays(1), 50.0, TransactionType.ISSUED, "Выдано на переплавку", 2, mockAlloys[0]),
         Transaction(3, LocalDateTime.now().minusDays(2), 200.0, TransactionType.RECEIVED, "Получено серебро", 10, mockAlloys[1]),
     )
 

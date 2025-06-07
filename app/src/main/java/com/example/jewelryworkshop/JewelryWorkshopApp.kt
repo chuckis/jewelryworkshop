@@ -10,7 +10,6 @@ import com.example.jewelryworkshop.domain.RepositoryFactory
 import com.jewelryworkshop.app.domain.repository.JewelryRepository
 import com.jewelryworkshop.app.domain.repository.RepositoryType
 import com.jewelryworkshop.ui.MainViewModel
-//import com.example.jewelryworkshop.BuildConfig TODO()
 
 class JewelryWorkshopApp : Application(), ViewModelStoreOwner {
     private val appViewModelStore: ViewModelStore by lazy {

@@ -5,10 +5,13 @@ import androidx.annotation.RequiresApi
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
+import com.example.jewelryworkshop.data.local.MetalAlloyEntity
+import com.jewelryworkshop.app.domain.model.MetalAlloy
 import com.jewelryworkshop.app.domain.model.Transaction
 import com.jewelryworkshop.app.domain.model.TransactionType
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+
 
 /**
  * Сущность Room для хранения транзакций в базе данных
@@ -22,18 +25,17 @@ data class TransactionEntity(
     val type: TransactionType,
     val description: String,
     val itemsCount: Int?,
-    val alloy: String,
+    val alloyId: Long, // Внешний ключ на MetalAlloy
 ) {
-        fun toDomain(): Transaction = Transaction(
+    fun toDomain(alloy: MetalAlloyEntity): Transaction = Transaction(
         id = id,
         dateTime = dateTime,
         weight = weight,
         type = type,
         description = description,
         itemsCount = itemsCount,
-        alloy = alloy,
+        alloy = alloy.toDomain(),
     )
-
     companion object {
         /**
          * Преобразовать доменную модель в Entity
@@ -45,7 +47,7 @@ data class TransactionEntity(
             type = transaction.type,
             description = transaction.description,
             itemsCount = transaction.itemsCount,
-            alloy = transaction.alloy,
+            alloyId = transaction.alloy.id,
         )
     }
 }

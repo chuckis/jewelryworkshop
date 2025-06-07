@@ -1,7 +1,7 @@
 package com.example.jewelryworkshop.data.local
 
-import com.example.jewelryworkshop.domain.MetalBalance
 import com.jewelryworkshop.app.domain.model.MetalAlloy
+import com.jewelryworkshop.app.domain.model.MetalBalance
 import com.jewelryworkshop.app.domain.model.Transaction
 import com.jewelryworkshop.app.domain.model.TransactionType
 import com.jewelryworkshop.app.domain.repository.JewelryRepository
@@ -22,7 +22,7 @@ class JewelryRepositoryInMemory : JewelryRepository {
         val totalWeight = transactions.sumOf { transaction ->
             when (transaction.type) {
                 TransactionType.RECEIVED -> transaction.weight
-                TransactionType.GIVEN -> -transaction.weight
+                TransactionType.ISSUED -> -transaction.weight
             }
         }
 
@@ -30,7 +30,7 @@ class JewelryRepositoryInMemory : JewelryRepository {
             val items = transaction.itemsCount ?: 0
             when (transaction.type) {
                 TransactionType.RECEIVED -> items
-                TransactionType.GIVEN -> -items
+                TransactionType.ISSUED -> -items
             }
         }
 

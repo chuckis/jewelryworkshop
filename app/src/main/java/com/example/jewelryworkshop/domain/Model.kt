@@ -8,8 +8,6 @@ import java.time.LocalDateTime
 enum class TransactionType {
     RECEIVED, // Получено
     ISSUED    // Выдано
-    ,
-    GIVEN
 }
 
 /**
@@ -24,14 +22,6 @@ data class Transaction(
     val itemsCount: Int?,// Количество изделий
     val alloy: MetalAlloy,
 ) {
-    /**
-     * Получить строковое представление транзакции в формате:
-     * "Дата(время); Вес полученых/выданых металла/изделий; Описание: кол-во изделий"
-     */
-    fun toFormattedString(): String {
-        val typeStr = if (type == TransactionType.RECEIVED) "получено" else "выдано"
-        return "$dateTime; $weight г. $typeStr; $description: $itemsCount шт."
-    }
 }
 
 /**

@@ -20,16 +20,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-//    buildTypes {
-//        release {
-//            isMinifyEnabled = false
-//            proguardFiles(
-//                getDefaultProguardFile("proguard-android-optimize.txt"),
-//                "proguard-rules.pro"
-//            )
-//        }
-//    }
-
     buildTypes {
         debug {
             buildConfigField("String", "DEFAULT_REPOSITORY", "\"ROOM_DATABASE\"")
@@ -78,23 +68,23 @@ android {
         implementation("androidx.navigation:navigation-compose:2.7.5")
         implementation(libs.androidx.room.runtime.android)
 
-        val room_version = "2.7.1"
+        val roomVersion = "2.7.1"
 
-        implementation("androidx.room:room-runtime:$room_version")
-        ksp("androidx.room:room-compiler:$room_version")
+        implementation("androidx.room:room-runtime:$roomVersion")
+        ksp("androidx.room:room-compiler:$roomVersion")
 
 
         // optional - Kotlin Extensions and Coroutines support for Room
-        implementation("androidx.room:room-ktx:$room_version")
+        implementation("androidx.room:room-ktx:$roomVersion")
 
         // optional - Guava support for Room, including Optional and ListenableFuture
-        implementation("androidx.room:room-guava:$room_version")
+        implementation("androidx.room:room-guava:$roomVersion")
 
         // optional - Test helpers
-        testImplementation("androidx.room:room-testing:$room_version")
+        testImplementation("androidx.room:room-testing:$roomVersion")
 
         // optional - Paging 3 Integration
-        implementation("androidx.room:room-paging:$room_version")
+        implementation("androidx.room:room-paging:$roomVersion")
 
         implementation(libs.androidx.core.ktx)
         implementation(libs.androidx.lifecycle.runtime.ktx)

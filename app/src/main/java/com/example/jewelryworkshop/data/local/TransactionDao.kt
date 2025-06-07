@@ -1,6 +1,7 @@
 package com.jewelryworkshop.app.data.local.dao
 
 import androidx.room.*
+import com.example.jewelryworkshop.data.local.MetalAlloyEntity
 import com.jewelryworkshop.app.data.local.entity.TransactionEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -10,11 +11,17 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TransactionDao {
 
+    @Transaction
     @Query("SELECT * FROM transactions")
-    fun getAllTransactionsWithAlloy(): Flow<List<TransactionEntity>>
+    fun getAllTransactionsWithAlloy(): Flow<List<TransactionWithAlloy>>
+
+    @Transaction
+    @Query("SELECT * FROM transactions WHERE alloyId = :alloyId")
+    suspend fun getTransactionsByAlloy(alloyId: Long): List<TransactionWithAlloy>
     /**
      * Получить все транзакции, отсортированные по дате (сначала новые)
      */
+    @Transaction
     @Query("SELECT * FROM transactions ORDER BY dateTime DESC")
     fun getAllTransactions(): Flow<List<TransactionEntity>>
 
@@ -56,3 +63,12 @@ interface TransactionDao {
     suspend fun getTransactionById(transactionId: Long): TransactionEntity?
 
 }
+
+data class TransactionWithAlloy(
+    @Embedded val transaction: TransactionEntity,
+    @Relation(
+        parentColumn = "alloyId",
+        entityColumn = "id"
+    )
+    val alloy: MetalAlloyEntity
+)
