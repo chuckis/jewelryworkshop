@@ -17,7 +17,7 @@ import com.jewelryworkshop.app.data.local.entity.TransactionEntity
 @TypeConverters(Converters::class)
 @Database(
     entities = [TransactionEntity::class, MetalAlloyEntity::class],
-    version = 8,
+    version = 9,
     exportSchema = false
 )
 abstract class JewelryDatabase : RoomDatabase() {
@@ -39,8 +39,8 @@ abstract class JewelryDatabase : RoomDatabase() {
                     JewelryDatabase::class.java,
                     "jewelry_database"
                 )
-                    .allowMainThreadQueries()
-                    .fallbackToDestructiveMigration()
+                    //                    .allowMainThreadQueries()
+                    .fallbackToDestructiveMigration(false)
                     .build()
                     .also { INSTANCE = it }
             }

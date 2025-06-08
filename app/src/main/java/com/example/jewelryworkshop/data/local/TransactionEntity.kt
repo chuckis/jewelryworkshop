@@ -2,8 +2,11 @@ package com.jewelryworkshop.app.data.local.entity
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import androidx.room.Relation
 import androidx.room.TypeConverter
 import com.example.jewelryworkshop.data.local.MetalAlloyEntity
 import com.jewelryworkshop.app.domain.model.MetalAlloy
@@ -16,16 +19,25 @@ import java.time.format.DateTimeFormatter
 /**
  * Сущность Room для хранения транзакций в базе данных
  */
-@Entity(tableName = "transactions")
+@Entity(
+    tableName = "transactions",
+    foreignKeys = [
+        ForeignKey(
+            entity = MetalAlloyEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["alloyId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 data class TransactionEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val dateTime: LocalDateTime,
     val weight: Double,
     val type: TransactionType,
     val description: String,
     val itemsCount: Int?,
-    val alloyId: Long, // Внешний ключ на MetalAlloy
+    val alloyId: Long,
 ) {
     fun toDomain(alloy: MetalAlloyEntity): Transaction = Transaction(
         id = id,
@@ -81,3 +93,12 @@ class Converters {
         return TransactionType.valueOf(value)
     }
 }
+
+data class TransactionWithAlloy(
+    @Embedded val transaction: TransactionEntity,
+    @Relation(
+        parentColumn = "alloyId",
+        entityColumn = "id"
+    )
+    val alloy: MetalAlloyEntity
+)

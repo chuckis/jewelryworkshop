@@ -78,4 +78,18 @@ class JewelryRepositoryInMemory : JewelryRepository {
             }
         }
     }
+
+    override suspend fun getAlloyById(id: Long): MetalAlloy? {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAllAlloys(): List<MetalAlloy> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun addAlloy(alloy: MetalAlloy) {
+        TODO("Not yet implemented")
+    }
+
+
 }

@@ -46,6 +46,10 @@ interface JewelryRepository {
 
     suspend fun updateMetalAlloy(metalAlloy: MetalAlloy)
 
+    suspend fun getAlloyById(id: Long): MetalAlloy?
+    fun getAllAlloys(): List<MetalAlloy>
+    suspend fun addAlloy(alloy: MetalAlloy)
+
 }
 
 enum class RepositoryType {
