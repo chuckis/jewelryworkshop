@@ -1,15 +1,16 @@
 package com.example.jewelryworkshop.data.local
 
+import com.example.jewelryworkshop.domain.MetalAlloyRepository
 import com.jewelryworkshop.app.domain.model.MetalAlloy
 import com.jewelryworkshop.app.domain.model.MetalBalance
 import com.jewelryworkshop.app.domain.model.Transaction
 import com.jewelryworkshop.app.domain.model.TransactionType
-import com.jewelryworkshop.app.domain.repository.JewelryRepository
+import com.jewelryworkshop.app.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import java.time.LocalDateTime
 
-class JewelryRepositoryMock : JewelryRepository {
+class TransactionRepositoryMock : TransactionRepository, MetalAlloyRepository {
     private val mockAlloys = listOf(
         MetalAlloy(1, "Золото"),
         MetalAlloy(2, "Серебро"),
@@ -34,9 +35,17 @@ class JewelryRepositoryMock : JewelryRepository {
 
     override suspend fun updateTransaction(transaction: Transaction) {}
 
-    override suspend fun addMetalAlloy(metalAlloy: MetalAlloy): Long = metalAlloy.id
+    override suspend fun addAlloy(metalAlloy: MetalAlloy): Long = metalAlloy.id
 
-    override suspend fun deleteMetalAlloy(metalAlloyId: Long) {}
+    override suspend fun deleteAlloy(metalAlloyId: Long) {}
 
-    override suspend fun updateMetalAlloy(metalAlloy: MetalAlloy) {}
+    override suspend fun updateAlloy(metalAlloy: MetalAlloy) {}
+
+    override suspend fun getAlloyById(id: Long): MetalAlloy? {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAllAlloys(): Flow<List<MetalAlloy>> {
+        TODO("Not yet implemented")
+    }
 }

@@ -1,15 +1,13 @@
 package com.jewelryworkshop.app.data.local.entity
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import androidx.room.TypeConverter
-import com.example.jewelryworkshop.data.local.MetalAlloyEntity
-import com.jewelryworkshop.app.domain.model.MetalAlloy
+import com.jewelryworkshop.app.data.local.entity.MetalAlloyEntity
 import com.jewelryworkshop.app.domain.model.Transaction
 import com.jewelryworkshop.app.domain.model.TransactionType
 import java.time.LocalDateTime
@@ -26,9 +24,10 @@ import java.time.format.DateTimeFormatter
             entity = MetalAlloyEntity::class,
             parentColumns = ["id"],
             childColumns = ["alloyId"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         )
-    ]
+    ],
+    indices = [Index(value = ["alloyId"])]
 )
 data class TransactionEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
@@ -68,16 +67,13 @@ data class TransactionEntity(
  * Конвертеры типов для Room
  */
 class Converters {
-    @RequiresApi(Build.VERSION_CODES.O)
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
     fun fromLocalDateTime(dateTime: LocalDateTime?): String? {
         return dateTime?.format(formatter)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
     fun toLocalDateTime(value: String?): LocalDateTime? {
         return value?.let { LocalDateTime.parse(it, formatter) }

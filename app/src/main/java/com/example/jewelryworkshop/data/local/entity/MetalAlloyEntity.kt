@@ -1,4 +1,4 @@
-package com.example.jewelryworkshop.data.local
+package com.jewelryworkshop.app.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

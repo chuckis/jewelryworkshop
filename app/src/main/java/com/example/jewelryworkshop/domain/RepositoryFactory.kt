@@ -1,19 +1,19 @@
 package com.example.jewelryworkshop.domain
 
 import android.content.Context
-import com.example.jewelryworkshop.data.local.JewelryRepositoryInMemory
-import com.example.jewelryworkshop.data.local.JewelryRepositoryMock
+import com.example.jewelryworkshop.data.local.TransactionRepositoryInMemory
+import com.example.jewelryworkshop.data.local.TransactionRepositoryMock
 import com.jewelryworkshop.app.data.local.database.JewelryDatabase
-import com.jewelryworkshop.app.data.repository.JewelryRepositoryRoom
-import com.jewelryworkshop.app.domain.repository.JewelryRepository
+import com.jewelryworkshop.app.data.repository.TransactionRepositoryRoom
+import com.jewelryworkshop.app.domain.repository.TransactionRepository
 import com.jewelryworkshop.app.domain.repository.RepositoryType
 
 object RepositoryFactory {
 
     // Кеширование созданных репозиториев
-    private var roomRepository: JewelryRepository? = null
-    private var inMemoryRepository: JewelryRepository? = null
-    private var mockRepository: JewelryRepository? = null
+    private var roomRepository: TransactionRepository? = null
+    private var inMemoryRepository: TransactionRepository? = null
+    private var mockRepository: TransactionRepository? = null
 
     /**
      * Создает репозиторий указанного типа
@@ -21,7 +21,7 @@ object RepositoryFactory {
     fun createJewelryRepository(
         context: Context,
         type: RepositoryType = RepositoryType.ROOM_DATABASE
-    ): JewelryRepository {
+    ): TransactionRepository {
         return when (type) {
             RepositoryType.ROOM_DATABASE -> {
                 if (roomRepository == null) {
@@ -31,13 +31,13 @@ object RepositoryFactory {
             }
             RepositoryType.IN_MEMORY_TEST -> {
                 if (inMemoryRepository == null) {
-                    inMemoryRepository = JewelryRepositoryInMemory()
+                    inMemoryRepository = TransactionRepositoryInMemory()
                 }
                 inMemoryRepository!!
             }
             RepositoryType.MOCK_DATA -> {
                 if (mockRepository == null) {
-                    mockRepository = JewelryRepositoryMock()
+                    mockRepository = TransactionRepositoryMock()
                 }
                 mockRepository!!
             }
@@ -46,9 +46,9 @@ object RepositoryFactory {
     /**
      * Создает Room репозиторий
      */
-    private fun createRoomRepository(context: Context): JewelryRepository {
+    private fun createRoomRepository(context: Context): TransactionRepository {
         val database = JewelryDatabase.getInstance(context)
-        return JewelryRepositoryRoom(
+        return TransactionRepositoryRoom(
             transactionDao = database.transactionDao(),
             metalAlloyDao = database.metalAlloyDao()
         )

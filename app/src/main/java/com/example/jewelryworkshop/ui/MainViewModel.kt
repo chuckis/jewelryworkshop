@@ -7,7 +7,7 @@ import com.jewelryworkshop.app.domain.model.MetalAlloy
 import com.jewelryworkshop.app.domain.model.MetalBalance
 import com.jewelryworkshop.app.domain.model.Transaction
 import com.jewelryworkshop.app.domain.model.TransactionType
-import com.jewelryworkshop.app.domain.repository.JewelryRepository
+import com.jewelryworkshop.app.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 /**
  * ViewModel для основного экрана приложения
  */
-class MainViewModel(private val repository: JewelryRepository) : ViewModel() {
+class MainViewModel(private val repository: TransactionRepository) : ViewModel() {
 
     // Поток всех транзакций, отсортированных по дате
     val transactions: StateFlow<List<Transaction>> = repository.getAllTransactions()
@@ -125,7 +125,7 @@ class MainViewModel(private val repository: JewelryRepository) : ViewModel() {
     /**
      * Factory для создания MainViewModel с внедрением зависимостей
      */
-    class Factory(private val repository: JewelryRepository) : ViewModelProvider.Factory {
+    class Factory(private val repository: TransactionRepository) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(MainViewModel::class.java)) {

@@ -1,14 +1,15 @@
 package com.example.jewelryworkshop.data.local
 
+import com.example.jewelryworkshop.domain.MetalAlloyRepository
 import com.jewelryworkshop.app.domain.model.MetalAlloy
 import com.jewelryworkshop.app.domain.model.MetalBalance
 import com.jewelryworkshop.app.domain.model.Transaction
 import com.jewelryworkshop.app.domain.model.TransactionType
-import com.jewelryworkshop.app.domain.repository.JewelryRepository
+import com.jewelryworkshop.app.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-class JewelryRepositoryInMemory : JewelryRepository {
+class TransactionRepositoryInMemory : TransactionRepository, MetalAlloyRepository {
     private val transactions = mutableListOf<Transaction>()
     private val metalAlloys = mutableListOf<MetalAlloy>()
     private var nextTransactionId = 1L
@@ -54,19 +55,19 @@ class JewelryRepositoryInMemory : JewelryRepository {
         }
     }
 
-    override suspend fun addMetalAlloy(metalAlloy: MetalAlloy): Long {
+    override suspend fun addAlloy(metalAlloy: MetalAlloy): Long {
         val newAlloy = metalAlloy.copy(id = nextAlloyId++)
         metalAlloys.add(newAlloy)
         return newAlloy.id
     }
 
-    override suspend fun deleteMetalAlloy(metalAlloyId: Long) {
+    override suspend fun deleteAlloy(metalAlloyId: Long) {
         metalAlloys.removeAll { it.id == metalAlloyId }
         // Также удаляем связанные транзакции
         transactions.removeAll { it.alloy.id == metalAlloyId }
     }
 
-    override suspend fun updateMetalAlloy(metalAlloy: MetalAlloy) {
+    override suspend fun updateAlloy(metalAlloy: MetalAlloy) {
         val index = metalAlloys.indexOfFirst { it.id == metalAlloy.id }
         if (index != -1) {
             metalAlloys[index] = metalAlloy
@@ -83,13 +84,7 @@ class JewelryRepositoryInMemory : JewelryRepository {
         TODO("Not yet implemented")
     }
 
-    override fun getAllAlloys(): List<MetalAlloy> {
+    override fun getAllAlloys(): Flow<List<MetalAlloy>> {
         TODO("Not yet implemented")
     }
-
-    override suspend fun addAlloy(alloy: MetalAlloy) {
-        TODO("Not yet implemented")
-    }
-
-
 }

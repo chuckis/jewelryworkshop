@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import com.example.jewelryworkshop.domain.RepositoryFactory
-import com.jewelryworkshop.app.domain.repository.JewelryRepository
+import com.jewelryworkshop.app.domain.repository.TransactionRepository
 import com.jewelryworkshop.app.domain.repository.RepositoryType
 import com.jewelryworkshop.ui.MainViewModel
 
@@ -63,7 +63,7 @@ class JewelryWorkshopApp : Application(), ViewModelStoreOwner {
         }
     }
 
-    val repository: JewelryRepository by lazy {
+    val repository: TransactionRepository by lazy {
         val type = getCurrentRepositoryType()
         Log.d("JewelryWorkshopApp", "Creating repository of type: $type")
         RepositoryFactory.createJewelryRepository(this, type)

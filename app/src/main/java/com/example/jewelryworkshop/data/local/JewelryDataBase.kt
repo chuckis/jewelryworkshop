@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.jewelryworkshop.data.local.MetalAlloyDao
-import com.example.jewelryworkshop.data.local.MetalAlloyEntity
+import com.jewelryworkshop.app.data.local.entity.MetalAlloyEntity
 import com.jewelryworkshop.app.data.local.dao.TransactionDao
 import com.jewelryworkshop.app.data.local.entity.Converters
 import com.jewelryworkshop.app.data.local.entity.TransactionEntity
@@ -17,7 +17,7 @@ import com.jewelryworkshop.app.data.local.entity.TransactionEntity
 @TypeConverters(Converters::class)
 @Database(
     entities = [TransactionEntity::class, MetalAlloyEntity::class],
-    version = 9,
+    version = 1,
     exportSchema = false
 )
 abstract class JewelryDatabase : RoomDatabase() {
