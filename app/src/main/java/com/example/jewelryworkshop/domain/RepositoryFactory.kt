@@ -1,6 +1,7 @@
 package com.example.jewelryworkshop.domain
 
 import android.content.Context
+import com.example.jewelryworkshop.data.local.CombinedRepository
 import com.example.jewelryworkshop.data.local.CombinedRepositoryInMemory
 import com.example.jewelryworkshop.data.local.CombinedRepositoryMock
 import com.jewelryworkshop.app.data.local.database.JewelryDatabase
@@ -11,9 +12,9 @@ import com.jewelryworkshop.app.domain.repository.RepositoryType
 object RepositoryFactory {
 
     // Кеширование созданных репозиториев
-    private var roomRepository: TransactionRepository? = null
-    private var inMemoryRepository: TransactionRepository? = null
-    private var mockRepository: TransactionRepository? = null
+    private var roomRepository: CombinedRepositoryRoom? = null
+    private var inMemoryRepository: CombinedRepositoryInMemory? = null
+    private var mockRepository: CombinedRepositoryMock? = null
 
     /**
      * Создает репозиторий указанного типа
@@ -21,7 +22,7 @@ object RepositoryFactory {
     fun createJewelryRepository(
         context: Context,
         type: RepositoryType = RepositoryType.ROOM_DATABASE
-    ): TransactionRepository {
+    ): CombinedRepository {
         return when (type) {
             RepositoryType.ROOM_DATABASE -> {
                 if (roomRepository == null) {
@@ -46,7 +47,7 @@ object RepositoryFactory {
     /**
      * Создает Room репозиторий
      */
-    private fun createRoomRepository(context: Context): TransactionRepository {
+    private fun createRoomRepository(context: Context): CombinedRepositoryRoom {
         val database = JewelryDatabase.getInstance(context)
         return CombinedRepositoryRoom(
             transactionDao = database.transactionDao(),

@@ -75,7 +75,6 @@ class JewelryWorkshopApp : Application(), ViewModelStoreOwner {
     val mainViewModel: MainViewModel by lazy {
         ViewModelProvider(this, MainViewModel.Factory(
             repository,
-            metals = TODO()
         ))[MainViewModel::class.java]
     }
 
