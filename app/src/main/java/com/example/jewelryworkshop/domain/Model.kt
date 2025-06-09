@@ -1,4 +1,4 @@
-package com.jewelryworkshop.app.domain.model
+package com.example.jewelryworkshop.domain
 
 import java.time.LocalDateTime
 

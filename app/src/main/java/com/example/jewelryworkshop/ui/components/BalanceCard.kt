@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.jewelryworkshop.app.domain.model.MetalBalance
+import com.example.jewelryworkshop.domain.MetalBalance
 
 /**
  * Компонент для отображения баланса металлов/изделий

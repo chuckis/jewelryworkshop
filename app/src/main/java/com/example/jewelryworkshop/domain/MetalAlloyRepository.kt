@@ -1,6 +1,5 @@
 package com.example.jewelryworkshop.domain
 
-import com.jewelryworkshop.app.domain.model.MetalAlloy
 import kotlinx.coroutines.flow.Flow
 
 interface MetalAlloyRepository {

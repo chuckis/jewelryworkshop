@@ -16,8 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.jewelryworkshop.app.domain.model.Transaction
-import com.jewelryworkshop.app.domain.model.TransactionType
+import com.example.jewelryworkshop.domain.Transaction
+import com.example.jewelryworkshop.domain.TransactionType
 import java.time.format.DateTimeFormatter
 
 /**

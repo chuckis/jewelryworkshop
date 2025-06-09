@@ -1,9 +1,9 @@
 package com.example.jewelryworkshop.data.local
 
-import com.jewelryworkshop.app.domain.model.MetalAlloy
-import com.jewelryworkshop.app.domain.model.MetalBalance
-import com.jewelryworkshop.app.domain.model.Transaction
-import com.jewelryworkshop.app.domain.model.TransactionType
+import com.example.jewelryworkshop.domain.MetalAlloy
+import com.example.jewelryworkshop.domain.MetalBalance
+import com.example.jewelryworkshop.domain.Transaction
+import com.example.jewelryworkshop.domain.TransactionType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import java.time.LocalDateTime

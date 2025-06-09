@@ -16,8 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.jewelryworkshop.app.domain.model.TransactionType
-import com.jewelryworkshop.ui.MainViewModel
+import com.example.jewelryworkshop.domain.TransactionType
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -95,7 +94,7 @@ fun TransactionAddScreen(
             type = selectedType,
             description = description,
             itemsCount = itemsCountValue,
-            metalAlloy = metalAlloy
+            alloyId = TODO()
         )
 
         onNavigateBack()

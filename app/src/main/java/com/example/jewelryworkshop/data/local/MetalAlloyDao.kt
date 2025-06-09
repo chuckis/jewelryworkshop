@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.jewelryworkshop.app.data.local.entity.MetalAlloyEntity
+import com.example.jewelryworkshop.data.local.entity.MetalAlloyEntity
 
 @Dao
 interface MetalAlloyDao {

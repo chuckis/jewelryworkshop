@@ -1,14 +1,11 @@
-package com.jewelryworkshop.app.data.repository
+package com.example.jewelryworkshop.data.local
 
 
-import com.example.jewelryworkshop.data.local.CombinedRepository
-import com.example.jewelryworkshop.data.local.MetalAlloyDao
-import com.jewelryworkshop.app.data.local.dao.TransactionDao
-import com.jewelryworkshop.app.data.local.entity.MetalAlloyEntity
-import com.jewelryworkshop.app.data.local.entity.TransactionEntity
-import com.jewelryworkshop.app.domain.model.MetalAlloy
-import com.jewelryworkshop.app.domain.model.MetalBalance
-import com.jewelryworkshop.app.domain.model.Transaction
+import com.example.jewelryworkshop.data.local.entity.MetalAlloyEntity
+import com.example.jewelryworkshop.data.local.entity.TransactionEntity
+import com.example.jewelryworkshop.domain.MetalAlloy
+import com.example.jewelryworkshop.domain.MetalBalance
+import com.example.jewelryworkshop.domain.Transaction
 import kotlinx.coroutines.flow.*
 
 
@@ -16,14 +13,17 @@ class CombinedRepositoryRoom(
     private val transactionDao: TransactionDao,
     private val metalAlloyDao: MetalAlloyDao
 ) : CombinedRepository {
-
     override fun getAllTransactions(): Flow<List<Transaction>> {
-        return transactionDao.getAllTransactionsWithAlloy().map { entities ->
-            entities.map { transactionWithAlloy ->
-                transactionWithAlloy.transaction.toDomain(transactionWithAlloy.alloy)
-            }
-        }
+        TODO("Not yet implemented")
     }
+
+//    override fun getAllTransactions(): Flow<List<Transaction>> {
+//        return transactionDao.getAllTransactionsWithAlloy().map { entities ->
+//            entities.map { transactionWithAlloy ->
+//                transactionWithAlloy.transaction.toDomain(transactionWithAlloy.alloy)
+//            }
+//        }
+//    }
 
     override fun getMetalBalance(): Flow<MetalBalance> {
         return combine(

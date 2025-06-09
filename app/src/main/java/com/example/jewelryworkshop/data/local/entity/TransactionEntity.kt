@@ -1,4 +1,4 @@
-package com.jewelryworkshop.app.data.local.entity
+package com.example.jewelryworkshop.data.local.entity
 
 import androidx.room.Embedded
 import androidx.room.Entity
@@ -7,9 +7,8 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import androidx.room.TypeConverter
-import com.jewelryworkshop.app.data.local.entity.MetalAlloyEntity
-import com.jewelryworkshop.app.domain.model.Transaction
-import com.jewelryworkshop.app.domain.model.TransactionType
+import com.example.jewelryworkshop.domain.Transaction
+import com.example.jewelryworkshop.domain.TransactionType
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -91,10 +90,14 @@ class Converters {
 }
 
 data class TransactionWithAlloy(
-    @Embedded val transaction: TransactionEntity,
+    @Embedded
+    val transaction: TransactionEntity,
+
     @Relation(
         parentColumn = "alloyId",
         entityColumn = "id"
     )
     val alloy: MetalAlloyEntity
-)
+) {
+    fun toDomain(): Transaction = transaction.toDomain(alloy)
+}

@@ -4,10 +4,8 @@ import android.content.Context
 import com.example.jewelryworkshop.data.local.CombinedRepository
 import com.example.jewelryworkshop.data.local.CombinedRepositoryInMemory
 import com.example.jewelryworkshop.data.local.CombinedRepositoryMock
-import com.jewelryworkshop.app.data.local.database.JewelryDatabase
-import com.jewelryworkshop.app.data.repository.CombinedRepositoryRoom
-import com.jewelryworkshop.app.domain.repository.TransactionRepository
-import com.jewelryworkshop.app.domain.repository.RepositoryType
+import com.example.jewelryworkshop.data.local.JewelryDatabase
+import com.example.jewelryworkshop.data.local.CombinedRepositoryRoom
 
 object RepositoryFactory {
 

@@ -8,11 +8,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import com.example.jewelryworkshop.data.local.CombinedRepository
-import com.example.jewelryworkshop.domain.MetalAlloyRepository
 import com.example.jewelryworkshop.domain.RepositoryFactory
-import com.jewelryworkshop.app.domain.repository.TransactionRepository
-import com.jewelryworkshop.app.domain.repository.RepositoryType
-import com.jewelryworkshop.ui.MainViewModel
+import com.example.jewelryworkshop.domain.RepositoryType
+import com.example.jewelryworkshop.ui.MainViewModel
 
 class JewelryWorkshopApp : Application(), ViewModelStoreOwner {
     private val appViewModelStore: ViewModelStore by lazy {

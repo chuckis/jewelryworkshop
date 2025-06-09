@@ -16,9 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.jewelryworkshop.app.domain.model.Transaction
-import com.jewelryworkshop.app.domain.model.TransactionType
-import com.jewelryworkshop.ui.MainViewModel
+import com.example.jewelryworkshop.domain.MetalAlloy
+import com.example.jewelryworkshop.domain.Transaction
+import com.example.jewelryworkshop.domain.TransactionType
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -100,7 +100,7 @@ fun TransactionScreen(
                 type = selectedType,
                 description = description,
                 itemsCount = itemsCountValue,
-                alloy = metalAlloy,
+                alloy = metalAlloy as MetalAlloy,
             )
             viewModel.updateTransaction(updatedTransaction)
         } else {
@@ -111,8 +111,7 @@ fun TransactionScreen(
                 type = selectedType,
                 description = description,
                 itemsCount = itemsCountValue,
-                metalAlloy = metalAlloy,
-
+                alloyId = TODO(),
             )
         }
 

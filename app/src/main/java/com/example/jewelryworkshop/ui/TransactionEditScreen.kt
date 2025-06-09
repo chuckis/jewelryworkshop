@@ -16,10 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.jewelryworkshop.app.domain.model.Transaction
-import com.jewelryworkshop.app.domain.model.TransactionType
-import com.jewelryworkshop.ui.MainViewModel
-import java.time.LocalDateTime
+import com.example.jewelryworkshop.domain.MetalAlloy
+import com.example.jewelryworkshop.domain.Transaction
+import com.example.jewelryworkshop.domain.TransactionType
 import java.time.format.DateTimeFormatter
 
 /**
@@ -253,10 +252,10 @@ fun TransactionEditScreen(
             )
 
             // Выбор сплава
-            MetalAlloyDropdown(
-                selectedAlloy = metalAlloy,
-                onAlloySelected = { metalAlloy = it }
-            )
+//            MetalAlloyDropdown(
+//                selectedAlloy = metalAlloy,
+//                onAlloySelected = { metalAlloy = it.toString() }
+//            )
 
             // Кнопки действий
             Row(
@@ -291,7 +290,7 @@ fun TransactionEditScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MetalAlloyDropdown(
-    selectedAlloy: String,
+    selectedAlloy: MetalAlloy,
     onAlloySelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }

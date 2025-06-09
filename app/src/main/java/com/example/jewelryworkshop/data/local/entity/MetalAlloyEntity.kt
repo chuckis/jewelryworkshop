@@ -1,8 +1,8 @@
-package com.jewelryworkshop.app.data.local.entity
+package com.example.jewelryworkshop.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.jewelryworkshop.app.domain.model.MetalAlloy
+import com.example.jewelryworkshop.domain.MetalAlloy
 
 @Entity(tableName = "metal_alloys")
 data class MetalAlloyEntity(

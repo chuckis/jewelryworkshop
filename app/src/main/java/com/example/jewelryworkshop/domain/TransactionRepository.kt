@@ -1,7 +1,5 @@
-package com.jewelryworkshop.app.domain.repository
+package com.example.jewelryworkshop.domain
 
-import com.jewelryworkshop.app.domain.model.MetalBalance
-import com.jewelryworkshop.app.domain.model.Transaction
 import kotlinx.coroutines.flow.Flow
 
 /**

@@ -1,6 +1,5 @@
 package com.example.jewelryworkshop.ui
 
-import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
@@ -13,10 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.jewelryworkshop.ui.MainViewModel
-import com.jewelryworkshop.app.domain.model.Transaction
-import com.example.jewelryworkshop.ui.components.BalanceCard
+import com.example.jewelryworkshop.domain.Transaction
 import com.example.jewelryworkshop.ui.components.TransactionItem
 
 @RequiresApi(Build.VERSION_CODES.O)

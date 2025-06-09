@@ -1,15 +1,13 @@
-package com.jewelryworkshop.ui
+package com.example.jewelryworkshop.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.jewelryworkshop.data.local.CombinedRepository
-import com.example.jewelryworkshop.domain.MetalAlloyRepository
-import com.jewelryworkshop.app.domain.model.MetalAlloy
-import com.jewelryworkshop.app.domain.model.MetalBalance
-import com.jewelryworkshop.app.domain.model.Transaction
-import com.jewelryworkshop.app.domain.model.TransactionType
-import com.jewelryworkshop.app.domain.repository.TransactionRepository
+import com.example.jewelryworkshop.domain.MetalAlloy
+import com.example.jewelryworkshop.domain.MetalBalance
+import com.example.jewelryworkshop.domain.Transaction
+import com.example.jewelryworkshop.domain.TransactionType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
