@@ -250,10 +250,10 @@ fun TransactionAddScreen(
             )
 
             // Выбор сплава
-            MetalAlloyDropdown(
-                selectedAlloy = metalAlloy,
-                onAlloySelected = { metalAlloy = it }
-            )
+//            MetalAlloyDropdown(
+//                selectedAlloy = metalAlloy,
+//                onAlloySelected = { metalAlloy = it }
+//            )
 
             // Кнопки действий
             Row(
