@@ -42,8 +42,8 @@ class CombinedRepositoryInMemory : CombinedRepository {
         return newTransaction.id
     }
 
-    override suspend fun deleteTransaction(transactionId: Long) {
-        transactions.removeAll { it.id == transactionId }
+    override suspend fun deleteTransaction(transaction: Transaction) {
+        transactions.removeAll { it.id == transaction.id }
     }
 
     override suspend fun updateTransaction(transaction: Transaction) {
@@ -59,10 +59,10 @@ class CombinedRepositoryInMemory : CombinedRepository {
         return newAlloy.id
     }
 
-    override suspend fun deleteAlloy(metalAlloyId: Long) {
-        metalAlloys.removeAll { it.id == metalAlloyId }
+    override suspend fun deleteAlloy(metalAlloy: MetalAlloy) {
+        metalAlloys.removeAll { it.id == metalAlloy.id }
         // Также удаляем связанные транзакции
-        transactions.removeAll { it.alloy.id == metalAlloyId }
+        transactions.removeAll { it.alloy.id == metalAlloy.id }
     }
 
     override suspend fun updateAlloy(metalAlloy: MetalAlloy) {
@@ -78,7 +78,7 @@ class CombinedRepositoryInMemory : CombinedRepository {
         }
     }
 
-    override suspend fun getAlloy(metalAlloy: MetalAlloy): MetalAlloy?{
+    override suspend fun getAlloy(metalAlloy: MetalAlloy): MetalAlloy {
         val index = metalAlloys.indexOfFirst { it.id == metalAlloy.id }
         return metalAlloys[index]
     }

@@ -29,17 +29,17 @@ class CombinedRepositoryMock : CombinedRepository {
 
     override suspend fun addTransaction(transaction: Transaction): Long = transaction.id
 
-    override suspend fun deleteTransaction(transactionId: Long) {}
+    override suspend fun deleteTransaction(transaction: Transaction) {}
 
     override suspend fun updateTransaction(transaction: Transaction) {}
 
     override suspend fun addAlloy(metalAlloy: MetalAlloy): Long = metalAlloy.id
 
-    override suspend fun deleteAlloy(metalAlloyId: Long) {}
+    override suspend fun deleteAlloy(metalAlloy: MetalAlloy) {}
 
     override suspend fun updateAlloy(metalAlloy: MetalAlloy) {}
 
-    override suspend fun getAlloy(alloy: MetalAlloy): MetalAlloy? {
+    override suspend fun getAlloy(alloy: MetalAlloy): MetalAlloy {
         TODO("Not yet implemented")
     }
 

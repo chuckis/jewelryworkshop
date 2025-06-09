@@ -71,10 +71,10 @@ class MainViewModel(private val repository: CombinedRepository) : ViewModel() {
     /**
      * Удалить транзакцию
      */
-    fun deleteTransaction(transactionId: Long) {
+    fun deleteTransaction(transaction: Transaction) {
         viewModelScope.launch {
             try {
-                repository.deleteTransaction(transactionId)
+                repository.deleteTransaction(transaction)
             } catch (e: Exception) {
                 _errorMessage.value = "Ошибка при удалении транзакции: ${e.message}"
             }

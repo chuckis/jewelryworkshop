@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TransactionDao {
 
-//    @Transaction
-//    @Query("SELECT * FROM transactions ORDER BY dateTime DESC")
-//    fun getAllTransactionsWithAlloy(): Flow<List<TransactionWithAlloy>>
+    @Transaction
+    @Query("SELECT * FROM transactions ORDER BY dateTime DESC")
+    fun getAllTransactionsWithAlloy(): Flow<List<TransactionWithAlloy>>
 
 //    @Transaction
 //    @Query("SELECT * FROM transactions WHERE alloyId = :alloyId ORDER BY dateTime DESC")
@@ -47,8 +47,8 @@ interface TransactionDao {
     /**
      * Удалить транзакцию по ID
      */
-    @Query("DELETE FROM transactions WHERE id = :transactionId")
-    suspend fun deleteTransaction(transactionId: Long)
+    @Delete
+    suspend fun deleteTransaction(transaction: TransactionEntity)
 
     /**
      * Получить транзакцию по ID с информацией о сплаве

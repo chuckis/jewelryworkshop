@@ -27,7 +27,7 @@ fun MainScreen(
     val metalBalance by viewModel.metalBalance.collectAsState()
 
     var showDeleteDialog by remember { mutableStateOf(false) }
-    var transactionToDelete by remember { mutableStateOf<Long?>(null) }
+    var transactionToDelete by remember { mutableStateOf<Transaction?>(null) }
 
     if (showDeleteDialog && transactionToDelete != null) {
         AlertDialog(
@@ -110,7 +110,7 @@ fun MainScreen(
                             transaction = transaction,
                             onClick = { onNavigateToTransactionDetail(transaction) },
                             onDeleteClick = { id ->
-                                transactionToDelete = id
+                                transactionToDelete = transaction
                                 showDeleteDialog = true
                             }
                         )

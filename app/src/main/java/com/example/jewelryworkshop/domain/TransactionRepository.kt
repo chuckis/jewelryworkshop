@@ -9,7 +9,7 @@ interface TransactionRepository {
     fun getAllTransactions(): Flow<List<Transaction>>
     fun getMetalBalance(): Flow<MetalBalance>
     suspend fun addTransaction(transaction: Transaction): Long
-    suspend fun deleteTransaction(transactionId: Long)
+    suspend fun deleteTransaction(transaction: Transaction)
     suspend fun updateTransaction(transaction: Transaction)
 }
 

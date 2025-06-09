@@ -13,17 +13,14 @@ class CombinedRepositoryRoom(
     private val transactionDao: TransactionDao,
     private val metalAlloyDao: MetalAlloyDao
 ) : CombinedRepository {
-    override fun getAllTransactions(): Flow<List<Transaction>> {
-        TODO("Not yet implemented")
-    }
 
-//    override fun getAllTransactions(): Flow<List<Transaction>> {
-//        return transactionDao.getAllTransactionsWithAlloy().map { entities ->
-//            entities.map { transactionWithAlloy ->
-//                transactionWithAlloy.transaction.toDomain(transactionWithAlloy.alloy)
-//            }
-//        }
-//    }
+    override fun getAllTransactions(): Flow<List<Transaction>> {
+        return transactionDao.getAllTransactionsWithAlloy().map { entities ->
+            entities.map { transactionWithAlloy ->
+                transactionWithAlloy.transaction.toDomain(transactionWithAlloy.alloy)
+            }
+        }
+    }
 
     override fun getMetalBalance(): Flow<MetalBalance> {
         return combine(
@@ -41,8 +38,9 @@ class CombinedRepositoryRoom(
         return transactionDao.insertTransaction(TransactionEntity.fromDomain(transaction))
     }
 
-    override suspend fun deleteTransaction(transactionId: Long) {
-        transactionDao.deleteTransaction(transactionId)
+
+    override suspend fun deleteTransaction(transaction: Transaction) {
+        transactionDao.deleteTransaction(TransactionEntity.fromDomain(transaction))
     }
 
     override suspend fun updateTransaction(transaction: Transaction) {
@@ -50,34 +48,33 @@ class CombinedRepositoryRoom(
     }
 
 
-
     override suspend fun addAlloy(metalAlloy: MetalAlloy): Long {
         return metalAlloyDao.insert(MetalAlloyEntity.fromDomain(metalAlloy))
     }
 
-    suspend fun deleteMetalAlloy(metalAlloyId: Long) {
-        metalAlloyDao.delete(metalAlloyId)
+    suspend fun deleteMetalAlloy(metalAlloy: MetalAlloy) {
+        metalAlloyDao.delete(MetalAlloyEntity.fromDomain(metalAlloy))
     }
 
     suspend fun updateMetalAlloy(metalAlloy: MetalAlloy) {
         metalAlloyDao.update(MetalAlloyEntity.fromDomain(metalAlloy))
     }
 
-    override suspend fun getAlloy(alloy: MetalAlloy): MetalAlloy? {
-        return metalAlloyDao.getById(alloy.id) as MetalAlloy?
+    override suspend fun getAlloy(metalAlloy: MetalAlloy): MetalAlloyEntity {
+        return metalAlloyDao.getById(metalAlloy)
     }
 
-    override fun getAllAlloys(): Flow<List<MetalAlloy>> {
-        TODO("Not yet implemented")
+    override suspend fun getAllAlloys(): Flow<List<MetalAlloy>> {
+        metalAlloyDao.getAllAlloys()
     }
 
 
-    override suspend fun updateAlloy(alloy: MetalAlloy) {
-        TODO("Not yet implemented")
+    override suspend fun updateAlloy(metalAlloy: MetalAlloy) {
+        metalAlloyDao.update(MetalAlloyEntity.fromDomain(metalAlloy))
     }
 
-    override suspend fun deleteAlloy(alloyId: Long) {
-        TODO("Not yet implemented")
+    override suspend fun deleteAlloy(metalAlloy: MetalAlloy) {
+        metalAlloyDao.delete(MetalAlloyEntity.fromDomain(metalAlloy))
     }
 }
 
