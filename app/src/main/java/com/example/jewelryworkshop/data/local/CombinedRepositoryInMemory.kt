@@ -1,15 +1,13 @@
 package com.example.jewelryworkshop.data.local
 
-import com.example.jewelryworkshop.domain.MetalAlloyRepository
 import com.jewelryworkshop.app.domain.model.MetalAlloy
 import com.jewelryworkshop.app.domain.model.MetalBalance
 import com.jewelryworkshop.app.domain.model.Transaction
 import com.jewelryworkshop.app.domain.model.TransactionType
-import com.jewelryworkshop.app.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-class TransactionRepositoryInMemory : TransactionRepository, MetalAlloyRepository {
+class CombinedRepositoryInMemory : CombinedRepository {
     private val transactions = mutableListOf<Transaction>()
     private val metalAlloys = mutableListOf<MetalAlloy>()
     private var nextTransactionId = 1L
@@ -80,11 +78,12 @@ class TransactionRepositoryInMemory : TransactionRepository, MetalAlloyRepositor
         }
     }
 
-    override suspend fun getAlloyById(id: Long): MetalAlloy? {
-        TODO("Not yet implemented")
+    override suspend fun getAlloy(metalAlloy: MetalAlloy): MetalAlloy?{
+        val index = metalAlloys.indexOfFirst { it.id == metalAlloy.id }
+        return metalAlloys[index]
     }
 
     override fun getAllAlloys(): Flow<List<MetalAlloy>> {
-        TODO("Not yet implemented")
+        return flowOf(metalAlloys)
     }
 }

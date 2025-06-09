@@ -1,22 +1,21 @@
 package com.jewelryworkshop.app.data.repository
 
 
+import com.example.jewelryworkshop.data.local.CombinedRepository
 import com.example.jewelryworkshop.data.local.MetalAlloyDao
-import com.example.jewelryworkshop.domain.MetalAlloyRepository
 import com.jewelryworkshop.app.data.local.dao.TransactionDao
 import com.jewelryworkshop.app.data.local.entity.MetalAlloyEntity
 import com.jewelryworkshop.app.data.local.entity.TransactionEntity
 import com.jewelryworkshop.app.domain.model.MetalAlloy
 import com.jewelryworkshop.app.domain.model.MetalBalance
 import com.jewelryworkshop.app.domain.model.Transaction
-import com.jewelryworkshop.app.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.*
 
 
-class TransactionRepositoryRoom(
+class CombinedRepositoryRoom(
     private val transactionDao: TransactionDao,
     private val metalAlloyDao: MetalAlloyDao
-) : TransactionRepository, MetalAlloyRepository {
+) : CombinedRepository {
 
     override fun getAllTransactions(): Flow<List<Transaction>> {
         return transactionDao.getAllTransactionsWithAlloy().map { entities ->
@@ -64,8 +63,8 @@ class TransactionRepositoryRoom(
         metalAlloyDao.update(MetalAlloyEntity.fromDomain(metalAlloy))
     }
 
-    override suspend fun getAlloyById(id: Long): MetalAlloy? {
-        return metalAlloyDao.getById(id) as MetalAlloy?
+    override suspend fun getAlloy(alloy: MetalAlloy): MetalAlloy? {
+        return metalAlloyDao.getById(alloy.id) as MetalAlloy?
     }
 
     override fun getAllAlloys(): Flow<List<MetalAlloy>> {

@@ -21,8 +21,8 @@ interface TransactionDao {
     /**
      * Получить все транзакции, отсортированные по дате (сначала новые)
      */
-    @Query("SELECT * FROM transactions ORDER BY dateTime DESC")
-    fun getAllTransactions(): Flow<List<TransactionEntity>>
+//    @Query("SELECT * FROM transactions ORDER BY dateTime DESC")
+//    fun getAllTransactions(): Flow<List<TransactionEntity>>
 
     /**
      * Получить общий баланс по весу полученных металлов/изделий

@@ -1,16 +1,14 @@
 package com.example.jewelryworkshop.data.local
 
-import com.example.jewelryworkshop.domain.MetalAlloyRepository
 import com.jewelryworkshop.app.domain.model.MetalAlloy
 import com.jewelryworkshop.app.domain.model.MetalBalance
 import com.jewelryworkshop.app.domain.model.Transaction
 import com.jewelryworkshop.app.domain.model.TransactionType
-import com.jewelryworkshop.app.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import java.time.LocalDateTime
 
-class TransactionRepositoryMock : TransactionRepository, MetalAlloyRepository {
+class CombinedRepositoryMock : CombinedRepository {
     private val mockAlloys = listOf(
         MetalAlloy(1, "Золото"),
         MetalAlloy(2, "Серебро"),
@@ -41,7 +39,7 @@ class TransactionRepositoryMock : TransactionRepository, MetalAlloyRepository {
 
     override suspend fun updateAlloy(metalAlloy: MetalAlloy) {}
 
-    override suspend fun getAlloyById(id: Long): MetalAlloy? {
+    override suspend fun getAlloy(alloy: MetalAlloy): MetalAlloy? {
         TODO("Not yet implemented")
     }
 

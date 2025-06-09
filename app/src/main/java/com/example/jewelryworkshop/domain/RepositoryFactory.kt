@@ -1,10 +1,10 @@
 package com.example.jewelryworkshop.domain
 
 import android.content.Context
-import com.example.jewelryworkshop.data.local.TransactionRepositoryInMemory
-import com.example.jewelryworkshop.data.local.TransactionRepositoryMock
+import com.example.jewelryworkshop.data.local.CombinedRepositoryInMemory
+import com.example.jewelryworkshop.data.local.CombinedRepositoryMock
 import com.jewelryworkshop.app.data.local.database.JewelryDatabase
-import com.jewelryworkshop.app.data.repository.TransactionRepositoryRoom
+import com.jewelryworkshop.app.data.repository.CombinedRepositoryRoom
 import com.jewelryworkshop.app.domain.repository.TransactionRepository
 import com.jewelryworkshop.app.domain.repository.RepositoryType
 
@@ -31,13 +31,13 @@ object RepositoryFactory {
             }
             RepositoryType.IN_MEMORY_TEST -> {
                 if (inMemoryRepository == null) {
-                    inMemoryRepository = TransactionRepositoryInMemory()
+                    inMemoryRepository = CombinedRepositoryInMemory()
                 }
                 inMemoryRepository!!
             }
             RepositoryType.MOCK_DATA -> {
                 if (mockRepository == null) {
-                    mockRepository = TransactionRepositoryMock()
+                    mockRepository = CombinedRepositoryMock()
                 }
                 mockRepository!!
             }
@@ -48,7 +48,7 @@ object RepositoryFactory {
      */
     private fun createRoomRepository(context: Context): TransactionRepository {
         val database = JewelryDatabase.getInstance(context)
-        return TransactionRepositoryRoom(
+        return CombinedRepositoryRoom(
             transactionDao = database.transactionDao(),
             metalAlloyDao = database.metalAlloyDao()
         )

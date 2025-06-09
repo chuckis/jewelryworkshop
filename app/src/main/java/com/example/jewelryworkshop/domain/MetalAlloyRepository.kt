@@ -7,6 +7,6 @@ interface MetalAlloyRepository {
     suspend fun addAlloy(alloy: MetalAlloy): Long
     suspend fun updateAlloy(alloy: MetalAlloy)
     suspend fun deleteAlloy(alloyId: Long)
-    suspend fun getAlloyById(id: Long): MetalAlloy?
+    suspend fun getAlloy(alloy: MetalAlloy): MetalAlloy?
     fun getAllAlloys(): Flow<List<MetalAlloy>>
 }

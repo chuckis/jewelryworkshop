@@ -2,10 +2,13 @@ package com.example.jewelryworkshop
 
 import android.app.Application
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
+import com.example.jewelryworkshop.data.local.CombinedRepository
+import com.example.jewelryworkshop.domain.MetalAlloyRepository
 import com.example.jewelryworkshop.domain.RepositoryFactory
 import com.jewelryworkshop.app.domain.repository.TransactionRepository
 import com.jewelryworkshop.app.domain.repository.RepositoryType
@@ -29,7 +32,7 @@ class JewelryWorkshopApp : Application(), ViewModelStoreOwner {
                     .invoke(null) as? Application
 
                 context?.let {
-                    (it.applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0
+                    (it.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
                 } ?: false
             } catch (e: Exception) {
                 false
@@ -54,7 +57,7 @@ class JewelryWorkshopApp : Application(), ViewModelStoreOwner {
     }
 
     private fun getCurrentRepositoryTypeFromPrefs(context: Context): RepositoryType {
-        val prefs = context.getSharedPreferences("developer_settings", Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences("developer_settings", MODE_PRIVATE)
         val typeName = prefs.getString("repository_type", getDefaultRepositoryType().name)
         return try {
             RepositoryType.valueOf(typeName ?: getDefaultRepositoryType().name)
@@ -63,19 +66,22 @@ class JewelryWorkshopApp : Application(), ViewModelStoreOwner {
         }
     }
 
-    val repository: TransactionRepository by lazy {
+    val repository: CombinedRepository by lazy {
         val type = getCurrentRepositoryType()
         Log.d("JewelryWorkshopApp", "Creating repository of type: $type")
         RepositoryFactory.createJewelryRepository(this, type)
     }
 
     val mainViewModel: MainViewModel by lazy {
-        ViewModelProvider(this, MainViewModel.Factory(repository))[MainViewModel::class.java]
+        ViewModelProvider(this, MainViewModel.Factory(
+            repository,
+            metals = TODO()
+        ))[MainViewModel::class.java]
     }
 
     override fun onCreate() {
         super.onCreate()
-        val isDebug = (applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        val isDebug = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
         Log.d("JewelryWorkshopApp", "Application created with repository: ${getCurrentRepositoryType()}")
         Log.d("JewelryWorkshopApp", "Debug mode: $isDebug")
     }

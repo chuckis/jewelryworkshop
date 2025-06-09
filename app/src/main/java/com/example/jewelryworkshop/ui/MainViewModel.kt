@@ -3,6 +3,8 @@ package com.jewelryworkshop.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.jewelryworkshop.data.local.CombinedRepository
+import com.example.jewelryworkshop.domain.MetalAlloyRepository
 import com.jewelryworkshop.app.domain.model.MetalAlloy
 import com.jewelryworkshop.app.domain.model.MetalBalance
 import com.jewelryworkshop.app.domain.model.Transaction
@@ -19,7 +21,7 @@ import java.time.LocalDateTime
 /**
  * ViewModel для основного экрана приложения
  */
-class MainViewModel(private val repository: TransactionRepository) : ViewModel() {
+class MainViewModel(private val repository: CombinedRepository) : ViewModel() {
 
     // Поток всех транзакций, отсортированных по дате
     val transactions: StateFlow<List<Transaction>> = repository.getAllTransactions()
@@ -45,8 +47,8 @@ class MainViewModel(private val repository: TransactionRepository) : ViewModel()
     ) {
         viewModelScope.launch {
             try {
-                // Получаем сплав по ID
-                val alloy = repository.getAlloyById(alloyId)
+                // Получаем сплав
+                val alloy = alloys.value.find { it.id == alloyId }
                 if (alloy != null) {
                     val transaction = Transaction(
                         id = 0, // Будет автоматически сгенерирован
@@ -125,11 +127,13 @@ class MainViewModel(private val repository: TransactionRepository) : ViewModel()
     /**
      * Factory для создания MainViewModel с внедрением зависимостей
      */
-    class Factory(private val repository: TransactionRepository) : ViewModelProvider.Factory {
+    class Factory(private val repository: CombinedRepository) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-                return MainViewModel(repository) as T
+                return MainViewModel(
+                    repository
+                ) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }
