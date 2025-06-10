@@ -10,6 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.jewelryworkshop.domain.TransactionType
+import com.example.jewelryworkshop.domain.MetalAlloy
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -36,12 +38,16 @@ fun TransactionAddScreen(
     var selectedType by remember { mutableStateOf(TransactionType.RECEIVED) }
     var description by remember { mutableStateOf("") }
     var itemsCount by remember { mutableStateOf("1") }
-    var metalAlloy by remember { mutableStateOf("") } // Значение по умолчанию
+    var selectedAlloyId by remember { mutableStateOf<Long?>(null) } // ID выбранного сплава
+
+    // Получаем список сплавов из ViewModel
+    val alloys by viewModel.alloys.collectAsState()
 
     // Состояние валидации
     var weightError by remember { mutableStateOf<String?>(null) }
     var descriptionError by remember { mutableStateOf<String?>(null) }
     var itemsCountError by remember { mutableStateOf<String?>(null) }
+    var alloyError by remember { mutableStateOf<String?>(null) }
 
     // Диалог выбора даты и времени
     var showDatePicker by remember { mutableStateOf(false) }
@@ -77,6 +83,14 @@ fun TransactionAddScreen(
             itemsCountError = null
         }
 
+        // Проверка выбора сплава
+        if (selectedAlloyId == null) {
+            alloyError = "Выберите сплав"
+            isValid = false
+        } else {
+            alloyError = null
+        }
+
         return isValid
     }
 
@@ -86,6 +100,7 @@ fun TransactionAddScreen(
 
         val weightValue = weight.toDoubleOrNull() ?: return
         val itemsCountValue = itemsCount.toIntOrNull() ?: return
+        val alloyId = selectedAlloyId ?: return
 
         // Создание новой транзакции
         viewModel.addTransaction(
@@ -94,7 +109,7 @@ fun TransactionAddScreen(
             type = selectedType,
             description = description,
             itemsCount = itemsCountValue,
-            alloy = metalAlloy,
+            alloyId = alloyId,
         )
 
         onNavigateBack()
@@ -249,11 +264,17 @@ fun TransactionAddScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
-            // Выбор сплава
-//            MetalAlloyDropdown(
-//                selectedAlloy = metalAlloy,
-//                onAlloySelected = { metalAlloy = it }
-//            )
+            // Выбор сплава - ДОБАВЛЕНО
+            MetalAlloyDropdown(
+                alloys = alloys,
+                selectedAlloyId = selectedAlloyId,
+                onAlloySelected = {
+                    selectedAlloyId = it
+                    alloyError = null
+                },
+                isError = alloyError != null,
+                errorMessage = alloyError
+            )
 
             // Кнопки действий
             Row(
@@ -283,4 +304,59 @@ fun TransactionAddScreen(
     // Вместо этого, в реальном приложении здесь должен быть код для отображения
     // диалога выбора даты и времени с использованием библиотеки DateTimePicker
     // или собственной реализации.
+}
+
+/**
+ * Выпадающий список для выбора сплава
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MetalAlloyDropdown(
+    alloys: List<MetalAlloy>,
+    selectedAlloyId: Long?,
+    onAlloySelected: (Long?) -> Unit,
+    isError: Boolean = false,
+    errorMessage: String? = null
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val selectedAlloy = alloys.find { it.id == selectedAlloyId }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+        OutlinedTextField(
+            value = selectedAlloy?.name ?: "",
+            onValueChange = { },
+            readOnly = true,
+            label = { Text("Сплав") },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(),
+            isError = isError,
+            supportingText = {
+                if (errorMessage != null) {
+                    Text(errorMessage)
+                }
+            }
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            alloys.forEach { alloy ->
+                DropdownMenuItem(
+                    text = { Text(alloy.name) },
+                    onClick = {
+                        onAlloySelected(alloy.id)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
 }

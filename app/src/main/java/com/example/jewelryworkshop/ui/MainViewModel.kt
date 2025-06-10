@@ -29,15 +29,16 @@ class MainViewModel(private val repository: CombinedRepository) : ViewModel() {
     val metalBalance: StateFlow<MetalBalance> = repository.getMetalBalance()
         .stateIn(viewModelScope, SharingStarted.Lazily, MetalBalance(0.0, 0))
 
-    // Поток всех доступных сплавов
-    val alloys: StateFlow<List<MetalAlloy>> =repository.getAllAlloys().stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
-        initialValue = emptyList()
-    )
+    // Поток всех доступных сплавов - ИСПРАВЛЕНО
+    val alloys: StateFlow<List<MetalAlloy>> = repository.getAllAlloys()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     /**
-     * Добавить новую транзакцию
+     * Добавить новую транзакцию - ИСПРАВЛЕНО
      */
     fun addTransaction(
         dateTime: LocalDateTime,
@@ -45,13 +46,13 @@ class MainViewModel(private val repository: CombinedRepository) : ViewModel() {
         type: TransactionType,
         description: String,
         itemsCount: Int?,
-        alloy: MetalAlloy,
+        alloyId: Long, // Изменено: принимаем ID сплава вместо объекта
     ) {
         viewModelScope.launch {
             try {
-                // Получаем сплав
-                val alloy = alloys.value.find { it.id == alloy.id }
-                if (alloy != null) {
+                // Получаем сплав по ID
+                val selectedAlloy = alloys.value.find { it.id == alloyId }
+                if (selectedAlloy != null) {
                     val transaction = Transaction(
                         id = 0, // Будет автоматически сгенерирован
                         dateTime = dateTime,
@@ -59,7 +60,7 @@ class MainViewModel(private val repository: CombinedRepository) : ViewModel() {
                         type = type,
                         description = description,
                         itemsCount = itemsCount,
-                        alloy = alloy,
+                        alloy = selectedAlloy,
                     )
                     repository.addTransaction(transaction)
                 } else {
