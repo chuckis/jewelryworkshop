@@ -64,8 +64,10 @@ class CombinedRepositoryRoom(
         return metalAlloyDao.getById(metalAlloy)
     }
 
-    override suspend fun getAllAlloys(): Flow<List<MetalAlloy>> {
-        metalAlloyDao.getAllAlloys()
+    override fun getAllAlloys(): Flow<List<MetalAlloy>> {
+        return metalAlloyDao.getAllAlloys().map { entities ->
+            entities.map { entity -> entity.toDomain() }
+        }
     }
 
 

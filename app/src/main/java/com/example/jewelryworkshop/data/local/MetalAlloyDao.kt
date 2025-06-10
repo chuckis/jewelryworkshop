@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.example.jewelryworkshop.data.local.entity.MetalAlloyEntity
 import com.example.jewelryworkshop.domain.MetalAlloy
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MetalAlloyDao {
@@ -22,7 +23,7 @@ interface MetalAlloyDao {
     suspend fun delete(metalAlloy: MetalAlloyEntity)
 
     @Query("SELECT * FROM metal_alloys")
-    suspend fun getAllAlloys(): List<MetalAlloyEntity>
+    fun getAllAlloys(): Flow<List<MetalAlloyEntity>>
 
     @Query("SELECT * FROM metal_alloys WHERE id = :id")
     suspend fun getByIdInternal(id: Long): MetalAlloyEntity
