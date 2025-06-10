@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,7 +22,8 @@ import com.example.jewelryworkshop.ui.components.TransactionItem
 fun MainScreen(
     viewModel: MainViewModel,
     onNavigateToAddTransaction: () -> Unit,
-    onNavigateToTransactionDetail: (Transaction) -> Unit
+    onNavigateToTransactionDetail: (Transaction) -> Unit,
+    onNavigateToAlloyManagement: () -> Unit // Добавляем новый параметр навигации
 ) {
     val transactions by viewModel.transactions.collectAsState()
     val metalBalance by viewModel.metalBalance.collectAsState()
@@ -68,7 +70,19 @@ fun MainScreen(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                ),
+                actions = {
+                    // Добавляем кнопку для перехода к управлению сплавами
+                    IconButton(
+                        onClick = onNavigateToAlloyManagement
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Settings, // или другую подходящую иконку
+                            contentDescription = "Управление сплавами",
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                }
             )
         },
         floatingActionButton = {

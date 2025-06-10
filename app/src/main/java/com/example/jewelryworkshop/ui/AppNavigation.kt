@@ -18,6 +18,8 @@ object NavRoutes {
     const val ADD_TRANSACTION = "add_transaction"
     const val TRANSACTION_DETAIL = "transaction_detail/{transactionId}"
     const val EDIT_TRANSACTION = "edit_transaction/{transactionId}"
+    const val ALLOY_MANAGEMENT = "alloy_management"
+    const val ADD_ALLOY = "add_alloy" // Добавляем маршрут для добавления сплава
 }
 
 
@@ -40,6 +42,9 @@ fun AppNavigation(
                 },
                 onNavigateToTransactionDetail = { transaction ->
                     navController.navigate("transaction_detail/${transaction.id}")
+                },
+                onNavigateToAlloyManagement = {
+                    navController.navigate(NavRoutes.ALLOY_MANAGEMENT)
                 }
             )
         }
@@ -104,6 +109,29 @@ fun AppNavigation(
                 // Если транзакция не найдена, возвращаемся назад
                 navController.popBackStack()
             }
+        }
+
+        // Экран управления сплавами
+        composable(route = NavRoutes.ALLOY_MANAGEMENT) {
+            AlloyManagementScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                viewModel = viewModel,
+                onNavigateToAddAlloy = {
+                    navController.navigate(NavRoutes.ADD_ALLOY)
+                }
+            )
+        }
+
+        // Экран добавления нового сплава
+        composable(route = NavRoutes.ADD_ALLOY) {
+            AlloyAddScreen(
+                viewModel = viewModel,
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

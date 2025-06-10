@@ -116,6 +116,32 @@ class MainViewModel(private val repository: CombinedRepository) : ViewModel() {
         }
     }
 
+    /**
+     * Удалить сплав
+     */
+    fun deleteAlloy(alloy: MetalAlloy) {
+        viewModelScope.launch {
+            try {
+                repository.deleteAlloy(alloy)
+            } catch (e: Exception) {
+                _errorMessage.value = "Ошибка при удалении сплава: ${e.message}"
+            }
+        }
+    }
+
+    /**
+     * Обновить сплав
+     */
+    fun updateAlloy(alloy: MetalAlloy) {
+        viewModelScope.launch {
+            try {
+                repository.updateAlloy(alloy)
+            } catch (e: Exception) {
+                _errorMessage.value = "Ошибка при обновлении сплава: ${e.message}"
+            }
+        }
+    }
+
     // Приватное поле для ошибок
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
