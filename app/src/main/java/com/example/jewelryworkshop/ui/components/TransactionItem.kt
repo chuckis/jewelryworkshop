@@ -35,6 +35,7 @@ fun TransactionItem(
     val isReceived = transaction.type == TransactionType.RECEIVED
     val indicatorColor = if (isReceived) Color(0xFF4CAF50) else Color(0xFFE53935)
     val typeText = if (isReceived) "Получено" else "Выдано"
+    val alloyName = transaction.alloy.name
 
     Card(
         modifier = Modifier
@@ -84,6 +85,13 @@ fun TransactionItem(
                 }
 
                 Spacer(modifier = Modifier.height(4.dp))
+
+                // Название сплава
+                Text(
+                    text = alloyName,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Light,
+                )
 
                 // Описание
                 Text(

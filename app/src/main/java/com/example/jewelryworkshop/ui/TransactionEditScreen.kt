@@ -32,6 +32,8 @@ fun TransactionEditScreen(
     existingTransaction: Transaction,
     onNavigateBack: () -> Unit
 ) {
+
+    val alloys by viewModel.alloys.collectAsState()
     // Состояние полей формы с начальными значениями из существующей транзакции
     var dateTime by remember { mutableStateOf(existingTransaction.dateTime) }
     var weight by remember { mutableStateOf(existingTransaction.weight.toString()) }
@@ -252,10 +254,11 @@ fun TransactionEditScreen(
             )
 
             // Выбор сплава
-//            MetalAlloyDropdown(
-//                selectedAlloy = metalAlloy,
-//                onAlloySelected = { metalAlloy = it.toString() }
-//            )
+            MetalAlloyDropdown(
+                alloys = alloys,
+                selectedAlloy = metalAlloy,
+                onAlloySelected = { metalAlloy = it }
+            )
 
             // Кнопки действий
             Row(
@@ -290,23 +293,18 @@ fun TransactionEditScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MetalAlloyDropdown(
+    alloys: List<MetalAlloy>,
     selectedAlloy: MetalAlloy,
-    onAlloySelected: (String) -> Unit
+    onAlloySelected: (MetalAlloy) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-
-    // Предполагаемые варианты сплавов
-    val alloyOptions = listOf(
-        "GOLD_585",
-        "SILVER_925",
-    )
 
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded }
     ) {
         OutlinedTextField(
-            value = selectedAlloy.toString(),
+            value = selectedAlloy.name,
             onValueChange = {},
             readOnly = true,
             label = { Text("Сплав металла") },
@@ -322,9 +320,9 @@ fun MetalAlloyDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            alloyOptions.forEach { alloy ->
+            alloys.forEach { alloy ->
                 DropdownMenuItem(
-                    text = { Text(alloy.toString()) },
+                    text = { Text(alloy.name) },
                     onClick = {
                         onAlloySelected(alloy)
                         expanded = false
