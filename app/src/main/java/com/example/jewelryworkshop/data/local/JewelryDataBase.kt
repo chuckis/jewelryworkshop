@@ -32,7 +32,9 @@ abstract class JewelryDatabase : RoomDatabase() {
                     context.applicationContext,
                     JewelryDatabase::class.java,
                     "jewelry_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration(true)
+                    .build()
                 INSTANCE = instance
                 instance
             }

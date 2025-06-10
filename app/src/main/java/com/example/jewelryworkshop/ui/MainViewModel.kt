@@ -30,7 +30,11 @@ class MainViewModel(private val repository: CombinedRepository) : ViewModel() {
         .stateIn(viewModelScope, SharingStarted.Lazily, MetalBalance(0.0, 0))
 
     // Поток всех доступных сплавов
-    val alloys: StateFlow<List<MetalAlloy>> = repository.getAllAlloys() as StateFlow<List<MetalAlloy>>
+    val alloys: StateFlow<List<MetalAlloy>> =repository.getAllAlloys().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = emptyList()
+    )
 
     /**
      * Добавить новую транзакцию
