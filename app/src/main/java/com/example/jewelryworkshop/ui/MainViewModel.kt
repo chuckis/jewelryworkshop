@@ -45,12 +45,12 @@ class MainViewModel(private val repository: CombinedRepository) : ViewModel() {
         type: TransactionType,
         description: String,
         itemsCount: Int?,
-        alloyId: Long,
+        alloy: MetalAlloy,
     ) {
         viewModelScope.launch {
             try {
                 // Получаем сплав
-                val alloy = alloys.value.find { it.id == alloyId }
+                val alloy = alloys.value.find { it.id == alloy.id }
                 if (alloy != null) {
                     val transaction = Transaction(
                         id = 0, // Будет автоматически сгенерирован

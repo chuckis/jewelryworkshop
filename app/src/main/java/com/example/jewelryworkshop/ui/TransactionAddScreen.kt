@@ -94,7 +94,7 @@ fun TransactionAddScreen(
             type = selectedType,
             description = description,
             itemsCount = itemsCountValue,
-            alloyId = TODO()
+            alloy = metalAlloy,
         )
 
         onNavigateBack()
