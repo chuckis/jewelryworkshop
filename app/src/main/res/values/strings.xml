@@ -20,4 +20,11 @@
     <string name="cancel">Cancel</string>
     <string name="ADD">Add</string>
     <string name="alloy">Alloy</string>
+    <string name="all_transactions">All Transactions</string>
+    <string name="alloy_management">Alloy management</string>
+    <string name="theres_no_transactions">There\'s no transactions, press + to add some</string>
+    <string name="grams">gr</string>
+    <string name="delete">delete</string>
+    <string name="deletion_confirmation">Deletion confirmation</string>
+    <string name="are_u_sure_delete">Are you sure you want to delete this operation?</string>
 </resources>

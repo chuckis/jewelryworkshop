@@ -12,7 +12,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.jewelryworkshop.R
 import com.example.jewelryworkshop.domain.Transaction
 import com.example.jewelryworkshop.ui.components.TransactionItem
 
@@ -37,8 +39,8 @@ fun MainScreen(
                 showDeleteDialog = false
                 transactionToDelete = null
             },
-            title = { Text("Подтверждение удаления") },
-            text = { Text("Вы действительно хотите удалить эту операцию?") },
+            title = { Text(stringResource(R.string.deletion_confirmation)) },
+            text = { Text(stringResource(R.string.are_u_sure_delete)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -47,7 +49,7 @@ fun MainScreen(
                         transactionToDelete = null
                     }
                 ) {
-                    Text("Удалить")
+                    Text(stringResource(R.string.delete))
                 }
             },
             dismissButton = {
@@ -57,7 +59,7 @@ fun MainScreen(
                         transactionToDelete = null
                     }
                 ) {
-                    Text("Отмена")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -66,7 +68,7 @@ fun MainScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Ювелирная мастерская") },
+                title = { Text(stringResource(R.string.all_transactions))},
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -78,7 +80,7 @@ fun MainScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Settings, // или другую подходящую иконку
-                            contentDescription = "Управление сплавами",
+                            contentDescription = stringResource(R.string.alloy_management),
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
@@ -92,7 +94,7 @@ fun MainScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Добавить операцию",
+                    contentDescription = stringResource(R.string.add_transaction),
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
@@ -112,7 +114,7 @@ fun MainScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "Нет операций. Нажмите + чтобы добавить.",
+                                text = stringResource(R.string.theres_no_transactions),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )

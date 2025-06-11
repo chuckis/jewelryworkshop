@@ -21,4 +21,11 @@
     <string name="cancel">Отмена</string>
     <string name="ADD">Добавить</string>
     <string name="alloy">Сплав</string>
+    <string name="all_transactions">Все операции</string>
+    <string name="alloy_management">Управление сплавами</string>
+    <string name="theres_no_transactions">Нет операций, нажмите + чтобы добавить</string>
+    <string name="grams">г.</string>
+    <string name="delete">Удалить</string>
+    <string name="deletion_confirmation">Подтверждение удаления</string>
+    <string name="are_u_sure_delete">Вы действительно хотите удалить эту операцию?</string>
 </resources>

@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.example.jewelryworkshop.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -33,8 +35,10 @@ fun TransactionItem(
 ) {
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
     val isReceived = transaction.type == TransactionType.RECEIVED
+    val recievedLabel = stringResource(R.string.recieved)
+    val issuedLabel = stringResource(R.string.issued)
     val indicatorColor = if (isReceived) Color(0xFF4CAF50) else Color(0xFFE53935)
-    val typeText = if (isReceived) "Получено" else "Выдано"
+    val typeText = if (isReceived) recievedLabel else issuedLabel
     val alloyName = transaction.alloy.name
 
     Card(
@@ -54,7 +58,7 @@ fun TransactionItem(
             // Индикатор типа транзакции (зеленый для "получено", красный для "выдано")
             Box(
                 modifier = Modifier
-                    .size(width = 4.dp, height = 48.dp)
+                    .size(width = 2.dp, height = 48.dp)
                     .background(color = indicatorColor, shape = RoundedCornerShape(2.dp))
             )
 
@@ -76,8 +80,9 @@ fun TransactionItem(
                     )
 
                     // Тип транзакции и вес
+                    val grams = stringResource(R.string.grams)
                     Text(
-                        text = "$typeText ${transaction.weight} г",
+                        text = "$typeText ${transaction.weight} $grams",
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                         color = indicatorColor
@@ -104,8 +109,9 @@ fun TransactionItem(
                 Spacer(modifier = Modifier.height(2.dp))
 
                 // Количество изделий
+                val quantityString = stringResource(R.string.quantity_of_items)
                 Text(
-                    text = "Количество: ${transaction.itemsCount} шт.",
+                    text = "$quantityString : ${transaction.itemsCount}",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
@@ -117,7 +123,7 @@ fun TransactionItem(
                 IconButton(onClick = { onClick(transaction) }) {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = "Редактировать",
+                        contentDescription = stringResource(R.string.edit_transaction),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -125,7 +131,7 @@ fun TransactionItem(
                 IconButton(onClick = { onDeleteClick(transaction.id) }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Удалить",
+                        contentDescription = stringResource(R.string.delete),
                         tint = MaterialTheme.colorScheme.error
                     )
                 }
