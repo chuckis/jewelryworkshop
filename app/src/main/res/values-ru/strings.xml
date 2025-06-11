@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ювелирная мастерская</string>
+    <string name="edit_transaction">Редактировать операцию</string>
+    <string name="new_transaction">Новая операция</string>
+    <string name="enter_description">Введите описание</string>
+    <string name="description">Описание</string>
+    <string name="enter_correct_weight">Введите правильный вес, больше 0</string>
+    <string name="enter_correct_count">Введите правильное кол-во</string>
+    <string name="save_edition">Сохранить редактирование</string>
+    <string name="add_transaction">Добавить операцию</string>
+    <string name="pick_date_time">Выбрать дату и время</string>
+    <string name="transaction_type">Тип операции</string>
+    <string name="recieved">Получено</string>
+    <string name="issued">Выдано</string>
+    <string name="weight_grams">Вес в граммах</string>
+    <string name="quantity_of_items">Кол-во изделий</string>
+    <string name="enter_alloy">Выберите сплав</string>
+    <string name="back">Назад</string>
+    <string name="date_time">Дата и время</string>
+    <string name="cancel">Отмена</string>
+    <string name="ADD">Добавить</string>
+    <string name="alloy">Сплав</string>
+</resources>

@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">jewelryworkshop</string>
+    <string name="edit_transaction">Edit transaction</string>
+    <string name="new_transaction">New transaction</string>
+    <string name="enter_description">Enter Description</string>
+    <string name="description">Descrption</string>
+    <string name="enter_correct_weight">Enter correct weight, > 0</string>
+    <string name="enter_correct_count">Enter correct count</string>
+    <string name="save_edition">Save edition</string>
+    <string name="add_transaction">Add transaction</string>
+    <string name="pick_date_time">Pick a data and time</string>
+    <string name="transaction_type">Transaction type</string>
+    <string name="recieved">Recieved</string>
+    <string name="issued">Issued</string>
+    <string name="weight_grams">Weight grams</string>
+    <string name="quantity_of_items">Quantity of items</string>
+    <string name="enter_alloy">Chose an alloy</string>
+    <string name="back">Back</string>
+    <string name="date_time">Date and time</string>
+    <string name="cancel">Cancel</string>
+    <string name="ADD">Add</string>
+    <string name="alloy">Alloy</string>
 </resources>

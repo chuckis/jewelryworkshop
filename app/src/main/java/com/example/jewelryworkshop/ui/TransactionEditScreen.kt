@@ -14,13 +14,17 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.jewelryworkshop.R
 import com.example.jewelryworkshop.domain.MetalAlloy
 import com.example.jewelryworkshop.domain.Transaction
 import com.example.jewelryworkshop.domain.TransactionType
 import java.time.format.DateTimeFormatter
 
+
+// TODO() non DRY!!!
 /**
  * Экран редактирования транзакции
  */
@@ -41,11 +45,19 @@ fun TransactionEditScreen(
     var description by remember { mutableStateOf(existingTransaction.description) }
     var itemsCount by remember { mutableStateOf(existingTransaction.itemsCount.toString()) }
     var metalAlloy by remember { mutableStateOf(existingTransaction.alloy) }
+    var selectedAlloyId by remember { mutableStateOf<Long?>(null) }
 
     // Состояние валидации
     var weightError by remember { mutableStateOf<String?>(null) }
     var descriptionError by remember { mutableStateOf<String?>(null) }
     var itemsCountError by remember { mutableStateOf<String?>(null) }
+    var alloyError by remember { mutableStateOf<String?>(null) }
+
+    // Получаем строки валидации один раз в Composable
+    val weightErrorMsg = stringResource(R.string.enter_correct_weight)
+    val descriptionErrorMsg = stringResource(R.string.enter_description)
+    val itemsCountErrorMsg = stringResource(R.string.enter_correct_count)
+    val alloyErrorMsg = stringResource(R.string.enter_alloy)
 
     // Диалог выбора даты и времени
     var showDatePicker by remember { mutableStateOf(false) }
@@ -59,7 +71,7 @@ fun TransactionEditScreen(
 
         // Проверка веса
         if (weight.isBlank() || weight.toDoubleOrNull() == null || weight.toDouble() <= 0) {
-            weightError = "Введите корректный вес (больше 0)"
+            weightError = weightErrorMsg
             isValid = false
         } else {
             weightError = null
@@ -67,7 +79,7 @@ fun TransactionEditScreen(
 
         // Проверка описания
         if (description.isBlank()) {
-            descriptionError = "Введите описание"
+            descriptionError = descriptionErrorMsg
             isValid = false
         } else {
             descriptionError = null
@@ -75,10 +87,18 @@ fun TransactionEditScreen(
 
         // Проверка количества изделий
         if (itemsCount.isBlank() || itemsCount.toIntOrNull() == null || itemsCount.toInt() <= 0) {
-            itemsCountError = "Введите корректное количество (больше 0)"
+            itemsCountError = itemsCountErrorMsg
             isValid = false
         } else {
             itemsCountError = null
+        }
+
+        // Проверка выбора сплава
+        if (selectedAlloyId == null) {
+            alloyError = alloyErrorMsg
+            isValid = false
+        } else {
+            alloyError = null
         }
 
         return isValid
@@ -107,12 +127,12 @@ fun TransactionEditScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Редактировать операцию") },
+                title = { Text(stringResource(R.string.edit_transaction))},
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Назад"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -133,7 +153,6 @@ fun TransactionEditScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Spacer(modifier = Modifier.height(8.dp))
-
             // Выбор даты и времени
             OutlinedCard(
                 modifier = Modifier.fillMaxWidth()
@@ -142,7 +161,7 @@ fun TransactionEditScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "Дата и время",
+                        text = stringResource(R.string.date_time),
                         style = MaterialTheme.typography.titleMedium
                     )
 
@@ -161,14 +180,14 @@ fun TransactionEditScreen(
                         IconButton(onClick = { showDatePicker = true }) {
                             Icon(
                                 imageVector = Icons.Default.DateRange,
-                                contentDescription = "Выбрать дату и время"
+                                contentDescription = stringResource(R.string.pick_date_time)
                             )
                         }
                     }
                 }
             }
 
-            // Выбор типа операции
+            // TransactionType
             OutlinedCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -176,7 +195,7 @@ fun TransactionEditScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "Тип операции",
+                        text = stringResource(R.string.transaction_type),
                         style = MaterialTheme.typography.titleMedium
                     )
 
@@ -191,7 +210,7 @@ fun TransactionEditScreen(
                             onClick = { selectedType = TransactionType.RECEIVED }
                         )
                         Text(
-                            text = "Получено",
+                            text = stringResource(R.string.recieved),
                             modifier = Modifier.clickable { selectedType = TransactionType.RECEIVED }
                         )
 
@@ -202,7 +221,7 @@ fun TransactionEditScreen(
                             onClick = { selectedType = TransactionType.ISSUED }
                         )
                         Text(
-                            text = "Выдано",
+                            text = stringResource(R.string.issued),
                             modifier = Modifier.clickable { selectedType = TransactionType.ISSUED }
                         )
                     }
@@ -228,7 +247,7 @@ fun TransactionEditScreen(
             OutlinedTextField(
                 value = description,
                 onValueChange = { description = it; descriptionError = null },
-                label = { Text("Описание") },
+                label = { Text(stringResource(R.string.description))},
                 modifier = Modifier.fillMaxWidth(),
                 isError = descriptionError != null,
                 supportingText = {
@@ -242,7 +261,7 @@ fun TransactionEditScreen(
             OutlinedTextField(
                 value = itemsCount,
                 onValueChange = { itemsCount = it; itemsCountError = null },
-                label = { Text("Количество изделий") },
+                label = { Text(stringResource(R.string.quantity_of_items)) },
                 modifier = Modifier.fillMaxWidth(),
                 isError = itemsCountError != null,
                 supportingText = {
@@ -256,8 +275,14 @@ fun TransactionEditScreen(
             // Выбор сплава
             MetalAlloyDropdown(
                 alloys = alloys,
-                selectedAlloy = metalAlloy,
-                onAlloySelected = { metalAlloy = it }
+                selectedAlloyId = selectedAlloyId,
+                onAlloySelected = {
+                    selectedAlloyId = it
+                    alloyError = null
+                },
+
+                isError = alloyError != null,
+                errorMessage = alloyErrorMsg
             )
 
             // Кнопки действий
@@ -269,66 +294,18 @@ fun TransactionEditScreen(
                     onClick = onNavigateBack,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Отмена")
+                    Text(stringResource(R.string.cancel))
                 }
 
                 Button(
                     onClick = { saveTransaction() },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Сохранить")
+                    Text(stringResource(R.string.save_edition))
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-        }
-    }
-
-    // TODO: Реализовать DateTimePicker (в этом примере опущено для краткости)
-    // Вместо этого, в реальном приложении здесь должен быть код для отображения
-    // диалога выбора даты и времени с использованием библиотеки DateTimePicker
-    // или собственной реализации.
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MetalAlloyDropdown(
-    alloys: List<MetalAlloy>,
-    selectedAlloy: MetalAlloy,
-    onAlloySelected: (MetalAlloy) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
-    ) {
-        OutlinedTextField(
-            value = selectedAlloy.name,
-            onValueChange = {},
-            readOnly = true,
-            label = { Text("Сплав металла") },
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .menuAnchor()
-        )
-
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            alloys.forEach { alloy ->
-                DropdownMenuItem(
-                    text = { Text(alloy.name) },
-                    onClick = {
-                        onAlloySelected(alloy)
-                        expanded = false
-                    }
-                )
-            }
         }
     }
 }
