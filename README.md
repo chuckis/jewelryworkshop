@@ -11,7 +11,7 @@ A specialized inventory management application designed for jewelry workshops. T
 - [x] Alloy CRUD
 - [ ] List tabs
 - [ ] Reports
-- [ ] Localization
+- [x] Localization
 - [ ] Menu
 - [ ] Data export to Excel, etc.
 - [ ] CRM functionality
