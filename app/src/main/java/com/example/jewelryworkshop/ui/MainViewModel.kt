@@ -38,7 +38,7 @@ class MainViewModel(private val repository: CombinedRepository) : ViewModel() {
         )
 
     /**
-     * Добавить новую транзакцию - ИСПРАВЛЕНО
+     * Добавить новую транзакцию
      */
     fun addTransaction(
         dateTime: LocalDateTime,
@@ -89,10 +89,34 @@ class MainViewModel(private val repository: CombinedRepository) : ViewModel() {
     /**
      * Обновить существующую транзакцию
      */
-    fun updateTransaction(transaction: Transaction) {
+    fun updateTransaction(
+        transactionId: Long,
+        dateTime: LocalDateTime,
+        weight: Double,
+        type: TransactionType,
+        description: String,
+        itemsCount: Int?,
+        alloyId: Long, // Принимаем ID сплава вместо объекта
+    ) {
         viewModelScope.launch {
             try {
-                repository.updateTransaction(transaction)
+                // Получаем сплав по ID
+                val selectedAlloy = alloys.value.find { it.id == alloyId }
+                if (selectedAlloy != null) {
+                    val updatedTransaction = Transaction(
+                        id = transactionId, // Используем переданный ID для обновления
+                        dateTime = dateTime,
+                        weight = weight,
+                        type = type,
+                        description = description,
+                        itemsCount = itemsCount,
+                        alloy = selectedAlloy,
+                    )
+                    repository.updateTransaction(updatedTransaction)
+                } else {
+                    // Обработка ошибки - сплав не найден
+                    _errorMessage.value = "Сплав не найден"
+                }
             } catch (e: Exception) {
                 _errorMessage.value = "Ошибка при обновлении транзакции: ${e.message}"
             }

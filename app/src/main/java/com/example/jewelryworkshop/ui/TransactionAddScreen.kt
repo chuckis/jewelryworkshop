@@ -51,8 +51,8 @@ fun TransactionAddScreen(
     var alloyError by remember { mutableStateOf<String?>(null) }
 
     // Получаем строки валидации один раз в Composable
-    val weightErrorMsg = stringResource(com.example.jewelryworkshop.R.string.enter_correct_weight)
-    val descriptionErrorMsg = stringResource(com.example.jewelryworkshop.R.string.enter_description)
+    val weightErrorMsg = stringResource(R.string.enter_correct_weight)
+    val descriptionErrorMsg = stringResource(R.string.enter_description)
     val itemsCountErrorMsg = stringResource(R.string.enter_correct_count)
     val alloyErrorMsg = stringResource(R.string.enter_alloy)
 

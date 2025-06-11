@@ -110,6 +110,7 @@ fun TransactionEditScreen(
 
         val weightValue = weight.toDoubleOrNull() ?: return
         val itemsCountValue = itemsCount.toIntOrNull() ?: return
+        val selectedAlloyIdValue = selectedAlloyId
 
         // Обновление существующей транзакции
         val updatedTransaction = existingTransaction.copy(
@@ -120,7 +121,15 @@ fun TransactionEditScreen(
             itemsCount = itemsCountValue,
             alloy = metalAlloy,
         )
-        viewModel.updateTransaction(updatedTransaction)
+        viewModel.updateTransaction(
+            updatedTransaction.id,
+            dateTime = updatedTransaction.dateTime,
+            weight = updatedTransaction.weight,
+            type = updatedTransaction.type,
+            description = updatedTransaction.description,
+            itemsCount = updatedTransaction.itemsCount,
+            alloyId = updatedTransaction.alloy.id
+        )
         onNavigateBack()
     }
 
@@ -275,14 +284,8 @@ fun TransactionEditScreen(
             // Выбор сплава
             MetalAlloyDropdown(
                 alloys = alloys,
-                selectedAlloyId = selectedAlloyId,
-                onAlloySelected = {
-                    selectedAlloyId = it
-                    alloyError = null
-                },
-
-                isError = alloyError != null,
-                errorMessage = alloyErrorMsg
+                selectedAlloy = metalAlloy,
+                onAlloySelected = { metalAlloy = it },
             )
 
             // Кнопки действий
@@ -306,6 +309,49 @@ fun TransactionEditScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MetalAlloyDropdown(
+    alloys: List<MetalAlloy>,
+    selectedAlloy: MetalAlloy,
+    onAlloySelected: (MetalAlloy) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+        OutlinedTextField(
+            value = selectedAlloy.name,
+            onValueChange = { },
+            readOnly = true,
+            label = { Text("Сплав металла") },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor()
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            alloys.forEach { alloy ->
+                DropdownMenuItem(
+                    text = { Text(alloy.name) },
+                    onClick = {
+                        onAlloySelected(alloy)
+                        expanded = false
+                    }
+                )
+            }
         }
     }
 }
