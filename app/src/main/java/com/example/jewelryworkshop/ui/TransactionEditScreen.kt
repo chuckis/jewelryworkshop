@@ -1,5 +1,6 @@
 package com.example.jewelryworkshop.ui
 
+import MetalAlloyDropdown
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
@@ -44,7 +45,7 @@ fun TransactionEditScreen(
     var selectedType by remember { mutableStateOf(existingTransaction.type) }
     var description by remember { mutableStateOf(existingTransaction.description) }
     var itemsCount by remember { mutableStateOf(existingTransaction.itemsCount.toString()) }
-    var metalAlloy by remember { mutableStateOf(existingTransaction.alloy) }
+    var selectedAlloyId by remember { mutableStateOf<Long?>(existingTransaction.alloy.id) }
 
     // Состояние валидации
     var weightError by remember { mutableStateOf<String?>(null) }
@@ -92,8 +93,8 @@ fun TransactionEditScreen(
             itemsCountError = null
         }
 
-        // Проверка выбора сплава (используем metalAlloy вместо selectedAlloyId)
-        if (metalAlloy.id <= 0) {
+        // Проверка выбора сплава
+        if (selectedAlloyId == null) {
             alloyError = alloyErrorMsg
             isValid = false
         } else {
@@ -110,6 +111,8 @@ fun TransactionEditScreen(
         val weightValue = weight.toDoubleOrNull() ?: return
         val itemsCountValue = itemsCount.toIntOrNull() ?: return
 
+        val selectedAlloyIdValue = selectedAlloyId ?: return
+
         // Обновление существующей транзакции
         viewModel.updateTransaction(
             transactionId = existingTransaction.id,
@@ -118,7 +121,7 @@ fun TransactionEditScreen(
             type = selectedType,
             description = description,
             itemsCount = itemsCountValue,
-            alloyId = metalAlloy.id
+            alloyId = selectedAlloyIdValue
         )
         onNavigateBack()
     }
@@ -274,9 +277,9 @@ fun TransactionEditScreen(
             // Выбор сплава
             MetalAlloyDropdown(
                 alloys = alloys,
-                selectedAlloy = metalAlloy,
+                selectedAlloyId = selectedAlloyId,
                 onAlloySelected = {
-                    metalAlloy = it
+                    selectedAlloyId = it
                     alloyError = null // Сбрасываем ошибку при выборе сплава
                 },
                 isError = alloyError != null,
@@ -304,64 +307,6 @@ fun TransactionEditScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MetalAlloyDropdown(
-    alloys: List<MetalAlloy>,
-    selectedAlloy: MetalAlloy,
-    onAlloySelected: (MetalAlloy) -> Unit,
-    isError: Boolean = false,
-    errorMessage: String? = null
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Column {
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded }
-        ) {
-            OutlinedTextField(
-                value = selectedAlloy.name,
-                onValueChange = { },
-                readOnly = true,
-                label = { Text("Сплав металла") },
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor(),
-                isError = isError
-            )
-
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                alloys.forEach { alloy ->
-                    DropdownMenuItem(
-                        text = { Text(alloy.name) },
-                        onClick = {
-                            onAlloySelected(alloy)
-                            expanded = false
-                        }
-                    )
-                }
-            }
-        }
-
-        // Отображение ошибки валидации
-        if (isError && errorMessage != null) {
-            Text(
-                text = errorMessage,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
-            )
         }
     }
 }

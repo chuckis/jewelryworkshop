@@ -1,5 +1,6 @@
 package com.example.jewelryworkshop.ui
 
+import MetalAlloyDropdown
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
@@ -310,59 +311,4 @@ fun TransactionAddScreen(
     // Вместо этого, в реальном приложении здесь должен быть код для отображения
     // диалога выбора даты и времени с использованием библиотеки DateTimePicker
     // или собственной реализации.
-}
-
-/**
- * Выпадающий список для выбора сплава
- */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MetalAlloyDropdown(
-    alloys: List<MetalAlloy>,
-    selectedAlloyId: Long?,
-    onAlloySelected: (Long?) -> Unit,
-    isError: Boolean = false,
-    errorMessage: String? = null
-) {
-    var expanded by remember { mutableStateOf(false) }
-    val selectedAlloy = alloys.find { it.id == selectedAlloyId }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
-    ) {
-        OutlinedTextField(
-            value = selectedAlloy?.name ?: "",
-            onValueChange = { },
-            readOnly = true,
-            label = { Text(stringResource(R.string.alloy)) },
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .menuAnchor(),
-            isError = isError,
-            supportingText = {
-                if (errorMessage != null) {
-                    Text(errorMessage)
-                }
-            }
-        )
-
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            alloys.forEach { alloy ->
-                DropdownMenuItem(
-                    text = { Text(alloy.name) },
-                    onClick = {
-                        onAlloySelected(alloy.id)
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
 }

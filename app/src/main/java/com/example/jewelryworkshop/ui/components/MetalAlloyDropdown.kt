@@ -1,49 +1,65 @@
-package com.example.jewelryworkshop.ui.components
-
-import androidx.compose.material3.DropdownMenu
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.example.jewelryworkshop.R
+import com.example.jewelryworkshop.domain.MetalAlloy
+import kotlin.collections.forEach
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownField() {
+fun MetalAlloyDropdown(
+    alloys: List<MetalAlloy>,
+    selectedAlloyId: Long?,
+    onAlloySelected: (Long?) -> Unit,
+    isError: Boolean = false,
+    errorMessage: String? = null
+) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf("Select an option") }
-    val options = listOf("Option 1", "Option 2", "Option 3")
+    val selectedAlloy = alloys.find { it.id == selectedAlloyId }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded }
     ) {
-        TextField(
-            value = selectedOption,
-            onValueChange = {},
+        OutlinedTextField(
+            value = selectedAlloy?.name ?: "",
+            onValueChange = { },
             readOnly = true,
-            label = { Text("Dropdown") },
+            label = { Text(stringResource(R.string.alloy)) },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
-            modifier = Modifier.menuAnchor()
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(),
+            isError = isError,
+            supportingText = {
+                if (errorMessage != null) {
+                    Text(errorMessage)
+                }
+            }
         )
-        DropdownMenu(
+
+        ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            options.forEach { option ->
+            alloys.forEach { alloy ->
                 DropdownMenuItem(
-                    text = { Text(option) },
+                    text = { Text(alloy.name) },
                     onClick = {
-                        selectedOption = option
+                        onAlloySelected(alloy.id)
                         expanded = false
                     }
                 )
