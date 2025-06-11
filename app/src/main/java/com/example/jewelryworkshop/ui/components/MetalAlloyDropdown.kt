@@ -67,3 +67,79 @@ fun MetalAlloyDropdown(
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun <T> GenericDropdown(
+    items: List<T>,
+    selectedItemId: Long?,
+    onItemSelected: (Long?) -> Unit,
+    label: String,
+    getItemId: (T) -> Long,
+    getItemDisplayName: (T) -> String,
+    isError: Boolean = false,
+    errorMessage: String? = null
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val selectedItem = items.find { getItemId(it) == selectedItemId }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+        OutlinedTextField(
+            value = selectedItem?.let { getItemDisplayName(it) } ?: "",
+            onValueChange = { },
+            readOnly = true,
+            label = { Text(label) },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(),
+            isError = isError,
+            supportingText = {
+                if (errorMessage != null) {
+                    Text(errorMessage)
+                }
+            }
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            items.forEach { item ->
+                DropdownMenuItem(
+                    text = { Text(getItemDisplayName(item)) },
+                    onClick = {
+                        onItemSelected(getItemId(item))
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+// Специализированная версия для MetalAlloy
+//@Composable
+//fun MetalAlloyDropdown(
+//    alloys: List<MetalAlloy>,
+//    selectedAlloyId: Long?,
+//    onAlloySelected: (Long?) -> Unit,
+//    isError: Boolean = false,
+//    errorMessage: String? = null
+//) {
+//    GenericDropdown(
+//        items = alloys,
+//        selectedItemId = selectedAlloyId,
+//        onItemSelected = onAlloySelected,
+//        label = stringResource(R.string.alloy),
+//        getItemId = { it.id },
+//        getItemDisplayName = { it.name },
+//        isError = isError,
+//        errorMessage = errorMessage
+//    )
+//}
