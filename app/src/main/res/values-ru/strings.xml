@@ -28,4 +28,14 @@
     <string name="delete">Удалить</string>
     <string name="deletion_confirmation">Подтверждение удаления</string>
     <string name="are_u_sure_delete">Вы действительно хотите удалить эту операцию?</string>
+    <string name="add_alloy">Добавить метал. сплав</string>
+    <string name="no_alloys">Нет сплавов</string>
+    <string name="total_alloys">Всего сплавов</string>
+    <string name="manage_list">Управляйте списком сплавов</string>
+    <string name="edit">Редактировать</string>
+    <string name="transaction_id">ID Операции</string>
+    <string name="system_info">Системная информация</string>
+    <string name="material_info">Информация о материале</string>
+    <string name="main_information">Общая информация</string>
+    <string name="transaction_detail">Детали Операции</string>
 </resources>

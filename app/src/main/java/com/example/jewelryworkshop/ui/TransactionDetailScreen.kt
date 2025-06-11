@@ -13,8 +13,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.jewelryworkshop.R
 import com.example.jewelryworkshop.domain.Transaction
 import com.example.jewelryworkshop.domain.TransactionType
 import java.time.format.DateTimeFormatter
@@ -36,12 +38,12 @@ fun TransactionDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Детали операции") },
+                title = { Text(stringResource(R.string.transaction_detail)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -59,7 +61,7 @@ fun TransactionDetailScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = "Редактировать"
+                    contentDescription = stringResource(R.string.edit)
                 )
             }
         }
@@ -82,7 +84,7 @@ fun TransactionDetailScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "Общая информация",
+                        text = stringResource(R.string.main_information),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -90,24 +92,24 @@ fun TransactionDetailScreen(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     DetailRow(
-                        label = "Дата и время:",
+                        label = stringResource(R.string.date_time),
                         value = dateFormatter.format(transaction.dateTime)
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     DetailRow(
-                        label = "Тип операции:",
+                        label = stringResource(R.string.transaction_type),
                         value = when (transaction.type) {
-                            TransactionType.RECEIVED -> "Получено"
-                            TransactionType.ISSUED -> "Выдано"
+                            TransactionType.RECEIVED -> stringResource(R.string.recieved)
+                            TransactionType.ISSUED -> stringResource(R.string.issued)
                         }
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     DetailRow(
-                        label = "Описание:",
+                        label = stringResource(R.string.description),
                         value = transaction.description
                     )
                 }
@@ -121,29 +123,30 @@ fun TransactionDetailScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "Информация о материале",
+                        text = stringResource(R.string.material_info),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
 
+                    val grams = stringResource(R.string.grams)
                     DetailRow(
-                        label = "Вес:",
-                        value = "${transaction.weight} г"
+                        label = stringResource(R.string.weight_grams),
+                        value = "${transaction.weight} ${grams}"
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     DetailRow(
-                        label = "Сплав:",
+                        label = stringResource(R.string.alloy),
                         value = transaction.alloy.name
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     DetailRow(
-                        label = "Количество изделий:",
+                        label = stringResource(R.string.quantity_of_items),
                         value = transaction.itemsCount.toString()
                     )
                 }
@@ -158,7 +161,7 @@ fun TransactionDetailScreen(
                         modifier = Modifier.padding(16.dp)
                     ) {
                         Text(
-                            text = "Системная информация",
+                            text = stringResource(R.string.system_info),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
@@ -166,7 +169,7 @@ fun TransactionDetailScreen(
                         Spacer(modifier = Modifier.height(12.dp))
 
                         DetailRow(
-                            label = "ID операции:",
+                            label = stringResource(R.string.transaction_id),
                             value = id.toString()
                         )
                     }

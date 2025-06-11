@@ -12,6 +12,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.example.jewelryworkshop.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.jewelryworkshop.domain.MetalAlloy
@@ -36,12 +38,12 @@ fun AlloyManagementScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Управление сплавами") },
+                title = { Text(stringResource(R.string.alloy_management)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Назад"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -59,7 +61,7 @@ fun AlloyManagementScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Добавить сплав"
+                    contentDescription = stringResource(R.string.add_alloy)
                 )
             }
         }
@@ -80,13 +82,13 @@ fun AlloyManagementScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "Нет сплавов",
+                            text = stringResource(R.string.no_alloys),
                             style = MaterialTheme.typography.headlineSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Нажмите '+' чтобы добавить первый сплав",
+                            text = stringResource(R.string.add_alloy),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -109,13 +111,14 @@ fun AlloyManagementScreen(
                             Column(
                                 modifier = Modifier.padding(16.dp)
                             ) {
+                                val totalAlloysStr = stringResource(R.string.total_alloys)
                                 Text(
-                                    text = "Всего сплавов: ${alloys.size}",
+                                    text = "${totalAlloysStr}: ${alloys.size}",
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = "Управляйте списком металлических сплавов",
+                                    text = stringResource(R.string.manage_list),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -143,14 +146,15 @@ fun AlloyManagementScreen(
 
     // Диалог подтверждения удаления
     if (showDeleteDialog && alloyToDelete != null) {
+        val areYouShureYouDeleteAlloy = stringResource(R.string.are_u_sure_delete)
         AlertDialog(
             onDismissRequest = {
                 showDeleteDialog = false
                 alloyToDelete = null
             },
-            title = { Text("Удалить сплав?") },
+            title = { Text(stringResource(R.string.delete)) },
             text = {
-                Text("Вы уверены, что хотите удалить сплав \"${alloyToDelete!!.name}\"? Это действие нельзя отменить.")
+                Text("${areYouShureYouDeleteAlloy} \"${alloyToDelete!!.name}\"?!")
             },
             confirmButton = {
                 TextButton(
@@ -160,7 +164,7 @@ fun AlloyManagementScreen(
                         alloyToDelete = null
                     }
                 ) {
-                    Text("Удалить")
+                    Text(stringResource(R.string.delete))
                 }
             },
             dismissButton = {
@@ -170,7 +174,7 @@ fun AlloyManagementScreen(
                         alloyToDelete = null
                     }
                 ) {
-                    Text("Отмена")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -220,7 +224,7 @@ fun AlloyListItem(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = "Редактировать",
+                        contentDescription = stringResource(R.string.edit),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -230,7 +234,7 @@ fun AlloyListItem(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Удалить",
+                        contentDescription = stringResource(R.string.delete),
                         tint = MaterialTheme.colorScheme.error
                     )
                 }
