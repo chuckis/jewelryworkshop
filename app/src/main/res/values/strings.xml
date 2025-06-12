@@ -37,4 +37,6 @@
     <string name="material_info">Mateial information</string>
     <string name="main_information">Main information</string>
     <string name="transaction_detail">Transaction details</string>
+    <string name="loading_transactions">Loading transactions...</string>
+    <string name="add_first_transaction">Add first transaction</string>
 </resources>

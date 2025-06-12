@@ -38,4 +38,6 @@
     <string name="material_info">Информация о материале</string>
     <string name="main_information">Общая информация</string>
     <string name="transaction_detail">Детали Операции</string>
+    <string name="loading_transactions">Загрузка операций</string>
+    <string name="add_first_transaction">Добавить первую операцию</string>
 </resources>

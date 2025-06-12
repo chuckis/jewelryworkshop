@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.example.jewelryworkshop.R
 import com.example.jewelryworkshop.domain.Transaction
 import com.example.jewelryworkshop.ui.components.TransactionItem
+import kotlinx.coroutines.delay
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,10 +26,12 @@ fun MainScreen(
     viewModel: MainViewModel,
     onNavigateToAddTransaction: () -> Unit,
     onNavigateToTransactionDetail: (Transaction) -> Unit,
-    onNavigateToAlloyManagement: () -> Unit // Добавляем новый параметр навигации
+    onNavigateToAlloyManagement: () -> Unit
 ) {
     val transactions by viewModel.transactions.collectAsState()
     val metalBalance by viewModel.metalBalance.collectAsState()
+
+    var isLoading by remember { mutableStateOf(true) }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
     var transactionToDelete by remember { mutableStateOf<Transaction?>(null) }
@@ -65,6 +68,11 @@ fun MainScreen(
         )
     }
 
+    LaunchedEffect(Unit) {
+        delay(1000)
+        isLoading = false
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -74,12 +82,11 @@ fun MainScreen(
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 actions = {
-                    // Добавляем кнопку для перехода к управлению сплавами
                     IconButton(
                         onClick = onNavigateToAlloyManagement
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Settings, // или другую подходящую иконку
+                            imageVector = Icons.Default.Settings,
                             contentDescription = stringResource(R.string.alloy_management),
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
@@ -88,48 +95,84 @@ fun MainScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = onNavigateToAddTransaction,
-                containerColor = MaterialTheme.colorScheme.primary
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.add_transaction),
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
+            if (!isLoading) {
+                FloatingActionButton(
+                    onClick = onNavigateToAddTransaction,
+                    containerColor = MaterialTheme.colorScheme.primary
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(R.string.add_transaction),
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
             }
         },
         content = { paddingValues ->
-            LazyColumn(
-                modifier = Modifier.padding(paddingValues),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                if (transactions.isEmpty()) {
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 32.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = stringResource(R.string.theres_no_transactions),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(48.dp),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = stringResource(R.string.loading_transactions),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.padding(paddingValues),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    if (transactions.isEmpty()) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 32.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.theres_no_transactions),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                    Text(
+                                        text = stringResource(R.string.add_first_transaction),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        items(transactions) { transaction ->
+                            TransactionItem(
+                                transaction = transaction,
+                                onClick = { onNavigateToTransactionDetail(transaction) },
+                                onDeleteClick = { id ->
+                                    transactionToDelete = transaction
+                                    showDeleteDialog = true
+                                }
                             )
                         }
-                    }
-                } else {
-                    items(transactions) { transaction ->
-                        TransactionItem(
-                            transaction = transaction,
-                            onClick = { onNavigateToTransactionDetail(transaction) },
-                            onDeleteClick = { id ->
-                                transactionToDelete = transaction
-                                showDeleteDialog = true
-                            }
-                        )
                     }
                 }
             }
