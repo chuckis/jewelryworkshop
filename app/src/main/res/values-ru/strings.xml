@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ювелирная мастерская</string>
+    <string name="app_name">Ювелирная мастерская</string>
     <string name="edit_transaction">Редактировать операцию</string>
     <string name="new_transaction">Новая операция</string>
     <string name="enter_description">Введите описание</string>
@@ -38,7 +38,7 @@
     <string name="material_info">Информация о материале</string>
     <string name="main_information">Общая информация</string>
     <string name="transaction_detail">Детали Операции</string>
-    <string name="loading_transactions">Загрузка операций</string>
+    <string name="loading_transactions">Загрузка операций…</string>
     <string name="add_first_transaction">Добавить первую операцию</string>
     <string name="no_transactions_for_alloy">Нет транзакций для сплава</string>
     <string name="ALL">Все</string>

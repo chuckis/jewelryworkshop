@@ -10,7 +10,7 @@
     <string name="add_transaction">Add transaction</string>
     <string name="pick_date_time">Pick a data and time</string>
     <string name="transaction_type">Transaction type</string>
-    <string name="recieved">Recieved</string>
+    <string name="recieved">Received</string>
     <string name="issued">Issued</string>
     <string name="weight_grams">Weight grams</string>
     <string name="quantity_of_items">Quantity of items</string>
@@ -37,7 +37,7 @@
     <string name="material_info">Mateial information</string>
     <string name="main_information">Main information</string>
     <string name="transaction_detail">Transaction details</string>
-    <string name="loading_transactions">Loading transactions...</string>
+    <string name="loading_transactions">Loading transactions…</string>
     <string name="add_first_transaction">Add first transaction</string>
     <string name="no_transactions_for_alloy">No transactions for this alloy</string>
     <string name="ALL">All</string>

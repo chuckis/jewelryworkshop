@@ -9,7 +9,7 @@ A specialized inventory management application designed for jewelry workshops. T
 - [x] CRUD operations
 - [x] Alloy management
 - [x] Alloy CRUD
-- [ ] List tabs
+- [x] List tabs
 - [ ] Reports
 - [x] Localization
 - [ ] Menu
