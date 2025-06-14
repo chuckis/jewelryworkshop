@@ -40,4 +40,6 @@
     <string name="transaction_detail">Детали Операции</string>
     <string name="loading_transactions">Загрузка операций</string>
     <string name="add_first_transaction">Добавить первую операцию</string>
+    <string name="no_transactions_for_alloy">Нет транзакций для сплава</string>
+    <string name="ALL">Все</string>
 </resources>

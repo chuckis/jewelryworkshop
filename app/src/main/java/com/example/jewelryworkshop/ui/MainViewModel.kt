@@ -8,13 +8,18 @@ import com.example.jewelryworkshop.domain.MetalAlloy
 import com.example.jewelryworkshop.domain.MetalBalance
 import com.example.jewelryworkshop.domain.Transaction
 import com.example.jewelryworkshop.domain.TransactionType
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+
+/**
+ * Data class для отображения сплавов с количеством транзакций
+ */
+data class AlloyWithCount(
+    val alloy: MetalAlloy,
+    val transactionCount: Int,
+    val totalWeight: Double
+)
 
 /**
  * ViewModel для основного экрана приложения
@@ -29,13 +34,38 @@ class MainViewModel(private val repository: CombinedRepository) : ViewModel() {
     val metalBalance: StateFlow<MetalBalance> = repository.getMetalBalance()
         .stateIn(viewModelScope, SharingStarted.Lazily, MetalBalance(0.0, 0))
 
-    // Поток всех доступных сплавов - ИСПРАВЛЕНО
+    // Поток всех доступных сплавов
     val alloys: StateFlow<List<MetalAlloy>> = repository.getAllAlloys()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
+
+    // Транзакции, сгруппированные по сплавам
+    val transactionsByAlloy: StateFlow<Map<MetalAlloy, List<Transaction>>> =
+        transactions.map { transactionsList ->
+            transactionsList
+                .filter { it.alloy != null } // Фильтруем транзакции без сплава
+                .groupBy { it.alloy!! }
+                .toSortedMap(compareBy { it.name }) // Сортируем по имени сплава
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
+
+    // Список сплавов с количеством транзакций (для отображения во вкладках)
+    val alloysWithCounts: StateFlow<List<AlloyWithCount>> =
+        transactionsByAlloy.map { grouped ->
+            grouped.map { (alloy, transactions) ->
+                AlloyWithCount(
+                    alloy = alloy,
+                    transactionCount = transactions.size,
+                    totalWeight = transactions.sumOf { it.weight }
+                )
+            }.sortedBy { it.alloy.name }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    // Приватное поле для ошибок
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
     /**
      * Добавить новую транзакцию
@@ -166,9 +196,14 @@ class MainViewModel(private val repository: CombinedRepository) : ViewModel() {
         }
     }
 
-    // Приватное поле для ошибок
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+    /**
+     * Получить транзакции для конкретного сплава
+     */
+    fun getTransactionsForAlloy(alloyId: Long): StateFlow<List<Transaction>> {
+        return transactionsByAlloy.map { grouped ->
+            grouped.entries.find { it.key.id == alloyId }?.value ?: emptyList()
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }
 
     /**
      * Очистить сообщение об ошибке

@@ -5,6 +5,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
@@ -18,6 +20,7 @@ import com.example.jewelryworkshop.R
 import com.example.jewelryworkshop.domain.Transaction
 import com.example.jewelryworkshop.ui.components.TransactionItem
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,13 +32,32 @@ fun MainScreen(
     onNavigateToAlloyManagement: () -> Unit
 ) {
     val transactions by viewModel.transactions.collectAsState()
+    val transactionsByAlloy by viewModel.transactionsByAlloy.collectAsState()
+    val alloysWithCounts by viewModel.alloysWithCounts.collectAsState()
     val metalBalance by viewModel.metalBalance.collectAsState()
 
     var isLoading by remember { mutableStateOf(true) }
-
     var showDeleteDialog by remember { mutableStateOf(false) }
     var transactionToDelete by remember { mutableStateOf<Transaction?>(null) }
+    val allStr = stringResource(R.string.ALL)
 
+    // Состояние для TabRow и Pager
+    val allTabs = remember(alloysWithCounts) {
+
+        listOf(TabInfo(null, allStr, transactions.size)) +
+                alloysWithCounts.map { alloyWithCount ->
+                    TabInfo(
+                        alloyId = alloyWithCount.alloy.id,
+                        title = alloyWithCount.alloy.name,
+                        count = alloyWithCount.transactionCount
+                    )
+                }
+    }
+
+    val pagerState = rememberPagerState(pageCount = { allTabs.size })
+    val coroutineScope = rememberCoroutineScope()
+
+    // Диалог удаления
     if (showDeleteDialog && transactionToDelete != null) {
         AlertDialog(
             onDismissRequest = {
@@ -76,7 +98,7 @@ fun MainScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.all_transactions))},
+                title = { Text(stringResource(R.string.all_transactions)) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -132,50 +154,136 @@ fun MainScreen(
                     }
                 }
             } else {
-                LazyColumn(
-                    modifier = Modifier.padding(paddingValues),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
                 ) {
-                    if (transactions.isEmpty()) {
-                        item {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 32.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.theres_no_transactions),
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                    Text(
-                                        text = stringResource(R.string.add_first_transaction),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
+                    // Вкладки
+                    if (allTabs.isNotEmpty()) {
+                        ScrollableTabRow(
+                            selectedTabIndex = pagerState.currentPage,
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                            edgePadding = 16.dp
+                        ) {
+                            allTabs.forEachIndexed { index, tab ->
+                                Tab(
+                                    selected = pagerState.currentPage == index,
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            pagerState.animateScrollToPage(index)
+                                        }
+                                    },
+                                    text = {
+                                        Text(
+                                            text = "${tab.title} (${tab.count})",
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    }
+                                )
                             }
                         }
-                    } else {
-                        items(transactions) { transaction ->
-                            TransactionItem(
-                                transaction = transaction,
-                                onClick = { onNavigateToTransactionDetail(transaction) },
-                                onDeleteClick = { id ->
+
+                        Divider()
+                    }
+
+                    // Контент вкладок
+                    if (allTabs.isNotEmpty()) {
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier.fillMaxSize()
+                        ) { page ->
+                            val currentTab = allTabs[page]
+                            val filteredTransactions = when (currentTab.alloyId) {
+                                null -> transactions // Все транзакции
+                                else -> transactionsByAlloy.entries
+                                    .find { it.key.id == currentTab.alloyId }
+                                    ?.value ?: emptyList()
+                            }
+
+                            TransactionsList(
+                                transactions = filteredTransactions,
+                                onTransactionClick = onNavigateToTransactionDetail,
+                                onDeleteClick = { transaction ->
                                     transactionToDelete = transaction
                                     showDeleteDialog = true
+                                },
+                                emptyMessage = if (currentTab.alloyId == null) {
+                                    stringResource(R.string.theres_no_transactions)
+                                } else {
+                                    "Нет транзакций для сплава ${currentTab.title}"
                                 }
                             )
                         }
+                    } else {
+                        // Если нет сплавов, показываем пустое состояние
+                        TransactionsList(
+                            transactions = emptyList(),
+                            onTransactionClick = onNavigateToTransactionDetail,
+                            onDeleteClick = { transaction ->
+                                transactionToDelete = transaction
+                                showDeleteDialog = true
+                            },
+                            emptyMessage = stringResource(R.string.theres_no_transactions)
+                        )
                     }
                 }
             }
         }
     )
 }
+
+@Composable
+private fun TransactionsList(
+    transactions: List<Transaction>,
+    onTransactionClick: (Transaction) -> Unit,
+    onDeleteClick: (Transaction) -> Unit,
+    emptyMessage: String
+) {
+    LazyColumn(
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        if (transactions.isEmpty()) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = emptyMessage,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = stringResource(R.string.add_first_transaction),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+        } else {
+            items(transactions) { transaction ->
+                TransactionItem(
+                    transaction = transaction,
+                    onClick = { onTransactionClick(transaction) },
+                    onDeleteClick = { onDeleteClick(transaction) }
+                )
+            }
+        }
+    }
+}
+
+private data class TabInfo(
+    val alloyId: Long?,
+    val title: String,
+    val count: Int
+)
