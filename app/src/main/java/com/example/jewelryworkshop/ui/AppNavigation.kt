@@ -10,18 +10,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 
-/**
- * Основные навигационные маршруты в приложении
- */
+
 object NavRoutes {
     const val MAIN = "main"
     const val ADD_TRANSACTION = "add_transaction"
     const val TRANSACTION_DETAIL = "transaction_detail/{transactionId}"
     const val EDIT_TRANSACTION = "edit_transaction/{transactionId}"
+    const val ADD_ALLOY = "add_alloy"
     const val ALLOY_MANAGEMENT = "alloy_management"
-    const val ADD_ALLOY = "add_alloy" // Добавляем маршрут для добавления сплава
+    const val REPORT_MANAGEMENT = "report_management"
+    const val SHOW_BALANCE = "show_balance"
+    const val ABOUT = "about"
 }
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -33,10 +33,10 @@ fun AppNavigation(
         navController = navController,
         startDestination = NavRoutes.MAIN
     ) {
-        // Главный экран со списком операций и балансом
         composable(route = NavRoutes.MAIN) {
             MainScreen(
                 viewModel = viewModel,
+                navController = navController,
                 onNavigateToAddTransaction = {
                     navController.navigate(NavRoutes.ADD_TRANSACTION)
                 },
@@ -49,7 +49,6 @@ fun AppNavigation(
             )
         }
 
-        // Экран добавления новой транзакции
         composable(route = NavRoutes.ADD_TRANSACTION) {
             TransactionAddScreen(
                 viewModel = viewModel,
@@ -59,7 +58,6 @@ fun AppNavigation(
             )
         }
 
-        // Экран просмотра деталей транзакции
         composable(
             route = NavRoutes.TRANSACTION_DETAIL,
             arguments = listOf(
@@ -81,12 +79,10 @@ fun AppNavigation(
                     }
                 )
             } ?: run {
-                // Если транзакция не найдена, возвращаемся назад
                 navController.popBackStack()
             }
         }
 
-        // Экран редактирования существующей транзакции
         composable(
             route = NavRoutes.EDIT_TRANSACTION,
             arguments = listOf(
@@ -106,12 +102,10 @@ fun AppNavigation(
                     }
                 )
             } ?: run {
-                // Если транзакция не найдена, возвращаемся назад
                 navController.popBackStack()
             }
         }
 
-        // Экран управления сплавами
         composable(route = NavRoutes.ALLOY_MANAGEMENT) {
             AlloyManagementScreen(
                 onNavigateBack = {
@@ -124,10 +118,36 @@ fun AppNavigation(
             )
         }
 
-        // Экран добавления нового сплава
         composable(route = NavRoutes.ADD_ALLOY) {
             AlloyAddScreen(
                 viewModel = viewModel,
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+       //TODO()
+        composable(route = NavRoutes.REPORT_MANAGEMENT) {
+            ReportManagementScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // Экран показа баланса //TODO()
+//        composable(route = NavRoutes.SHOW_BALANCE) {
+//            ShowBalanceScreen(
+//                viewModel = viewModel,
+//                onNavigateBack = {
+//                    navController.popBackStack()
+//                }
+//            )
+//        }
+
+        composable(route = NavRoutes.ABOUT) {
+            AboutScreen(
                 onNavigateBack = {
                     navController.popBackStack()
                 }

@@ -34,11 +34,13 @@
     <string name="edit">Edit</string>
     <string name="transaction_id">Transaction ID</string>
     <string name="system_info">System information</string>
-    <string name="material_info">Mateial information</string>
+    <string name="material_info">Material information</string>
     <string name="main_information">Main information</string>
     <string name="transaction_detail">Transaction details</string>
     <string name="loading_transactions">Loading transactions…</string>
     <string name="add_first_transaction">Add first transaction</string>
     <string name="no_transactions_for_alloy">No transactions for this alloy</string>
     <string name="ALL">All</string>
+    <string name="report_management">Report management</string>
+    <string name="about">About</string>
 </resources>

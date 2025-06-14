@@ -76,15 +76,15 @@ class MainViewModel(private val repository: CombinedRepository) : ViewModel() {
         type: TransactionType,
         description: String,
         itemsCount: Int?,
-        alloyId: Long, // Изменено: принимаем ID сплава вместо объекта
+        alloyId: Long,
     ) {
         viewModelScope.launch {
             try {
-                // Получаем сплав по ID
+
                 val selectedAlloy = alloys.value.find { it.id == alloyId }
                 if (selectedAlloy != null) {
                     val transaction = Transaction(
-                        id = 0, // Будет автоматически сгенерирован
+                        id = 0,
                         dateTime = dateTime,
                         weight = weight,
                         type = type,
@@ -94,7 +94,7 @@ class MainViewModel(private val repository: CombinedRepository) : ViewModel() {
                     )
                     repository.addTransaction(transaction)
                 } else {
-                    // Обработка ошибки - сплав не найден
+
                     _errorMessage.value = "Сплав не найден"
                 }
             } catch (e: Exception) {

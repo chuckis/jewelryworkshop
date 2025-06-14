@@ -12,7 +12,7 @@ A specialized inventory management application designed for jewelry workshops. T
 - [x] List tabs
 - [ ] Reports
 - [x] Localization
-- [ ] Menu
+- [x] Menu
 - [ ] Data export to Excel, etc.
 - [ ] CRM functionality
 - [ ] Synchronization

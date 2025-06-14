@@ -42,4 +42,6 @@
     <string name="add_first_transaction">Добавить первую операцию</string>
     <string name="no_transactions_for_alloy">Нет транзакций для сплава</string>
     <string name="ALL">Все</string>
+    <string name="report_management">Управление отчетами</string>
+    <string name="about">О приложении</string>
 </resources>

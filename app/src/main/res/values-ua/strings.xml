@@ -41,4 +41,6 @@
     <string name="add_first_transaction">Додати першу операцію</string>
     <string name="no_transactions_for_alloy">Немає операцій для цього сплаву</string>
     <string name="ALL">Всі</string>
+    <string name="report_management">Управління звітами</string>
+    <string name="about">Про застосунок</string>
 </resources>
