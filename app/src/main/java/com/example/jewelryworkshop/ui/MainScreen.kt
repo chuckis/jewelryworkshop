@@ -48,18 +48,32 @@ fun MainScreen(
     val coroutineScope = rememberCoroutineScope()
 
     // Состояние для TabRow и Pager
-    val allTabs = remember(alloysWithCounts) {
-        listOf(TabInfo(null, allStr, transactions.size)) +
-                alloysWithCounts.map { alloyWithCount ->
-                    TabInfo(
-                        alloyId = alloyWithCount.alloy.id,
-                        title = alloyWithCount.alloy.name,
-                        count = alloyWithCount.transactionCount
-                    )
-                }
+    val allTabs = remember(transactions, alloys, transactionsByAlloy) {
+        val allTab = TabInfo(null, allStr, transactions.size)
+
+        val alloyTabs = alloys.map { alloy ->
+            val transactionCount = transactionsByAlloy.entries
+                .find { it.key.id == alloy.id }
+                ?.value?.size ?: 0
+
+            TabInfo(
+                alloyId = alloy.id,
+                title = alloy.name,
+                count = transactionCount
+            )
+        }
+
+        listOf(allTab) + alloyTabs
     }
 
     val pagerState = rememberPagerState(pageCount = { allTabs.size })
+
+    // Проверяем, что текущая страница не выходит за границы после обновления списка вкладок
+    LaunchedEffect(allTabs.size) {
+        if (pagerState.currentPage >= allTabs.size && allTabs.isNotEmpty()) {
+            pagerState.animateScrollToPage(0) // Переключаемся на первую вкладку
+        }
+    }
 
     // Диалог удаления
     if (showDeleteDialog && transactionToDelete != null) {
@@ -193,7 +207,7 @@ fun MainScreen(
                             .padding(paddingValues)
                     ) {
                         // Вкладки
-                        if (allTabs.isNotEmpty()) {
+                        if (allTabs.isNotEmpty() && pagerState.currentPage < allTabs.size) {
                             ScrollableTabRow(
                                 selectedTabIndex = pagerState.currentPage,
                                 containerColor = MaterialTheme.colorScheme.surface,
@@ -222,78 +236,81 @@ fun MainScreen(
                         }
 
                         // Контент вкладок
-                        if (allTabs.isNotEmpty()) {
+                        if (allTabs.isNotEmpty() && pagerState.currentPage < allTabs.size) {
                             HorizontalPager(
                                 state = pagerState,
                                 modifier = Modifier.fillMaxSize()
                             ) { page ->
-                                val currentTab = allTabs[page]
-                                val filteredTransactions = when (currentTab.alloyId) {
-                                    null -> transactions
-                                    else -> transactionsByAlloy.entries
-                                        .find { it.key.id == currentTab.alloyId }
-                                        ?.value ?: emptyList()
-                                }
-
-                                // Находим текущий сплав для отображения баланса
-                                val currentAlloy = when (currentTab.alloyId) {
-                                    null -> null
-                                    else -> alloys.find { it.id == currentTab.alloyId }
-                                }
-
-                                LazyColumn(
-                                    contentPadding = PaddingValues(16.dp),
-                                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                                    modifier = Modifier.fillMaxSize()
-                                ) {
-
-                                    if (currentAlloy != null) {
-                                        item {
-                                            SingleAlloyBalanceCard(
-                                                selectedAlloy = currentAlloy,
-                                                transactions = transactions,
-                                                modifier = Modifier.fillMaxWidth()
-                                            )
-                                        }
+                                // Дополнительная проверка безопасности
+                                if (page < allTabs.size) {
+                                    val currentTab = allTabs[page]
+                                    val filteredTransactions = when (currentTab.alloyId) {
+                                        null -> transactions
+                                        else -> transactionsByAlloy.entries
+                                            .find { it.key.id == currentTab.alloyId }
+                                            ?.value ?: emptyList()
                                     }
 
-                                    // Список транзакций
-                                    if (filteredTransactions.isEmpty()) {
-                                        item {
-                                            // Убираем Box с центрированием, оставляем только Column
-                                            Column(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(vertical = 32.dp),
-                                                horizontalAlignment = Alignment.CenterHorizontally,
-                                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                                            ) {
-                                                Text(
-                                                    text = if (currentTab.alloyId == null) {
-                                                        stringResource(R.string.theres_no_transactions)
-                                                    } else {
-                                                        "Нет транзакций для сплава ${currentTab.title}"
-                                                    },
-                                                    style = MaterialTheme.typography.bodyLarge,
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                                )
-                                                Text(
-                                                    text = stringResource(R.string.add_first_transaction),
-                                                    style = MaterialTheme.typography.bodySmall,
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    // Находим текущий сплав для отображения баланса
+                                    val currentAlloy = when (currentTab.alloyId) {
+                                        null -> null
+                                        else -> alloys.find { it.id == currentTab.alloyId }
+                                    }
+
+                                    LazyColumn(
+                                        contentPadding = PaddingValues(16.dp),
+                                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                                        modifier = Modifier.fillMaxSize()
+                                    ) {
+
+                                        if (currentAlloy != null) {
+                                            item {
+                                                SingleAlloyBalanceCard(
+                                                    selectedAlloy = currentAlloy,
+                                                    transactions = transactions,
+                                                    modifier = Modifier.fillMaxWidth()
                                                 )
                                             }
                                         }
-                                    } else {
-                                        items(filteredTransactions) { transaction ->
-                                            TransactionItem(
-                                                transaction = transaction,
-                                                onClick = { onNavigateToTransactionDetail(transaction) },
-                                                onDeleteClick = {
-                                                    transactionToDelete = transaction
-                                                    showDeleteDialog = true
+
+                                        // Список транзакций
+                                        if (filteredTransactions.isEmpty()) {
+                                            item {
+                                                // Убираем Box с центрированием, оставляем только Column
+                                                Column(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(vertical = 32.dp),
+                                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                                ) {
+                                                    Text(
+                                                        text = if (currentTab.alloyId == null) {
+                                                            stringResource(R.string.theres_no_transactions)
+                                                        } else {
+                                                            "Нет транзакций для сплава ${currentTab.title}"
+                                                        },
+                                                        style = MaterialTheme.typography.bodyLarge,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                    Text(
+                                                        text = stringResource(R.string.add_first_transaction),
+                                                        style = MaterialTheme.typography.bodySmall,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
                                                 }
-                                            )
+                                            }
+                                        } else {
+                                            items(filteredTransactions) { transaction ->
+                                                TransactionItem(
+                                                    transaction = transaction,
+                                                    onClick = { onNavigateToTransactionDetail(transaction) },
+                                                    onDeleteClick = {
+                                                        transactionToDelete = transaction
+                                                        showDeleteDialog = true
+                                                    }
+                                                )
+                                            }
                                         }
                                     }
                                 }
