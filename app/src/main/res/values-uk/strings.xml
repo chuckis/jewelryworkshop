@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Ювелірна майстерня</string>
     <string name="edit_transaction">Редагувати операцію</string>
@@ -49,4 +50,14 @@
     <string name="incoming">Отримано</string>
     <string name="outgoing">Віддано</string>
     <string name="transactions">Операції</string>
+    <string name="enter_alloy_name">Введіть назву сплаву</string>
+    <string name="more_than_two">Назва не повинна бути меншою 2 літер</string>
+    <string name="lesser_than_fifty">Назва не повинна бути більшою 10 літер</string>
+    <string name="not_unique_name">Не унікальна назва, вже існує</string>
+    <string name="must_b_unique">Назва повинна бути унікальною</string>
+    <string name="name">Назва</string>
+    <string name="alloy_name">Назва сплаву</string>
+    <string name="for_example">Наприклад: Золото 585, Срібло 925</string>
+    <string name="enter_from_two_up_to_ten_symbols">Введіть від 2 до 10 символів</string>
+    <string name="existing_alloys">Сплави що вже існують</string>
 </resources>

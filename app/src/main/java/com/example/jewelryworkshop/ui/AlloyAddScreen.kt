@@ -8,6 +8,8 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.example.jewelryworkshop.R
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 
@@ -20,19 +22,14 @@ fun AlloyAddScreen(
     viewModel: MainViewModel,
     onNavigateBack: () -> Unit
 ) {
-    // Состояние полей формы
     var alloyName by remember { mutableStateOf("") }
 
-    // Состояние валидации
     var nameError by remember { mutableStateOf<String?>(null) }
 
-    // Состояние загрузки
     var isLoading by remember { mutableStateOf(false) }
 
-    // Получаем список существующих сплавов для проверки дубликатов
     val existingAlloys by viewModel.alloys.collectAsState()
 
-    // Отслеживаем сообщения об ошибках из ViewModel
     val errorMessage by viewModel.errorMessage.collectAsState()
 
     // Показываем снэкбар при ошибке
@@ -43,6 +40,10 @@ fun AlloyAddScreen(
             viewModel.clearErrorMessage()
         }
     }
+    val nameErrorEnterAlloyNameStr = stringResource(R.string.enter_alloy_name)
+    val nameErrorMoreTwoLettersStr = stringResource(R.string.more_than_two)
+    val nameErrorLesserThanFiftyStr = stringResource(R.string.lesser_than_fifty)
+    val nameErrorNotUniqueNameStr = stringResource(R.string.not_unique_name)
 
     // Функция валидации формы
     fun validateForm(): Boolean {
@@ -51,19 +52,19 @@ fun AlloyAddScreen(
         // Проверка имени сплава
         when {
             alloyName.isBlank() -> {
-                nameError = "Введите название сплава"
+                nameError = nameErrorEnterAlloyNameStr
                 isValid = false
             }
             alloyName.length < 2 -> {
-                nameError = "Название должно содержать минимум 2 символа"
+                nameError = nameErrorMoreTwoLettersStr
                 isValid = false
             }
-            alloyName.length > 50 -> {
-                nameError = "Название не должно превышать 50 символов"
+            alloyName.length > 10 -> {
+                nameError = nameErrorLesserThanFiftyStr
                 isValid = false
             }
             existingAlloys.any { it.name.equals(alloyName.trim(), ignoreCase = true) } -> {
-                nameError = "Сплав с таким названием уже существует"
+                nameError = nameErrorNotUniqueNameStr
                 isValid = false
             }
             else -> {
@@ -74,29 +75,25 @@ fun AlloyAddScreen(
         return isValid
     }
 
-    // Функция сохранения сплава
     fun saveAlloy() {
         if (!validateForm()) return
 
         isLoading = true
 
-        // Добавляем новый сплав через ViewModel
         viewModel.addAlloy(alloyName.trim())
 
-        // После успешного добавления возвращаемся назад
-        // (в реальном приложении лучше отслеживать результат операции)
         onNavigateBack()
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Новый сплав") },
+                title = { Text(stringResource(R.string.add_alloy)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Назад"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -129,13 +126,13 @@ fun AlloyAddScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "Добавление сплава",
+                        text = stringResource(R.string.add_alloy),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Введите название нового металлического сплава. Название должно быть уникальным.",
+                        text = stringResource(R.string.enter_alloy_name) + stringResource(R.string.must_b_unique),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -149,8 +146,8 @@ fun AlloyAddScreen(
                     alloyName = it
                     nameError = null
                 },
-                label = { Text("Название сплава") },
-                placeholder = { Text("Например: Золото 585, Серебро 925") },
+                label = { Text(stringResource(R.string.alloy_name)) },
+                placeholder = { Text(stringResource(R.string.for_example)) },
                 modifier = Modifier.fillMaxWidth(),
                 isError = nameError != null,
                 supportingText = {
@@ -161,7 +158,7 @@ fun AlloyAddScreen(
                         )
                     } else {
                         Text(
-                            text = "Введите от 2 до 50 символов",
+                            text = stringResource(R.string.enter_from_two_up_to_ten_symbols),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -179,7 +176,7 @@ fun AlloyAddScreen(
                         modifier = Modifier.padding(16.dp)
                     ) {
                         Text(
-                            text = "Существующие сплавы:",
+                            text = stringResource(R.string.existing_alloys),
                             style = MaterialTheme.typography.titleSmall,
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -194,9 +191,9 @@ fun AlloyAddScreen(
                             )
                         }
 
-                        if (existingAlloys.size > 5) {
+                        if (existingAlloys.size > 3) {
                             Text(
-                                text = "... и еще ${existingAlloys.size - 5}",
+                                text = "... + ${existingAlloys.size - 3}",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.padding(vertical = 2.dp)
@@ -218,7 +215,7 @@ fun AlloyAddScreen(
                     modifier = Modifier.weight(1f),
                     enabled = !isLoading
                 ) {
-                    Text("Отмена")
+                    Text(stringResource(R.string.cancel))
                 }
 
                 Button(
@@ -232,7 +229,7 @@ fun AlloyAddScreen(
                             strokeWidth = 2.dp
                         )
                     } else {
-                        Text("Добавить")
+                        Text(stringResource(R.string.add_alloy))
                     }
                 }
             }

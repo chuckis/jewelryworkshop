@@ -19,6 +19,12 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+        bundle {
+            language {
+                enableSplit = false
+            }
+        }
+
     buildTypes {
         debug {
             buildConfigField("String", "DEFAULT_REPOSITORY", "\"ROOM_DATABASE\"")

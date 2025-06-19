@@ -50,4 +50,14 @@
     <string name="incoming">Получено</string>
     <string name="outgoing">Выдано</string>
     <string name="transactions">Операции</string>
+    <string name="enter_alloy_name">Введите название сплава</string>
+    <string name="more_than_two">Название не должно содержать меньше 2 букв</string>
+    <string name="lesser_than_fifty">Название не должно превышать 10 символов</string>
+    <string name="not_unique_name">Название с таким именем уже есть</string>
+    <string name="must_b_unique">Название должно быть уникальным</string>
+    <string name="name">Название</string>
+    <string name="alloy_name">Название сплава</string>
+    <string name="for_example">Например: Золото 585, Серебро 925</string>
+    <string name="enter_from_two_up_to_ten_symbols">Введите от 2 до 10 символов</string>
+    <string name="existing_alloys">Существующие сплавы</string>
 </resources>

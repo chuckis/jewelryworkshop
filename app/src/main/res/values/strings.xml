@@ -49,4 +49,14 @@
     <string name="incoming">Incoming</string>
     <string name="outgoing">Outgoing</string>
     <string name="transactions">Transactions</string>
+    <string name="enter_alloy_name">Enter alloy name</string>
+    <string name="more_than_two">Name must contain more than 2 letters</string>
+    <string name="lesser_than_fifty">Name must contain less than 10 letters</string>
+    <string name="not_unique_name">Not unique name</string>
+    <string name="must_b_unique">Name must be unique</string>
+    <string name="name">name</string>
+    <string name="alloy_name">Alloy name</string>
+    <string name="for_example">For example: Gold14, silver, Ag etc.</string>
+    <string name="enter_from_two_up_to_ten_symbols">Enter from 2 up to 10 symbols</string>
+    <string name="existing_alloys">Existing alloys</string>
 </resources>
