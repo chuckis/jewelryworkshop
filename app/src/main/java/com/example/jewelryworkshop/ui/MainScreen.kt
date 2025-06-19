@@ -243,7 +243,8 @@ fun MainScreen(
 
                                 LazyColumn(
                                     contentPadding = PaddingValues(16.dp),
-                                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                                    modifier = Modifier.fillMaxSize()
                                 ) {
 
                                     if (currentAlloy != null) {
@@ -259,31 +260,28 @@ fun MainScreen(
                                     // Список транзакций
                                     if (filteredTransactions.isEmpty()) {
                                         item {
-                                            Box(
+                                            // Убираем Box с центрированием, оставляем только Column
+                                            Column(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
                                                     .padding(vertical = 32.dp),
-                                                contentAlignment = Alignment.TopCenter
+                                                horizontalAlignment = Alignment.CenterHorizontally,
+                                                verticalArrangement = Arrangement.spacedBy(8.dp)
                                             ) {
-                                                Column(
-                                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                                                ) {
-                                                    Text(
-                                                        text = if (currentTab.alloyId == null) {
-                                                            stringResource(R.string.theres_no_transactions)
-                                                        } else {
-                                                            "Нет транзакций для сплава ${currentTab.title}"
-                                                        },
-                                                        style = MaterialTheme.typography.bodyLarge,
-                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                                    )
-                                                    Text(
-                                                        text = stringResource(R.string.add_first_transaction),
-                                                        style = MaterialTheme.typography.bodySmall,
-                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                                    )
-                                                }
+                                                Text(
+                                                    text = if (currentTab.alloyId == null) {
+                                                        stringResource(R.string.theres_no_transactions)
+                                                    } else {
+                                                        "Нет транзакций для сплава ${currentTab.title}"
+                                                    },
+                                                    style = MaterialTheme.typography.bodyLarge,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                                Text(
+                                                    text = stringResource(R.string.add_first_transaction),
+                                                    style = MaterialTheme.typography.bodySmall,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
                                             }
                                         }
                                     } else {
@@ -302,27 +300,25 @@ fun MainScreen(
                             }
                         } else {
                             // Показываем пустое состояние, если нет вкладок
-                            Box(
+                            // Также убираем центрирование здесь
+                            Column(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(16.dp),
-                                contentAlignment = Alignment.TopCenter
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.theres_no_transactions),
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                    Text(
-                                        text = stringResource(R.string.add_first_transaction),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
+                                Spacer(modifier = Modifier.height(32.dp))
+                                Text(
+                                    text = stringResource(R.string.theres_no_transactions),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = stringResource(R.string.add_first_transaction),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
                             }
                         }
                     }
