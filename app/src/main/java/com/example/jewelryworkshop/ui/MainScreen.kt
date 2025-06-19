@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import com.example.jewelryworkshop.R
 import com.example.jewelryworkshop.domain.Transaction
 import com.example.jewelryworkshop.ui.components.TransactionItem
+import com.example.jewelryworkshop.ui.components.SingleAlloyBalanceCard
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,6 +36,7 @@ fun MainScreen(
     val transactions by viewModel.transactions.collectAsState()
     val transactionsByAlloy by viewModel.transactionsByAlloy.collectAsState()
     val alloysWithCounts by viewModel.alloysWithCounts.collectAsState()
+    val alloys by viewModel.alloys.collectAsState()
 
     var isLoading by remember { mutableStateOf(true) }
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -113,12 +115,6 @@ fun MainScreen(
                     }
                     navController.navigate(NavRoutes.REPORT_MANAGEMENT)
                 },
-//                onNavigateToShowBalance = {
-//                    coroutineScope.launch {
-//                        drawerState.close()
-//                    }
-//                    navController.navigate(NavRoutes.SHOW_BALANCE)
-//                },
                 onNavigateToAbout = {
                     coroutineScope.launch {
                         drawerState.close()
@@ -173,7 +169,7 @@ fun MainScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(paddingValues),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.TopCenter
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -239,30 +235,95 @@ fun MainScreen(
                                         ?.value ?: emptyList()
                                 }
 
-                                TransactionsList(
-                                    transactions = filteredTransactions,
-                                    onTransactionClick = onNavigateToTransactionDetail,
-                                    onDeleteClick = { transaction ->
-                                        transactionToDelete = transaction
-                                        showDeleteDialog = true
-                                    },
-                                    emptyMessage = if (currentTab.alloyId == null) {
-                                        stringResource(R.string.theres_no_transactions)
-                                    } else {
-                                        "Нет транзакций для сплава ${currentTab.title}"
+                                // Находим текущий сплав для отображения баланса
+                                val currentAlloy = when (currentTab.alloyId) {
+                                    null -> null
+                                    else -> alloys.find { it.id == currentTab.alloyId }
+                                }
+
+                                LazyColumn(
+                                    contentPadding = PaddingValues(16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+
+                                    if (currentAlloy != null) {
+                                        item {
+                                            SingleAlloyBalanceCard(
+                                                selectedAlloy = currentAlloy,
+                                                transactions = transactions,
+                                                modifier = Modifier.fillMaxWidth()
+                                            )
+                                        }
                                     }
-                                )
+
+                                    // Список транзакций
+                                    if (filteredTransactions.isEmpty()) {
+                                        item {
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(vertical = 32.dp),
+                                                contentAlignment = Alignment.TopCenter
+                                            ) {
+                                                Column(
+                                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                                ) {
+                                                    Text(
+                                                        text = if (currentTab.alloyId == null) {
+                                                            stringResource(R.string.theres_no_transactions)
+                                                        } else {
+                                                            "Нет транзакций для сплава ${currentTab.title}"
+                                                        },
+                                                        style = MaterialTheme.typography.bodyLarge,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                    Text(
+                                                        text = stringResource(R.string.add_first_transaction),
+                                                        style = MaterialTheme.typography.bodySmall,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        items(filteredTransactions) { transaction ->
+                                            TransactionItem(
+                                                transaction = transaction,
+                                                onClick = { onNavigateToTransactionDetail(transaction) },
+                                                onDeleteClick = {
+                                                    transactionToDelete = transaction
+                                                    showDeleteDialog = true
+                                                }
+                                            )
+                                        }
+                                    }
+                                }
                             }
                         } else {
-                            TransactionsList(
-                                transactions = emptyList(),
-                                onTransactionClick = onNavigateToTransactionDetail,
-                                onDeleteClick = { transaction ->
-                                    transactionToDelete = transaction
-                                    showDeleteDialog = true
-                                },
-                                emptyMessage = stringResource(R.string.theres_no_transactions)
-                            )
+                            // Показываем пустое состояние, если нет вкладок
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.TopCenter
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.theres_no_transactions),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                    Text(
+                                        text = stringResource(R.string.add_first_transaction),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -276,7 +337,6 @@ fun MainScreen(
 fun DrawerContent(
     onNavigateToAlloyManagement: () -> Unit,
     onNavigateToReportManagement: () -> Unit,
-//    onNavigateToShowBalance: () -> Unit,
     onNavigateToAbout: () -> Unit
 ) {
     ModalDrawerSheet(
@@ -312,7 +372,6 @@ fun DrawerContent(
                 modifier = Modifier.padding(vertical = 8.dp)
             )
 
-
             NavigationDrawerItem(
                 label = {
                     Text(stringResource(R.string.alloy_management))
@@ -330,23 +389,6 @@ fun DrawerContent(
                 onClick = onNavigateToReportManagement,
                 modifier = Modifier.padding(vertical = 4.dp)
             )
-            //TODO()
-//            NavigationDrawerItem(
-//                icon = {
-//                    Icon(
-//                        imageVector = Icons.Default.AccountBalance,
-//                        contentDescription = null
-//                    )
-//                },
-//                label = {
-//                    Text(stringResource(R.string.show_balance))
-//                },
-//                selected = false,
-//                onClick = onNavigateToShowBalance,
-//                modifier = Modifier.padding(vertical = 4.dp)
-//            )
-
-//            Spacer(modifier = Modifier.weight(1f))
 
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 8.dp)
@@ -366,54 +408,6 @@ fun DrawerContent(
                 onClick = onNavigateToAbout,
                 modifier = Modifier.padding(vertical = 4.dp)
             )
-        }
-    }
-}
-
-@Composable
-private fun TransactionsList(
-    transactions: List<Transaction>,
-    onTransactionClick: (Transaction) -> Unit,
-    onDeleteClick: (Transaction) -> Unit,
-    emptyMessage: String
-) {
-    LazyColumn(
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        if (transactions.isEmpty()) {
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 32.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            text = emptyMessage,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            text = stringResource(R.string.add_first_transaction),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
-        } else {
-            items(transactions) { transaction ->
-                TransactionItem(
-                    transaction = transaction,
-                    onClick = { onTransactionClick(transaction) },
-                    onDeleteClick = { onDeleteClick(transaction) }
-                )
-            }
         }
     }
 }

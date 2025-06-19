@@ -43,4 +43,10 @@
     <string name="ALL">All</string>
     <string name="report_management">Report management</string>
     <string name="about">About</string>
+    <string name="show">Show</string>
+    <string name="balance">Balance</string>
+    <string name="current_balance">Current balance</string>
+    <string name="incoming">Incoming</string>
+    <string name="outgoing">Outgoing</string>
+    <string name="transactions">Transactions</string>
 </resources>

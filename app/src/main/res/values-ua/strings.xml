@@ -43,4 +43,10 @@
     <string name="ALL">Всі</string>
     <string name="report_management">Управління звітами</string>
     <string name="about">Про застосунок</string>
+    <string name="show">Показати</string>
+    <string name="balance">Баланс</string>
+    <string name="current_balance">Дійсний баланс</string>
+    <string name="incoming">Отримано</string>
+    <string name="outgoing">Віддано</string>
+    <string name="transactions">Операції</string>
 </resources>
