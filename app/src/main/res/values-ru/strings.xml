@@ -60,4 +60,5 @@
     <string name="for_example">Например: Золото 585, Серебро 925</string>
     <string name="enter_from_two_up_to_ten_symbols">Введите от 2 до 10 символов</string>
     <string name="existing_alloys">Существующие сплавы</string>
+    <string name="edit_alloy_title">Редактировать сплав</string>
 </resources>

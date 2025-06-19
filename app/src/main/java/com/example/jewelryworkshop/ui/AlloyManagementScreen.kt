@@ -26,7 +26,8 @@ import com.example.jewelryworkshop.domain.MetalAlloy
 fun AlloyManagementScreen(
     viewModel: MainViewModel,
     onNavigateBack: () -> Unit,
-    onNavigateToAddAlloy: () -> Unit
+    onNavigateToAddAlloy: () -> Unit,
+    onNavigateToEditAlloy: (MetalAlloy) -> Unit
 ) {
     // Получаем список сплавов
     val alloys by viewModel.alloys.collectAsState()
@@ -130,8 +131,7 @@ fun AlloyManagementScreen(
                         AlloyListItem(
                             alloy = alloy,
                             onEditClick = {
-                                // TODO: Реализовать редактирование
-                                // onNavigateToEditAlloy(alloy.id)
+                                 onNavigateToEditAlloy(alloy)
                             },
                             onDeleteClick = {
                                 alloyToDelete = alloy
