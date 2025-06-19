@@ -10,6 +10,7 @@ A specialized inventory management application designed for jewelry workshops. T
 - [x] Alloy management
 - [x] Alloy CRUD
 - [x] List tabs
+- [x] Metal balance for each tab
 - [ ] Reports
 - [x] Localization
 - [x] Menu
@@ -51,7 +52,3 @@ This application is designed to work offline-first, making it perfect for jewelr
 ## Contributing
 
 Contributions are welcome! Please feel free to submit issues and pull requests.
-
-## License
-
-[Add your license information here]
