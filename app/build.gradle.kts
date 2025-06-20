@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.jewelryworkshop"
-        minSdk = 26  // Уменьшил для совместимости с LocalDateTime
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
