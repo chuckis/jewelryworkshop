@@ -16,7 +16,7 @@ data class RepairOrder(
     val estimatedCompletionDate: LocalDateTime? = null,
     val totalEstimatedPrice: BigDecimal? = null,
     val depositAmount: BigDecimal? = null,
-    val depositPaid: Boolean? = null,
+    val depositPaid: Boolean = false,
 ) {
     val totalItemsCount: Int
         get() = (items?.size ?: 0) + (batches?.sumOf { it.items!!.size } ?: 0)
@@ -28,14 +28,14 @@ data class RepairOrder(
         get() = status == OrderStatus.COMPLETED
 
     val isInProgress: Boolean
-        get() = status == OrderStatus.IN_PROGRESS
+        get() = status == OrderStatus.IN_PROGRESS || status == OrderStatus.WAITING_PARTS
 
     val remainingBalance: BigDecimal
         get() = totalEstimatedPrice!! - depositAmount!!
 
     val finalPaymentReceived: Boolean
         get() {
-            return depositPaid!!
+            return depositPaid
         }
 }
 

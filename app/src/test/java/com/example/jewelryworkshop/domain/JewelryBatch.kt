@@ -6,7 +6,7 @@ data class JewelryBatch(
     val id: Long = 0L,
     val name: String? = null,
     val description: String? = null,
-    val items: List<JewelryItem>? = null,
+    val items: List<JewelryItem>? = emptyList(),
 ) {
 
     val itemsCount: Long

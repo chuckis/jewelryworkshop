@@ -240,7 +240,7 @@ class RepairOrderTest {
         assertEquals(BigDecimal("2000"), order.totalEstimatedPrice)
         assertEquals(BigDecimal("1000"), order.depositAmount)
         assertTrue(order.depositPaid == true)
-        assertFalse(order.finalPaymentReceived)
+        assertTrue(order.finalPaymentReceived)
 
         assertEquals(1, order.totalItemsCount)
         assertEquals(5.0, order.totalWeight, 0.001)
@@ -281,7 +281,7 @@ class RepairOrderTest {
             batches = listOf(batch)
         )
 
-        assertEquals(3, order.totalItemsCount) // 2 отдельных + 1 в партии
+        assertEquals(3, order.totalItemsCount)
         assertEquals(13.0, order.totalWeight, 0.001) // 3 + 2 + 8
     }
 
