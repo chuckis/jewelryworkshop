@@ -1,7 +1,6 @@
 package com.example.jewelryworkshop.domain
 
 import kotlinx.coroutines.flow.Flow
-import java.time.LocalDateTime
 
 interface CustomerRepository {
     suspend fun addCustomer(customer: Customer): Long
