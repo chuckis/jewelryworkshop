@@ -6,6 +6,7 @@ import com.example.jewelryworkshop.domain.Report
 import com.example.jewelryworkshop.domain.ReportStatus
 import com.example.jewelryworkshop.domain.TransactionRepository
 import com.example.jewelryworkshop.domain.TransactionType
+import kotlinx.coroutines.flow.first
 import java.time.LocalDateTime
 
 // Very-very OOP-styled
@@ -13,13 +14,13 @@ class CreateReportService(
     private val transactionRepository: TransactionRepository
 ) {
 
-    fun createReport(startPeriod: LocalDateTime,
-                     endPeriod: LocalDateTime,
-                     metalAlloy: MetalAlloy,
-                     createdBy: String? = ""
+    suspend fun createReport(startPeriod: LocalDateTime,
+                             endPeriod: LocalDateTime,
+                             metalAlloy: MetalAlloy,
+                             createdBy: String? = ""
     ): Report {
         // Get all transactions from repository
-        val allTransactions = transactionRepository.getAllTransactions() as List<Transaction>
+        val allTransactions = transactionRepository.getAllTransactions().first()
 
         // Filter transactions by date range and metal alloy
         val filteredTransactions = allTransactions.filter { transaction ->
@@ -42,13 +43,13 @@ class CreateReportService(
         )
     }
 
-    fun createReportsGroupedByAlloy(
+    suspend fun createReportsGroupedByAlloy(
         startPeriod: LocalDateTime,
         endPeriod: LocalDateTime,
         createdBy: String = ""
     ): List<Report> {
         // Get all transactions from repository
-        val allTransactions = transactionRepository.getAllTransactions() as List<Transaction>
+        val allTransactions = transactionRepository.getAllTransactions().first()
 
         // Filter transactions by date range
         val filteredTransactions = allTransactions.filter { transaction ->
@@ -98,12 +99,12 @@ class CreateReportService(
         )
     }
 
-    fun getReportSummary(
+    suspend fun getReportSummary(
         startPeriod: LocalDateTime,
         endPeriod: LocalDateTime,
         metalAlloy: MetalAlloy
     ): ReportSummary {
-        val allTransactions = transactionRepository.getAllTransactions() as List<Transaction>
+        val allTransactions = transactionRepository.getAllTransactions().first()
 
         val filteredTransactions = allTransactions.filter { transaction ->
             transaction.dateTime >= startPeriod &&

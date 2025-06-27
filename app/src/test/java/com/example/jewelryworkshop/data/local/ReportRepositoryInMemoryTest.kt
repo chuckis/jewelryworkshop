@@ -42,8 +42,8 @@ class ReportRepositoryInMemoryTest {
         val report1 = Report(metalAlloy = metalAlloy)
         val report2 = Report(metalAlloy = metalAlloy)
 
-        val id1 = repository.addReport(report1)
-        val id2 = repository.addReport(report2)
+        val id1 = repository.addReport(report1).id
+        val id2 = repository.addReport(report2).id
 
         assertEquals(1L, id1)
         assertEquals(2L, id2)
@@ -121,7 +121,7 @@ class ReportRepositoryInMemoryTest {
         repository.addReport(report2)
         val allReports = repository.getAllReports()
 
-//        assertEquals(2, allReports.size)
+        assertEquals(2, allReports.size)
         assertEquals("user1", allReports[0].createdBy)
         assertEquals("user2", allReports[1].createdBy)
     }

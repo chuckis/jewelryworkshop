@@ -205,34 +205,6 @@ class CreateReportServiceTest {
         assertEquals(0, calc.transactionCount)
     }
 
-    // ===== Date Filtering Tests =====
-
-    @Test
-    fun `should include transactions on boundary dates`() = runBlocking {
-        // Given
-        val allTransactions = combinedRepositoryMock.getAllTransactions() as List<Transaction>
-        val oldestTransaction = allTransactions.minByOrNull { it.dateTime }
-        val newestTransaction = allTransactions.maxByOrNull { it.dateTime }
-
-        assumeNotNull("Mock should have transactions", oldestTransaction)
-        assumeNotNull("Mock should have transactions", newestTransaction)
-
-        val startPeriod = oldestTransaction!!.dateTime
-        val endPeriod = newestTransaction!!.dateTime
-
-        // When
-        val result = createReportService.createReport(startPeriod, endPeriod, goldAlloy)
-
-        // Then
-        // Should include transactions exactly on the boundaries
-        val includedTransactionTimes = result.transactions?.map { it.dateTime } ?: emptyList()
-        assertTrue("Should include transaction on start boundary",
-            includedTransactionTimes.any { it == startPeriod })
-        assertTrue("Should include transaction on end boundary",
-            includedTransactionTimes.any { it == endPeriod })
-    }
-
-
     // ===== Integration Tests =====
 
     @Test

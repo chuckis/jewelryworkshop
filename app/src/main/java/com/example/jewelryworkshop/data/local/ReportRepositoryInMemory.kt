@@ -9,27 +9,13 @@ import java.util.concurrent.atomic.AtomicLong
 
 class ReportRepositoryInMemory : ReportRepository {
 
-    private val data: ArrayList<Report> = ArrayList()
-    private val idGenerator = AtomicLong(1L)
+    private val data = mutableListOf<Report>()
 
-    /**
-     * Adds or updates a report in the data collection.
-     *
-     * If a report with the same ID already exists, it will be replaced with the new report.
-     * If no matching report is found, the new report will be added to the collection.
-     *
-     * @param report The report to add or update
-     * @return The report that was added or updated (same as the input parameter)
-     */
     override fun addReport(report: Report): Report {
-        val existingIndex = data.indexOfFirst { it.id == report.id }
-
-        if (existingIndex >= 0) {
-            data[existingIndex] = report
-        } else {
-            data.add(report)
-        }
-        return report
+        val nextId = (data.maxOfOrNull { it.id ?: 0L } ?: 0L) + 1
+        val reportWithId = report.copy(id = nextId)
+        data.add(reportWithId)
+        return reportWithId
     }
 
     /**

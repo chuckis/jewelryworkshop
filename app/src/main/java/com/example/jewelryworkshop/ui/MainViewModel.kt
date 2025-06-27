@@ -30,9 +30,6 @@ class MainViewModel(private val repository: CombinedRepository) : ViewModel() {
     val transactions: StateFlow<List<Transaction>> = repository.getAllTransactions()
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    // Текущий баланс металлов/изделий
-    val metalBalance: StateFlow<MetalBalance> = repository.getMetalBalance()
-        .stateIn(viewModelScope, SharingStarted.Lazily, MetalBalance(0.0, 0))
 
     // Поток всех доступных сплавов
     val alloys: StateFlow<List<MetalAlloy>> = repository.getAllAlloys()
