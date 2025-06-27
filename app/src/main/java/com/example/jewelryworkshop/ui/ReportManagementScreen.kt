@@ -1,5 +1,6 @@
 package com.example.jewelryworkshop.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -244,6 +245,7 @@ fun ReportManagementScreen(
 }
 
 // CSV Export Functions
+@SuppressLint("MemberExtensionConflict")
 fun createCsvContent(reportData: List<ReportItem>): String {
     val csvBuilder = StringBuilder()
 
@@ -276,8 +278,8 @@ suspend fun exportAndShareCsv(context: Context, data: List<ReportItem>) {
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val fileName = "expense_report_$timestamp.csv"
 
-        // Create file in app's cache directory
-        val file = File(context.cacheDir, fileName)
+        // Create file in app's external files directory
+        val file = File(context.getExternalFilesDir(null), fileName)
         file.writeText(csvContent)
 
         // Create URI for sharing
