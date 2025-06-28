@@ -22,6 +22,7 @@ class MainActivity : ComponentActivity() {
 
         // Получение экземпляра ViewModel из приложения
         val mainViewModel = application.app.mainViewModel
+        val reportManagementViewModel = application.app.reportManagementViewModel
 
         setContent {
             JewelryWorkshopTheme {
@@ -31,7 +32,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     // Инициализация навигации приложения
-                    AppNavigation(mainViewModel)
+                    AppNavigation(mainViewModel, reportManagementViewModel)
                 }
             }
         }
