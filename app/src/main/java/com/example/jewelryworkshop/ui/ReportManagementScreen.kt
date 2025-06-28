@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -16,33 +14,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
-import com.example.jewelryworkshop.R
 import android.content.Context
-import android.content.Intent
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jewelryworkshop.domain.Report
+import com.example.jewelryworkshop.domain.MetalAlloy
+import java.time.LocalDateTime
 import kotlinx.coroutines.launch
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.format.DateTimeFormatter
 
-// Sample data class
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportManagementScreen(
@@ -53,12 +49,12 @@ fun ReportManagementScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-//    LaunchedEffect(uiState.errorMessage) {
-//        uiState.errorMessage?.let { message ->
-//            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-//            viewModel.clearError()
-//        }
-//    }
+    LaunchedEffect(uiState.errorMessage) {
+        uiState.errorMessage?.let { message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            viewModel.clearError()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -119,12 +115,12 @@ fun ReportManagementScreen(
                 )
 
                 // Report Summary Section
-                if (uiState.reportSummary != null) {
-                    ReportSummarySection(
-                        summary = uiState.reportSummary,
-                        isLoading = uiState.isLoadingSummary
-                    )
-                }
+//                if (uiState.reportSummary != null) {
+//                    ReportSummarySection(
+//                        summary = uiState.reportSummary!!,
+//                        isLoading = uiState.isLoadingSummary
+//                    )
+//                }
 
                 // Generated Reports Section
                 if (uiState.generatedReports.isNotEmpty()) {
@@ -142,6 +138,52 @@ fun ReportManagementScreen(
                         }
                     )
                 }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AlloySelectionDropdown(
+    alloys: List<MetalAlloy>,
+    selectedAlloy: MetalAlloy?,
+    onAlloySelected: (MetalAlloy?) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+        OutlinedTextField(
+            value = selectedAlloy?.name ?: "",
+            onValueChange = { },
+            readOnly = true,
+            label = { Text("Select Alloy") },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(),
+            leadingIcon = {
+                Icon(Icons.Default.Build, contentDescription = null)
+            }
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            alloys.forEach { alloy ->
+                DropdownMenuItem(
+                    text = { Text(alloy.name) },
+                    onClick = {
+                        onAlloySelected(alloy)
+                        expanded = false
+                    }
+                )
             }
         }
     }
@@ -173,13 +215,10 @@ private fun ReportConfigurationSection(
             )
 
             // Alloy Selection
-            MetalAlloyDropdown(
+            AlloySelectionDropdown(
                 alloys = uiState.availableAlloys,
-                selectedAlloyId = uiState.selectedAlloy?.id,
-                onAlloySelected = { id ->
-                    val alloy = uiState.availableAlloys.find { it.id == id }
-                    onAlloySelected(alloy)
-                }
+                selectedAlloy = uiState.selectedAlloy,
+                onAlloySelected = onAlloySelected
             )
 
             // Period Selection
@@ -247,17 +286,60 @@ private fun DateTimePicker(
     dateTime: LocalDateTime,
     onDateTimeChanged: (LocalDateTime) -> Unit
 ) {
-    // Simplified date/time picker - in real implementation you'd use proper date/time pickers
-    OutlinedTextField(
-        value = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-        onValueChange = { /* Handle date/time parsing */ },
-        label = { Text(label) },
+    var showDatePicker by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
+
+    Row(
         modifier = Modifier.fillMaxWidth(),
-        readOnly = true,
-        trailingIcon = {
-            Icon(Icons.Default.DateRange, contentDescription = "Select Date")
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        // Date Field
+        OutlinedTextField(
+            value = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+            onValueChange = { },
+            label = { Text("$label Date") },
+            modifier = Modifier.weight(1f),
+            readOnly = true,
+            trailingIcon = {
+                IconButton(onClick = { showDatePicker = true }) {
+                    Icon(Icons.Default.DateRange, contentDescription = "Select Date")
+                }
+            }
+        )
+
+        // Time Field
+        OutlinedTextField(
+            value = dateTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+            onValueChange = { },
+            label = { Text("Time") },
+            modifier = Modifier.weight(1f),
+            readOnly = true,
+            trailingIcon = {
+                IconButton(onClick = { showTimePicker = true }) {
+//                    Icon(Icons.Default.Schedule, contentDescription = "Select Time")
+                    Text("Select Time")
+                }
+            }
+        )
+    }
+
+    // Note: In a real implementation, you would use proper DatePickerDialog and TimePickerDialog
+    // For now, this provides the UI structure
+    if (showDatePicker) {
+        // DatePickerDialog would go here
+        // For demonstration, we'll just close the picker
+        LaunchedEffect(Unit) {
+            showDatePicker = false
         }
-    )
+    }
+
+    if (showTimePicker) {
+        // TimePickerDialog would go here
+        // For demonstration, we'll just close the picker
+        LaunchedEffect(Unit) {
+            showTimePicker = false
+        }
+    }
 }
 
 @Composable
@@ -296,7 +378,8 @@ private fun ReportActionsSection(
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                     } else {
-                        Icon(Icons.Default.Description, contentDescription = null)
+//                        Icon(Icons.Default.Description, contentDescription = null)
+                        Text("Description")
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Generate Report")
@@ -307,7 +390,7 @@ private fun ReportActionsSection(
                     enabled = !uiState.isGeneratingReport,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Icon(Icons.Default.ListAlt, contentDescription = null)
+//                    Icon(Icons.Default.ListAlt, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("All Alloys")
                 }
@@ -327,7 +410,8 @@ private fun ReportActionsSection(
                         color = MaterialTheme.colorScheme.onSecondary
                     )
                 } else {
-                    Icon(Icons.Default.Analytics, contentDescription = null)
+//                    Icon(Icons.Default.Analytics, contentDescription = null)
+                    Text("Analytics")
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Load Summary")
@@ -336,64 +420,64 @@ private fun ReportActionsSection(
     }
 }
 
-@Composable
-private fun ReportSummarySection(
-    summary: ReportSummary,
-    isLoading: Boolean
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    Icons.Default.Analytics,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Report Summary",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            if (isLoading) {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            } else {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    SummaryItem(
-                        label = "Total Records",
-                        value = summary.totalRecords.toString()
-                    )
-                    SummaryItem(
-                        label = "Total Amount",
-                        value = summary.totalAmount.toString()
-                    )
-                    SummaryItem(
-                        label = "Average",
-                        value = summary.averageAmount.toString()
-                    )
-                }
-            }
-        }
-    }
-}
+//@Composable
+//private fun ReportSummarySection(
+//    summary: ReportSummary,
+//    isLoading: Boolean
+//) {
+//    Card(
+//        modifier = Modifier.fillMaxWidth(),
+//        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+//    ) {
+//        Column(
+//            modifier = Modifier.padding(16.dp),
+//            verticalArrangement = Arrangement.spacedBy(12.dp)
+//        ) {
+//            Row(
+//                verticalAlignment = Alignment.CenterVertically
+//            ) {
+////                Icon(
+////                    Icons.Default.Analytics,
+////                    contentDescription = null,
+////                    tint = MaterialTheme.colorScheme.primary
+////                )
+//                Spacer(modifier = Modifier.width(8.dp))
+//                Text(
+//                    text = "Report Summary",
+//                    style = MaterialTheme.typography.headlineSmall,
+//                    fontWeight = FontWeight.Bold
+//                )
+//            }
+//
+//            if (isLoading) {
+//                Box(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    contentAlignment = Alignment.Center
+//                ) {
+//                    CircularProgressIndicator()
+//                }
+//            } else {
+//                Row(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    horizontalArrangement = Arrangement.SpaceBetween
+//                ) {
+//                    SummaryItem(
+//                        label = "Total Records",
+//                        value = summary.totalRecords.toString()
+//                    )
+//                    SummaryItem(
+//                        label = "Total Amount",
+//                        value = summary.totalAmount.toString()
+//                    )
+//                    SummaryItem(
+//                        label = "Average",
+//                        value = summary.averageAmount.toString()
+//                    )
+//                }
+//            }
+//        }
+//    }
+//}
 
 @Composable
 private fun SummaryItem(
@@ -433,12 +517,12 @@ private fun GeneratedReportsSection(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(bottom = 12.dp)
             ) {
-                Icon(
-                    Icons.Default.Description,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.width(8.dp))
+//                Icon(
+//                    Icons.Default.Description,
+//                    contentDescription = null,
+//                    tint = MaterialTheme.colorScheme.primary
+//                )
+//                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Generated Reports (${reports.size})",
                     style = MaterialTheme.typography.headlineSmall,
@@ -483,12 +567,12 @@ private fun ReportItem(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = report.alloyName,
+                    text = report.metalAlloy.name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = "Created: ${report.createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))}",
+                    text = "Created: ${report.createdAt?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -498,7 +582,7 @@ private fun ReportItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = "Records: ${report.data.size}",
+                    text = "Records: ${report.transactions?.size}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -525,7 +609,7 @@ private suspend fun exportReportAsCsv(context: Context, report: Report) {
     try {
         val csvContent = createReportCsvContent(report)
         val timestamp = java.text.SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(java.util.Date())
-        val fileName = "report_${report.alloyName.replace(" ", "_")}_$timestamp.csv"
+        val fileName = "report_${report.metalAlloy.name.replace(" ", "_")}_$timestamp.csv"
 
         // Create file in app's external files directory
         val file = java.io.File(context.getExternalFilesDir(null), fileName)
@@ -542,7 +626,7 @@ private suspend fun exportReportAsCsv(context: Context, report: Report) {
         val shareIntent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
             type = "text/csv"
             putExtra(android.content.Intent.EXTRA_STREAM, uri)
-            putExtra(android.content.Intent.EXTRA_SUBJECT, "Metal Alloy Report - ${report.alloyName}")
+            putExtra(android.content.Intent.EXTRA_SUBJECT, "Metal Alloy Report - ${report.metalAlloy.name}")
             putExtra(android.content.Intent.EXTRA_TEXT, "Please find the metal alloy report attached.")
             addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
@@ -555,27 +639,28 @@ private suspend fun exportReportAsCsv(context: Context, report: Report) {
     }
 }
 
+@SuppressLint("MemberExtensionConflict")
 private fun createReportCsvContent(report: Report): String {
     val csvBuilder = StringBuilder()
 
     // Add header with report metadata
     csvBuilder.append("Metal Alloy Report\n")
-    csvBuilder.append("Alloy: ${escapeCsvField(report.alloyName)}\n")
-    csvBuilder.append("Created: ${report.createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}\n")
-    csvBuilder.append("Created By: ${escapeCsvField(report.createdBy)}\n")
-    csvBuilder.append("Period: ${report.startPeriod.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))} to ${report.endPeriod.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}\n")
+    csvBuilder.append("Alloy: ${escapeCsvField(report.metalAlloy.name)}\n")
+    csvBuilder.append("Created: ${report.createdAt?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}\n")
+    csvBuilder.append("Created By: ${escapeCsvField(report.createdBy as String)}\n")
+    csvBuilder.append("Period: ${report.startPeriod?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))} to ${report.endPeriod?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}\n")
     csvBuilder.append("\n")
 
     // Add data header row
-    csvBuilder.append("ID,Item Name,Category,Amount,Date,Description\n")
+    csvBuilder.append("ID,Type,Category,Amount,Date,Description\n")
 
     // Add data rows
-    report.data.forEach { item ->
+    report.transactions?.forEach { item ->
         csvBuilder.append("${item.id},")
-        csvBuilder.append("${escapeCsvField(item.name)},")
-        csvBuilder.append("${escapeCsvField(item.category)},")
-        csvBuilder.append("${item.amount},")
-        csvBuilder.append("${item.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))},")
+        csvBuilder.append("${escapeCsvField(item.type.toString())},")
+        csvBuilder.append("${escapeCsvField(item.weight.toString())},")
+        csvBuilder.append("${item.itemsCount},")
+        csvBuilder.append("${item.dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))},")
         csvBuilder.append("${escapeCsvField(item.description ?: "")}\n")
     }
 

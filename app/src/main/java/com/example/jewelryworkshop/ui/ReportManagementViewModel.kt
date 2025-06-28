@@ -1,6 +1,7 @@
 package com.example.jewelryworkshop.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.jewelryworkshop.data.local.CombinedRepository
 import com.example.jewelryworkshop.data.local.CombinedRepositoryMock
@@ -240,5 +241,18 @@ class ReportManagementViewModel(
             return false
         }
         return true
+    }
+}
+
+class ReportManagementViewModelFactory(
+    private val repository: CombinedRepository
+) : ViewModelProvider.Factory {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ReportManagementViewModel::class.java)) {
+            return ReportManagementViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
