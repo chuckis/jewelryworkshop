@@ -21,7 +21,7 @@ object NavRoutes {
     const val ALLOY_MANAGEMENT = "alloy_management"
     const val EDIT_ALLOY = "edit_alloy/{alloyId}"
     const val REPORT_MANAGEMENT = "report_management"
-    const val SHOW_BALANCE = "show_balance"
+//    const val SHOW_BALANCE = "show_balance"
     const val ABOUT = "about"
 }
 
@@ -29,6 +29,7 @@ object NavRoutes {
 @Composable
 fun AppNavigation(
     viewModel: MainViewModel,
+    reportManagementViewModel: ReportManagementViewModel,
     navController: NavHostController = rememberNavController()
 ) {
     NavHost(
@@ -158,19 +159,10 @@ fun AppNavigation(
             ReportManagementScreen(
                 onNavigateBack = {
                     navController.popBackStack()
-                }
+                },
+                viewModel = reportManagementViewModel
             )
         }
-
-        // Экран показа баланса //TODO()
-//        composable(route = NavRoutes.SHOW_BALANCE) {
-//            ShowBalanceScreen(
-//                viewModel = viewModel,
-//                onNavigateBack = {
-//                    navController.popBackStack()
-//                }
-//            )
-//        }
 
         composable(route = NavRoutes.ABOUT) {
             AboutScreen(

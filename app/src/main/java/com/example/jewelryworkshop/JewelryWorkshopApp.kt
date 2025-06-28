@@ -11,6 +11,8 @@ import com.example.jewelryworkshop.data.local.CombinedRepository
 import com.example.jewelryworkshop.domain.RepositoryFactory
 import com.example.jewelryworkshop.domain.RepositoryType
 import com.example.jewelryworkshop.ui.MainViewModel
+import com.example.jewelryworkshop.ui.ReportManagementViewModel
+import com.example.jewelryworkshop.ui.ReportManagementViewModelFactory
 
 class JewelryWorkshopApp : Application(), ViewModelStoreOwner {
     private val appViewModelStore: ViewModelStore by lazy {
@@ -74,6 +76,10 @@ class JewelryWorkshopApp : Application(), ViewModelStoreOwner {
         ViewModelProvider(this, MainViewModel.Factory(
             repository,
         ))[MainViewModel::class.java]
+    }
+
+    val reportManagementViewModel: ReportManagementViewModel by lazy {
+        ViewModelProvider(this, ReportManagementViewModelFactory(repository))[ReportManagementViewModel::class.java]
     }
 
     override fun onCreate() {
