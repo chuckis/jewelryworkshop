@@ -26,11 +26,16 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.MailOutline
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.example.jewelryworkshop.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jewelryworkshop.domain.Report
@@ -38,6 +43,7 @@ import com.example.jewelryworkshop.domain.MetalAlloy
 import java.time.LocalDateTime
 import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,6 +54,7 @@ fun ReportManagementScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    var showMenu by remember { mutableStateOf(false) }
 
     LaunchedEffect(uiState.errorMessage) {
         uiState.errorMessage?.let { message ->
@@ -55,26 +62,53 @@ fun ReportManagementScreen(
             viewModel.clearError()
         }
     }
-
     Scaffold(
+        modifier = Modifier,
         topBar = {
             TopAppBar(
-                title = { Text("Report Management") },
+        title = { Text(stringResource(R.string.report_management)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
-                actions = {
-                    IconButton(
-                        onClick = { viewModel.clearReports() },
-                        enabled = uiState.generatedReports.isNotEmpty()
-                    ) {
-                        Icon(Icons.Default.Clear, contentDescription = "Clear Reports")
-                    }
-                }
-            )
-        }
+        actions = {
+            IconButton(onClick = { showMenu = true }) {
+                Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.more))
+            }
+            DropdownMenu(
+                expanded = showMenu,
+                onDismissRequest = { showMenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { R.string.clear_reports },
+                    enabled = uiState.generatedReports.isNotEmpty(),
+                    onClick = { viewModel.clearReports()
+                        showMenu = false }
+                )
+                DropdownMenuItem(
+                    text = { R.string.day_report },
+                    onClick = { viewModel.setPeriodToToday()
+                        showMenu = false }
+                )
+                DropdownMenuItem(
+                    text = { R.string.week_report },
+                    onClick = { viewModel.setPeriodToLastWeek()
+                        showMenu = false }
+                )
+                DropdownMenuItem(
+                    text = { R.string.month_report },
+                    onClick = { viewModel.setPeriodToLastMonth()
+                        showMenu = false }
+                )
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+        ))
+    }
     ) { paddingValues ->
         if (uiState.isLoading) {
             Box(
@@ -101,27 +135,13 @@ fun ReportManagementScreen(
                     onStartPeriodChanged = { period -> viewModel.updateStartPeriod(period) },
                     onEndPeriodChanged = { period -> viewModel.updateEndPeriod(period) },
                     onCreatedByChanged = { creator -> viewModel.updateCreatedBy(creator) },
-                    onSetPeriodToLastMonth = { viewModel.setPeriodToLastMonth() },
-                    onSetPeriodToLastWeek = { viewModel.setPeriodToLastWeek() },
-                    onSetPeriodToToday = { viewModel.setPeriodToToday() }
                 )
 
                 // Action Buttons Section
                 ReportActionsSection(
                     uiState = uiState,
                     onGenerateSingleReport = { viewModel.generateSingleReport() },
-                    onGenerateAllReports = { viewModel.generateReportsForAllAlloys() },
-                    onLoadSummary = { viewModel.loadReportSummary() }
                 )
-
-                // Report Summary Section
-//                if (uiState.reportSummary != null) {
-//                    ReportSummarySection(
-//                        summary = uiState.reportSummary!!,
-//                        isLoading = uiState.isLoadingSummary
-//                    )
-//                }
-
                 // Generated Reports Section
                 if (uiState.generatedReports.isNotEmpty()) {
                     GeneratedReportsSection(
@@ -196,9 +216,6 @@ private fun ReportConfigurationSection(
     onStartPeriodChanged: (LocalDateTime) -> Unit,
     onEndPeriodChanged: (LocalDateTime) -> Unit,
     onCreatedByChanged: (String) -> Unit,
-    onSetPeriodToLastMonth: () -> Unit,
-    onSetPeriodToLastWeek: () -> Unit,
-    onSetPeriodToToday: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -227,31 +244,6 @@ private fun ReportConfigurationSection(
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Medium
             )
-
-            // Quick Period Buttons
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                OutlinedButton(
-                    onClick = onSetPeriodToToday,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text("Today")
-                }
-                OutlinedButton(
-                    onClick = onSetPeriodToLastWeek,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text("Last Week")
-                }
-                OutlinedButton(
-                    onClick = onSetPeriodToLastMonth,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text("Last Month")
-                }
-            }
 
             // Date/Time Pickers (simplified representation)
             DateTimePicker(
@@ -346,8 +338,6 @@ private fun DateTimePicker(
 private fun ReportActionsSection(
     uiState: ReportManagementUiState,
     onGenerateSingleReport: () -> Unit,
-    onGenerateAllReports: () -> Unit,
-    onLoadSummary: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -378,126 +368,13 @@ private fun ReportActionsSection(
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                     } else {
-//                        Icon(Icons.Default.Description, contentDescription = null)
-                        Text("Description")
+                       Text("Generate Report")
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Generate Report")
+
                 }
 
-                Button(
-                    onClick = onGenerateAllReports,
-                    enabled = !uiState.isGeneratingReport,
-                    modifier = Modifier.weight(1f)
-                ) {
-//                    Icon(Icons.Default.ListAlt, contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("All Alloys")
-                }
-            }
-
-            Button(
-                onClick = onLoadSummary,
-                enabled = !uiState.isLoadingSummary && uiState.selectedAlloy != null,
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary
-                )
-            ) {
-                if (uiState.isLoadingSummary) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(16.dp),
-                        color = MaterialTheme.colorScheme.onSecondary
-                    )
-                } else {
-//                    Icon(Icons.Default.Analytics, contentDescription = null)
-                    Text("Analytics")
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Load Summary")
             }
         }
-    }
-}
-
-//@Composable
-//private fun ReportSummarySection(
-//    summary: ReportSummary,
-//    isLoading: Boolean
-//) {
-//    Card(
-//        modifier = Modifier.fillMaxWidth(),
-//        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-//    ) {
-//        Column(
-//            modifier = Modifier.padding(16.dp),
-//            verticalArrangement = Arrangement.spacedBy(12.dp)
-//        ) {
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-////                Icon(
-////                    Icons.Default.Analytics,
-////                    contentDescription = null,
-////                    tint = MaterialTheme.colorScheme.primary
-////                )
-//                Spacer(modifier = Modifier.width(8.dp))
-//                Text(
-//                    text = "Report Summary",
-//                    style = MaterialTheme.typography.headlineSmall,
-//                    fontWeight = FontWeight.Bold
-//                )
-//            }
-//
-//            if (isLoading) {
-//                Box(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    contentAlignment = Alignment.Center
-//                ) {
-//                    CircularProgressIndicator()
-//                }
-//            } else {
-//                Row(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    horizontalArrangement = Arrangement.SpaceBetween
-//                ) {
-//                    SummaryItem(
-//                        label = "Total Records",
-//                        value = summary.totalRecords.toString()
-//                    )
-//                    SummaryItem(
-//                        label = "Total Amount",
-//                        value = summary.totalAmount.toString()
-//                    )
-//                    SummaryItem(
-//                        label = "Average",
-//                        value = summary.averageAmount.toString()
-//                    )
-//                }
-//            }
-//        }
-//    }
-//}
-
-@Composable
-private fun SummaryItem(
-    label: String,
-    value: String
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = value,
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
     }
 }
 
@@ -517,12 +394,12 @@ private fun GeneratedReportsSection(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(bottom = 12.dp)
             ) {
-//                Icon(
-//                    Icons.Default.Description,
-//                    contentDescription = null,
-//                    tint = MaterialTheme.colorScheme.primary
-//                )
-//                Spacer(modifier = Modifier.width(8.dp))
+                Icon(
+                    Icons.Default.MailOutline,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Generated Reports (${reports.size})",
                     style = MaterialTheme.typography.headlineSmall,

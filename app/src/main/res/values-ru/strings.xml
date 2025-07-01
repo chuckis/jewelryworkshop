@@ -61,4 +61,9 @@
     <string name="enter_from_two_up_to_ten_symbols">Введите от 2 до 10 символов</string>
     <string name="existing_alloys">Существующие сплавы</string>
     <string name="edit_alloy_title">Редактировать сплав</string>
+    <string name="more">Ещё</string>
+    <string name="clear_reports">Очистить отчёты</string>
+    <string name="day_report">Отчёт за день</string>
+    <string name="week_report">Отчёт за неделю</string>
+    <string name="month_report">Отчёт за месяц</string>
 </resources>
