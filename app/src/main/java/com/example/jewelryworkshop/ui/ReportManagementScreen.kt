@@ -24,7 +24,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.MoreVert
@@ -33,6 +32,7 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.example.jewelryworkshop.R
@@ -73,7 +73,11 @@ fun ReportManagementScreen(
                     }
                 },
         actions = {
-            IconButton(onClick = { showMenu = true }) {
+            IconButton(onClick = { showMenu = true },
+                colors = IconButtonDefaults.iconButtonColors(
+                    contentColor = Color.White
+                )
+            ) {
                 Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.more))
             }
             DropdownMenu(
@@ -81,25 +85,33 @@ fun ReportManagementScreen(
                 onDismissRequest = { showMenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { R.string.clear_reports },
+                    text = { Text(stringResource(R.string.clear_reports)) },
                     enabled = uiState.generatedReports.isNotEmpty(),
-                    onClick = { viewModel.clearReports()
-                        showMenu = false }
+                    onClick = {
+                        viewModel.clearReports()
+                        showMenu = false
+                    }
                 )
                 DropdownMenuItem(
-                    text = { R.string.day_report },
-                    onClick = { viewModel.setPeriodToToday()
-                        showMenu = false }
+                    text = { Text(stringResource(R.string.day_report)) },
+                    onClick = {
+                        viewModel.setPeriodToToday()
+                        showMenu = false
+                    }
                 )
                 DropdownMenuItem(
-                    text = { R.string.week_report },
-                    onClick = { viewModel.setPeriodToLastWeek()
-                        showMenu = false }
+                    text = { Text(stringResource(R.string.week_report)) },
+                    onClick = {
+                        viewModel.setPeriodToLastWeek()
+                        showMenu = false
+                    }
                 )
                 DropdownMenuItem(
-                    text = { R.string.month_report },
-                    onClick = { viewModel.setPeriodToLastMonth()
-                        showMenu = false }
+                    text = { Text(stringResource(R.string.month_report)) },
+                    onClick = {
+                        viewModel.setPeriodToLastMonth()
+                        showMenu = false
+                    }
                 )
             }
         },
