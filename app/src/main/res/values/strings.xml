@@ -65,4 +65,40 @@
     <string name="day_report">Day Report</string>
     <string name="week_report">Week Report</string>
     <string name="month_report">Month Report</string>
+    <string name="report_exported_successfully">Report exported successfully</string>
+    <string name="export_failed">Export failed: %1$s</string>
+    <string name="select_alloy">Select Alloy</string>
+    <string name="report_configuration">Report Configuration</string>
+    <string name="report_period">Report Period</string>
+    <string name="start_period">Start Period</string>
+    <string name="end_period">End Period</string>
+    <string name="start_period_date">Start Period Date</string>
+    <string name="end_period_date">End Period Date</string>
+    <string name="time">Time</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_time">Select Time</string>
+    <string name="created_by">Created By</string>
+    <string name="actions">Actions</string>
+    <string name="generate_report">Generate Report</string>
+    <string name="generated_reports">Generated Reports (%1$d)</string>
+    <string name="created_label">Created: %1$s</string>
+    <string name="by_label">By: %1$s</string>
+    <string name="records_label">Records: %1$d</string>
+    <string name="export_csv">Export CSV</string>
+    <string name="share_report">Share Report</string>
+    <string name="share_report_subject">Metal Alloy Report - %1$s</string>
+    <string name="share_report_text">Please find the metal alloy report attached.</string>
+
+    <!-- CSV Report content -->
+    <string name="csv_metal_alloy_report">Metal Alloy Report</string>
+    <string name="csv_alloy_label">Alloy: %1$s</string>
+    <string name="csv_created_label">Created: %1$s</string>
+    <string name="csv_created_by_label">Created By: %1$s</string>
+    <string name="csv_period_label">Period: %1$s to %2$s</string>
+    <string name="csv_header_id">ID</string>
+    <string name="csv_header_type">Type</string>
+    <string name="csv_header_category">Category</string>
+    <string name="csv_header_amount">Amount</string>
+    <string name="csv_header_date">Date</string>
+    <string name="csv_header_description">Description</string>
 </resources>

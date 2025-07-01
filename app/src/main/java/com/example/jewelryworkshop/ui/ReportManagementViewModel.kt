@@ -49,16 +49,17 @@ class ReportManagementViewModel(
             try {
                 _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
 
-                val alloys = repository.getAllAlloys().first()
-                _uiState.value = _uiState.value.copy(
-                    availableAlloys = alloys,
-                    selectedAlloy = alloys.firstOrNull(),
-                    isLoading = false
-                )
+                repository.getAllAlloys().collect { alloys ->
+                    _uiState.value = _uiState.value.copy(
+                        availableAlloys = alloys,
+                        selectedAlloy = alloys.firstOrNull(),
+                        isLoading = false
+                    )
+                }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    errorMessage = "Ошибка загрузки сплавов: ${e.message}"
+                    errorMessage = "Alloys loading Error: ${e.message}"
                 )
             }
         }

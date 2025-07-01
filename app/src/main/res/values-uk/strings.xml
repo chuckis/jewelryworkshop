@@ -66,4 +66,41 @@
     <string name="day_report">Звіт за день</string>
     <string name="week_report">Звіт за тиждень</string>
     <string name="month_report">Звіт за місяць</string>
+    <!-- New strings for ReportManagementScreen -->
+    <string name="report_exported_successfully">Звіт успішно експортовано</string>
+    <string name="export_failed">Помилка експорту: %1$s</string>
+    <string name="select_alloy">Оберіть сплав</string>
+    <string name="report_configuration">Налаштування звіту</string>
+    <string name="report_period">Період звіту</string>
+    <string name="start_period">Початковий період</string>
+    <string name="end_period">Кінцевий період</string>
+    <string name="start_period_date">Дата початку періоду</string>
+    <string name="end_period_date">Дата закінчення періоду</string>
+    <string name="time">Час</string>
+    <string name="select_date">Обрати дату</string>
+    <string name="select_time">Обрати час</string>
+    <string name="created_by">Створено користувачем</string>
+    <string name="actions">Дії</string>
+    <string name="generate_report">Створити звіт</string>
+    <string name="generated_reports">Створені звіти (%1$d)</string>
+    <string name="created_label">Створено: %1$s</string>
+    <string name="by_label">Автор: %1$s</string>
+    <string name="records_label">Записів: %1$d</string>
+    <string name="export_csv">Експорт CSV</string>
+    <string name="share_report">Надіслати звіт</string>
+    <string name="share_report_subject">Звіт по металевому сплаву - %1$s</string>
+    <string name="share_report_text">Будь ласка, знайдіть прикріплений звіт по металевому сплаву.</string>
+
+    <!-- CSV Report content -->
+    <string name="csv_metal_alloy_report">Звіт по металевому сплаву</string>
+    <string name="csv_alloy_label">Сплав: %1$s</string>
+    <string name="csv_created_label">Створено: %1$s</string>
+    <string name="csv_created_by_label">Створено користувачем: %1$s</string>
+    <string name="csv_period_label">Період: з %1$s по %2$s</string>
+    <string name="csv_header_id">ID</string>
+    <string name="csv_header_type">Тип</string>
+    <string name="csv_header_category">Категорія</string>
+    <string name="csv_header_amount">Кількість</string>
+    <string name="csv_header_date">Дата</string>
+    <string name="csv_header_description">Опис</string>
 </resources>

@@ -66,61 +66,61 @@ fun ReportManagementScreen(
         modifier = Modifier,
         topBar = {
             TopAppBar(
-        title = { Text(stringResource(R.string.report_management)) },
+                title = { Text(stringResource(R.string.report_management)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
-        actions = {
-            IconButton(onClick = { showMenu = true },
-                colors = IconButtonDefaults.iconButtonColors(
-                    contentColor = Color.White
-                )
-            ) {
-                Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.more))
-            }
-            DropdownMenu(
-                expanded = showMenu,
-                onDismissRequest = { showMenu = false }
-            ) {
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.clear_reports)) },
-                    enabled = uiState.generatedReports.isNotEmpty(),
-                    onClick = {
-                        viewModel.clearReports()
-                        showMenu = false
+                actions = {
+                    IconButton(onClick = { showMenu = true },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.more))
                     }
-                )
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.day_report)) },
-                    onClick = {
-                        viewModel.setPeriodToToday()
-                        showMenu = false
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.clear_reports)) },
+                            enabled = uiState.generatedReports.isNotEmpty(),
+                            onClick = {
+                                viewModel.clearReports()
+                                showMenu = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.day_report)) },
+                            onClick = {
+                                viewModel.setPeriodToToday()
+                                showMenu = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.week_report)) },
+                            onClick = {
+                                viewModel.setPeriodToLastWeek()
+                                showMenu = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.month_report)) },
+                            onClick = {
+                                viewModel.setPeriodToLastMonth()
+                                showMenu = false
+                            }
+                        )
                     }
-                )
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.week_report)) },
-                    onClick = {
-                        viewModel.setPeriodToLastWeek()
-                        showMenu = false
-                    }
-                )
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.month_report)) },
-                    onClick = {
-                        viewModel.setPeriodToLastMonth()
-                        showMenu = false
-                    }
-                )
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-        ))
-    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+                ))
+        }
     ) { paddingValues ->
         if (uiState.isLoading) {
             Box(
@@ -162,9 +162,9 @@ fun ReportManagementScreen(
                             scope.launch {
                                 try {
                                     exportReportAsCsv(context, report)
-                                    Toast.makeText(context, "Report exported successfully", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, context.getString(R.string.report_exported_successfully), Toast.LENGTH_SHORT).show()
                                 } catch (e: Exception) {
-                                    Toast.makeText(context, "Export failed: ${e.message}", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(context, context.getString(R.string.export_failed, e.message), Toast.LENGTH_LONG).show()
                                 }
                             }
                         }
@@ -192,7 +192,7 @@ private fun AlloySelectionDropdown(
             value = selectedAlloy?.name ?: "",
             onValueChange = { },
             readOnly = true,
-            label = { Text("Select Alloy") },
+            label = { Text(stringResource(R.string.select_alloy)) },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
@@ -238,7 +238,7 @@ private fun ReportConfigurationSection(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Report Configuration",
+                text = stringResource(R.string.report_configuration),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
@@ -252,20 +252,20 @@ private fun ReportConfigurationSection(
 
             // Period Selection
             Text(
-                text = "Report Period",
+                text = stringResource(R.string.report_period),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Medium
             )
 
             // Date/Time Pickers (simplified representation)
             DateTimePicker(
-                label = "Start Period",
+                label = stringResource(R.string.start_period),
                 dateTime = uiState.startPeriod,
                 onDateTimeChanged = onStartPeriodChanged
             )
 
             DateTimePicker(
-                label = "End Period",
+                label = stringResource(R.string.end_period),
                 dateTime = uiState.endPeriod,
                 onDateTimeChanged = onEndPeriodChanged
             )
@@ -274,7 +274,7 @@ private fun ReportConfigurationSection(
             OutlinedTextField(
                 value = uiState.createdBy,
                 onValueChange = onCreatedByChanged,
-                label = { Text("Created By") },
+                label = { Text(stringResource(R.string.created_by)) },
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = {
                     Icon(Icons.Default.Person, contentDescription = null)
@@ -301,12 +301,12 @@ private fun DateTimePicker(
         OutlinedTextField(
             value = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
             onValueChange = { },
-            label = { Text("$label Date") },
+            label = { Text("$label ${stringResource(R.string.csv_header_date)}") },
             modifier = Modifier.weight(1f),
             readOnly = true,
             trailingIcon = {
                 IconButton(onClick = { showDatePicker = true }) {
-                    Icon(Icons.Default.DateRange, contentDescription = "Select Date")
+                    Icon(Icons.Default.DateRange, contentDescription = stringResource(R.string.select_date))
                 }
             }
         )
@@ -315,13 +315,12 @@ private fun DateTimePicker(
         OutlinedTextField(
             value = dateTime.format(DateTimeFormatter.ofPattern("HH:mm")),
             onValueChange = { },
-            label = { Text("Time") },
+            label = { Text(stringResource(R.string.time)) },
             modifier = Modifier.weight(1f),
             readOnly = true,
             trailingIcon = {
                 IconButton(onClick = { showTimePicker = true }) {
-//                    Icon(Icons.Default.Schedule, contentDescription = "Select Time")
-                    Text("Select Time")
+                    Text(stringResource(R.string.select_time))
                 }
             }
         )
@@ -360,7 +359,7 @@ private fun ReportActionsSection(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Actions",
+                text = stringResource(R.string.actions),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
@@ -380,7 +379,7 @@ private fun ReportActionsSection(
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                     } else {
-                       Text("Generate Report")
+                        Text(stringResource(R.string.generate_report))
                     }
 
                 }
@@ -413,7 +412,7 @@ private fun GeneratedReportsSection(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Generated Reports (${reports.size})",
+                    text = stringResource(R.string.generated_reports, reports.size),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -461,17 +460,17 @@ private fun ReportItem(
                     fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = "Created: ${report.createdAt?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))}",
+                    text = stringResource(R.string.created_label, report.createdAt?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) ?: ""),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = "By: ${report.createdBy}",
+                    text = stringResource(R.string.by_label, report.createdBy as String),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = "Records: ${report.transactions?.size}",
+                    text = stringResource(R.string.records_label, report.transactions?.size ?: 0),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -487,7 +486,7 @@ private fun ReportItem(
                     modifier = Modifier.size(18.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                Text("Export CSV")
+                Text(stringResource(R.string.export_csv))
             }
         }
     }
@@ -496,7 +495,7 @@ private fun ReportItem(
 // CSV Export function adapted for Report data
 private suspend fun exportReportAsCsv(context: Context, report: Report) {
     try {
-        val csvContent = createReportCsvContent(report)
+        val csvContent = createReportCsvContent(context, report)
         val timestamp = java.text.SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(java.util.Date())
         val fileName = "report_${report.metalAlloy.name.replace(" ", "_")}_$timestamp.csv"
 
@@ -515,12 +514,12 @@ private suspend fun exportReportAsCsv(context: Context, report: Report) {
         val shareIntent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
             type = "text/csv"
             putExtra(android.content.Intent.EXTRA_STREAM, uri)
-            putExtra(android.content.Intent.EXTRA_SUBJECT, "Metal Alloy Report - ${report.metalAlloy.name}")
-            putExtra(android.content.Intent.EXTRA_TEXT, "Please find the metal alloy report attached.")
+            putExtra(android.content.Intent.EXTRA_SUBJECT, context.getString(R.string.share_report_subject, report.metalAlloy.name))
+            putExtra(android.content.Intent.EXTRA_TEXT, context.getString(R.string.share_report_text))
             addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
 
-        context.startActivity(android.content.Intent.createChooser(shareIntent, "Share Report"))
+        context.startActivity(android.content.Intent.createChooser(shareIntent, context.getString(R.string.share_report)))
 
     } catch (e: Exception) {
         android.util.Log.e("ReportExport", "Failed to export report CSV", e)
@@ -529,19 +528,26 @@ private suspend fun exportReportAsCsv(context: Context, report: Report) {
 }
 
 @SuppressLint("MemberExtensionConflict")
-private fun createReportCsvContent(report: Report): String {
+private fun createReportCsvContent(context: Context, report: Report): String {
     val csvBuilder = StringBuilder()
 
     // Add header with report metadata
-    csvBuilder.append("Metal Alloy Report\n")
-    csvBuilder.append("Alloy: ${escapeCsvField(report.metalAlloy.name)}\n")
-    csvBuilder.append("Created: ${report.createdAt?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}\n")
-    csvBuilder.append("Created By: ${escapeCsvField(report.createdBy as String)}\n")
-    csvBuilder.append("Period: ${report.startPeriod?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))} to ${report.endPeriod?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}\n")
+    csvBuilder.append("${context.getString(R.string.csv_metal_alloy_report)}\n")
+    csvBuilder.append("${context.getString(R.string.csv_alloy_label, escapeCsvField(report.metalAlloy.name))}\n")
+    csvBuilder.append("${context.getString(R.string.csv_created_label, report.createdAt?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) ?: "")}\n")
+    csvBuilder.append("${context.getString(R.string.csv_created_by_label, escapeCsvField(report.createdBy as String))}\n")
+    csvBuilder.append("${context.getString(R.string.csv_period_label,
+        report.startPeriod?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) ?: "",
+        report.endPeriod?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) ?: "")}\n")
     csvBuilder.append("\n")
 
     // Add data header row
-    csvBuilder.append("ID,Type,Category,Amount,Date,Description\n")
+    csvBuilder.append("${context.getString(R.string.csv_header_id)},")
+    csvBuilder.append("${context.getString(R.string.csv_header_type)},")
+    csvBuilder.append("${context.getString(R.string.csv_header_category)},")
+    csvBuilder.append("${context.getString(R.string.csv_header_amount)},")
+    csvBuilder.append("${context.getString(R.string.csv_header_date)},")
+    csvBuilder.append("${context.getString(R.string.csv_header_description)}\n")
 
     // Add data rows
     report.transactions?.forEach { item ->
