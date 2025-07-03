@@ -16,61 +16,130 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-// Основные цвета светлой темы
+
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF625B71),
-    onPrimary = Color.White,
-    primaryContainer = Color(0xFFE8DEF8),
-    onPrimaryContainer = Color(0xFF1D192B),
-    secondary = Color(0xFF7D5260),
-    onSecondary = Color.White,
-    secondaryContainer = Color(0xFFFFD8E4),
-    onSecondaryContainer = Color(0xFF31111D),
-    tertiary = Color(0xFF4A6690),
-    onTertiary = Color.White,
-    tertiaryContainer = Color(0xFFD3E3FF),
-    onTertiaryContainer = Color(0xFF001C3A),
-    error = Color(0xFFB3261E),
-    background = Color(0xFFFFFBFE),
-    onBackground = Color(0xFF1C1B1F),
-    surface = Color(0xFFFFFBFE),
-    onSurface = Color(0xFF1C1B1F),
-    surfaceVariant = Color(0xFFE7E0EC),
-    onSurfaceVariant = Color(0xFF49454F),
-    outline = Color(0xFF79747E)
+
+    primary = Color(0xFF2E7D32),
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFFA8F5A8),
+    onPrimaryContainer = Color(0xFF0A4E0A),
+
+    secondary = Color(0xFFFFC107),
+    onSecondary = Color(0xFF2E2E2E),
+    secondaryContainer = Color(0xFFFFF8E1),
+    onSecondaryContainer = Color(0xFF5D4037),
+
+    tertiary = Color(0xFF8BC34A),
+    onTertiary = Color(0xFFFFFFFF),
+    tertiaryContainer = Color(0xFFE8F5E8),
+    onTertiaryContainer = Color(0xFF2E4A2E),
+
+    error = Color(0xFFD32F2F),
+    onError = Color(0xFFFFFFFF),
+    errorContainer = Color(0xFFFFEBEE),
+    onErrorContainer = Color(0xFF5D1A1A),
+
+    background = Color(0xFFFFFDF7),
+    onBackground = Color(0xFF1C1B1A),
+
+    surface = Color(0xFFFFFDF7),
+    onSurface = Color(0xFF1C1B1A),
+    surfaceVariant = Color(0xFFF5F5F0),
+    onSurfaceVariant = Color(0xFF4A4A47),
+
+    outline = Color(0xFF7A7A77),
+    outlineVariant = Color(0xFFCACAC7),
+
+    surfaceTint = Color(0xFF2E7D32),
+    inverseSurface = Color(0xFF313030),
+    inverseOnSurface = Color(0xFFF4F4F1),
+    inversePrimary = Color(0xFF7CB342),
+    surfaceDim = Color(0xFFDEDDD8),
+    surfaceBright = Color(0xFFFFFDF7),
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFF8F7F2),
+    surfaceContainer = Color(0xFFF2F1EC),
+    surfaceContainerHigh = Color(0xFFECECE6),
+    surfaceContainerHighest = Color(0xFFE6E6E1)
 )
 
-// Основные цвета темной темы
+
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFFD0BCFF),
-    onPrimary = Color(0xFF381E72),
-    primaryContainer = Color(0xFF4F378B),
-    onPrimaryContainer = Color(0xFFEADDFF),
-    secondary = Color(0xFFFFB0C8),
-    onSecondary = Color(0xFF492532),
-    secondaryContainer = Color(0xFF633B48),
-    onSecondaryContainer = Color(0xFFFFD8E4),
-    tertiary = Color(0xFFB1C5FF),
-    onTertiary = Color(0xFF002962),
-    tertiaryContainer = Color(0xFF324679),
-    onTertiaryContainer = Color(0xFFD3E3FF),
-    error = Color(0xFFF2B8B5),
-    background = Color(0xFF1C1B1F),
-    onBackground = Color(0xFFE6E1E5),
-    surface = Color(0xFF1C1B1F),
-    onSurface = Color(0xFFE6E1E5),
-    surfaceVariant = Color(0xFF49454F),
-    onSurfaceVariant = Color(0xFFCAC4D0),
-    outline = Color(0xFF938F99)
+
+    primary = Color(0xFF81C784),
+    onPrimary = Color(0xFF0A4E0A),
+    primaryContainer = Color(0xFF1B5E20),
+    onPrimaryContainer = Color(0xFFA8F5A8),
+
+    secondary = Color(0xFFFFD54F),
+    onSecondary = Color(0xFF3E2723),
+    secondaryContainer = Color(0xFF6D4C41),
+    onSecondaryContainer = Color(0xFFFFF8E1),
+
+    tertiary = Color(0xFFAED581),
+    onTertiary = Color(0xFF2E4A2E),
+    tertiaryContainer = Color(0xFF4A6741),
+    onTertiaryContainer = Color(0xFFE8F5E8),
+
+    error = Color(0xFFEF5350),
+    onError = Color(0xFF5D1A1A),
+    errorContainer = Color(0xFFB71C1C),
+    onErrorContainer = Color(0xFFFFEBEE),
+
+    background = Color(0xFF1A1A17),
+    onBackground = Color(0xFFE6E6E1),
+
+    surface = Color(0xFF1A1A17),
+    onSurface = Color(0xFFE6E6E1),
+    surfaceVariant = Color(0xFF4A4A47),
+    onSurfaceVariant = Color(0xFFCACAC7),
+
+    outline = Color(0xFF949491),
+    outlineVariant = Color(0xFF4A4A47),
+
+    surfaceTint = Color(0xFF81C784),
+    inverseSurface = Color(0xFFE6E6E1),
+    inverseOnSurface = Color(0xFF313030),
+    inversePrimary = Color(0xFF2E7D32),
+    surfaceDim = Color(0xFF1A1A17),
+    surfaceBright = Color(0xFF403F3D),
+    surfaceContainerLowest = Color(0xFF0F0F0C),
+    surfaceContainerLow = Color(0xFF1C1B1A),
+    surfaceContainer = Color(0xFF201F1E),
+    surfaceContainerHigh = Color(0xFF2B2A28),
+    surfaceContainerHighest = Color(0xFF363533)
 )
 
-/**
- * Тема приложения ювелирной мастерской
- */
+
+object JewelryColors {
+
+    val Gold = Color(0xFFFFD700)
+    val Silver = Color(0xFFC0C0C0)
+    val Platinum = Color(0xFFE5E4E2)
+    val RoseGold = Color(0xFFE8B4A0)
+
+
+    val Diamond = Color(0xFFFAFAFA)
+    val Ruby = Color(0xFFE0115F)
+    val Sapphire = Color(0xFF0F52BA)
+    val Emerald = Color(0xFF50C878)
+    val Topaz = Color(0xFFFFCC00)
+
+
+    val GoldGradient = listOf(
+        Color(0xFFFFD700),
+        Color(0xFFFFA500)
+    )
+
+    val EmeraldGradient = listOf(
+        Color(0xFF2E7D32),
+        Color(0xFF4CAF50)
+    )
+}
+
 @Composable
 fun JewelryWorkshopTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Динамические цвета доступны только на Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
