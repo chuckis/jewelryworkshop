@@ -200,7 +200,7 @@ private fun AlloySelectionDropdown(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .exposedDropdownSize(),
+                .menuAnchor(),
             leadingIcon = {
                 Icon(Icons.Default.Build, contentDescription = null)
             }

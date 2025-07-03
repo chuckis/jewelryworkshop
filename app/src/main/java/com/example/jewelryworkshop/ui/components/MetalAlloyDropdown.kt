@@ -42,7 +42,7 @@ fun MetalAlloyDropdown(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .exposedDropdownSize(), // Changed from .menuAnchor()
+                .menuAnchor(), // Use menuAnchor() instead of exposedDropdownSize()
             isError = isError,
             supportingText = {
                 if (errorMessage != null) {
