@@ -46,9 +46,6 @@ fun AppNavigation(
                 onNavigateToTransactionDetail = { transaction ->
                     navController.navigate("transaction_detail/${transaction.id}")
                 },
-                onNavigateToAlloyManagement = {
-                    navController.navigate(NavRoutes.ALLOY_MANAGEMENT)
-                }
             )
         }
 

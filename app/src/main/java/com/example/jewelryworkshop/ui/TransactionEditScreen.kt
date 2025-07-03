@@ -1,16 +1,14 @@
 package com.example.jewelryworkshop.ui
 
 import MetalAlloyDropdown
-import android.os.Build
-import androidx.annotation.RequiresApi
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,17 +17,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.jewelryworkshop.R
-import com.example.jewelryworkshop.domain.MetalAlloy
 import com.example.jewelryworkshop.domain.Transaction
 import com.example.jewelryworkshop.domain.TransactionType
-import java.time.format.DateTimeFormatter
+import com.example.jewelryworkshop.ui.components.CompactDatePickerDialog
 
-
-// TODO() non DRY!!!
 /**
- * Экран редактирования транзакции
+ * Edit Transaction Screen
  */
-@RequiresApi(Build.VERSION_CODES.O)
+@SuppressLint("MemberExtensionConflict")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionEditScreen(
@@ -39,7 +34,6 @@ fun TransactionEditScreen(
 ) {
 
     val alloys by viewModel.alloys.collectAsState()
-    // Состояние полей формы с начальными значениями из существующей транзакции
     var dateTime by remember { mutableStateOf(existingTransaction.dateTime) }
     var weight by remember { mutableStateOf(existingTransaction.weight.toString()) }
     var selectedType by remember { mutableStateOf(existingTransaction.type) }
@@ -47,29 +41,21 @@ fun TransactionEditScreen(
     var itemsCount by remember { mutableStateOf(existingTransaction.itemsCount.toString()) }
     var selectedAlloyId by remember { mutableStateOf<Long?>(existingTransaction.alloy.id) }
 
-    // Состояние валидации
     var weightError by remember { mutableStateOf<String?>(null) }
     var descriptionError by remember { mutableStateOf<String?>(null) }
     var itemsCountError by remember { mutableStateOf<String?>(null) }
     var alloyError by remember { mutableStateOf<String?>(null) }
 
-    // Получаем строки валидации один раз в Composable
     val weightErrorMsg = stringResource(R.string.enter_correct_weight)
     val descriptionErrorMsg = stringResource(R.string.enter_description)
     val itemsCountErrorMsg = stringResource(R.string.enter_correct_count)
     val alloyErrorMsg = stringResource(R.string.enter_alloy)
 
-    // Диалог выбора даты и времени
     var showDatePicker by remember { mutableStateOf(false) }
 
-    // Форматировщик даты и времени для отображения
-    val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-
-    // Функция валидации формы
     fun validateForm(): Boolean {
         var isValid = true
 
-        // Проверка веса
         if (weight.isBlank() || weight.toDoubleOrNull() == null || weight.toDouble() <= 0) {
             weightError = weightErrorMsg
             isValid = false
@@ -77,7 +63,6 @@ fun TransactionEditScreen(
             weightError = null
         }
 
-        // Проверка описания
         if (description.isBlank()) {
             descriptionError = descriptionErrorMsg
             isValid = false
@@ -85,7 +70,6 @@ fun TransactionEditScreen(
             descriptionError = null
         }
 
-        // Проверка количества изделий
         if (itemsCount.isBlank() || itemsCount.toIntOrNull() == null || itemsCount.toInt() <= 0) {
             itemsCountError = itemsCountErrorMsg
             isValid = false
@@ -93,7 +77,6 @@ fun TransactionEditScreen(
             itemsCountError = null
         }
 
-        // Проверка выбора сплава
         if (selectedAlloyId == null) {
             alloyError = alloyErrorMsg
             isValid = false
@@ -104,7 +87,6 @@ fun TransactionEditScreen(
         return isValid
     }
 
-    // Функция сохранения транзакции
     fun saveTransaction() {
         if (!validateForm()) return
 
@@ -113,7 +95,6 @@ fun TransactionEditScreen(
 
         val selectedAlloyIdValue = selectedAlloyId ?: return
 
-        // Обновление существующей транзакции
         viewModel.updateTransaction(
             transactionId = existingTransaction.id,
             dateTime = dateTime,
@@ -133,7 +114,7 @@ fun TransactionEditScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.back)
                         )
                     }
@@ -154,41 +135,8 @@ fun TransactionEditScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+
             Spacer(modifier = Modifier.height(8.dp))
-            // Выбор даты и времени
-            OutlinedCard(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.date_time),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = dateFormatter.format(dateTime),
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.weight(1f)
-                        )
-
-                        IconButton(onClick = { showDatePicker = true }) {
-                            Icon(
-                                imageVector = Icons.Default.DateRange,
-                                contentDescription = stringResource(R.string.pick_date_time)
-                            )
-                        }
-                    }
-                }
-            }
-
             // TransactionType
             OutlinedCard(
                 modifier = Modifier.fillMaxWidth()
@@ -230,7 +178,17 @@ fun TransactionEditScreen(
                 }
             }
 
-            // Вес металла/изделий
+            MetalAlloyDropdown(
+                alloys = alloys,
+                selectedAlloyId = selectedAlloyId,
+                onAlloySelected = {
+                    selectedAlloyId = it
+                    alloyError = null
+                },
+                isError = alloyError != null,
+                errorMessage = alloyError
+            )
+
             OutlinedTextField(
                 value = weight,
                 onValueChange = { weight = it; weightError = null },
@@ -245,21 +203,6 @@ fun TransactionEditScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
             )
 
-            // Описание
-            OutlinedTextField(
-                value = description,
-                onValueChange = { description = it; descriptionError = null },
-                label = { Text(stringResource(R.string.description))},
-                modifier = Modifier.fillMaxWidth(),
-                isError = descriptionError != null,
-                supportingText = {
-                    if (descriptionError != null) {
-                        Text(descriptionError!!)
-                    }
-                }
-            )
-
-            // Количество изделий
             OutlinedTextField(
                 value = itemsCount,
                 onValueChange = { itemsCount = it; itemsCountError = null },
@@ -274,19 +217,19 @@ fun TransactionEditScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
-            // Выбор сплава
-            MetalAlloyDropdown(
-                alloys = alloys,
-                selectedAlloyId = selectedAlloyId,
-                onAlloySelected = {
-                    selectedAlloyId = it
-                    alloyError = null // Сбрасываем ошибку при выборе сплава
-                },
-                isError = alloyError != null,
-                errorMessage = alloyError
+            OutlinedTextField(
+                value = description,
+                onValueChange = { description = it; descriptionError = null },
+                label = { Text(stringResource(R.string.description))},
+                modifier = Modifier.fillMaxWidth(),
+                isError = descriptionError != null,
+                supportingText = {
+                    if (descriptionError != null) {
+                        Text(descriptionError!!)
+                    }
+                }
             )
 
-            // Кнопки действий
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -308,5 +251,16 @@ fun TransactionEditScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
         }
+    }
+    // Date Picker Dialog
+    if (showDatePicker) {
+        CompactDatePickerDialog(
+            initialDate = dateTime,
+            onDateSelected = { selectedDateTime ->
+                dateTime = selectedDateTime
+                showDatePicker = false
+            },
+            onDismiss = { showDatePicker = false }
+        )
     }
 }

@@ -1,5 +1,6 @@
 package com.example.jewelryworkshop.ui.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -13,9 +14,6 @@ import com.example.jewelryworkshop.domain.Transaction
 import com.example.jewelryworkshop.domain.TransactionType
 import com.example.jewelryworkshop.R
 
-/**
- * Data class для отображения баланса одного сплава
- */
 data class SingleAlloyBalance(
     val alloy: MetalAlloy,
     val currentBalance: Double,
@@ -24,13 +22,13 @@ data class SingleAlloyBalance(
     val transactionCount: Int
 )
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun SingleAlloyBalanceCard(
     selectedAlloy: MetalAlloy,
     transactions: List<Transaction>,
     modifier: Modifier = Modifier
 ) {
-    // Вычисляем баланс для выбранного сплава
     val balance = remember(transactions, selectedAlloy) {
         calculateSingleAlloyBalance(transactions, selectedAlloy)
     }
@@ -46,7 +44,6 @@ fun SingleAlloyBalanceCard(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Заголовок
             Text(
                 text = stringResource(R.string.balance) + ": ${balance.alloy.name}",
                 style = MaterialTheme.typography.titleMedium,
@@ -55,14 +52,12 @@ fun SingleAlloyBalanceCard(
             )
 
             if (balance.transactionCount == 0) {
-                // Если нет транзакций
                 Text(
                     text = stringResource(R.string.no_transactions_for_alloy),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                 )
             } else {
-                // Текущий баланс
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -74,7 +69,7 @@ fun SingleAlloyBalanceCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "${String.format("%.2f", balance.currentBalance)} г",
+                        text = "${String.format("%.2f", balance.currentBalance)} "+ stringResource(R.string.grams),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold,
                         color = when {
@@ -90,12 +85,10 @@ fun SingleAlloyBalanceCard(
                     color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                 )
 
-                // Детали баланса
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    // Приход
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -105,20 +98,17 @@ fun SingleAlloyBalanceCard(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "${String.format("%.2f", balance.totalIncoming)}" + stringResource(R.string.grams),
+                            text = String.format("%.2f", balance.totalIncoming) + stringResource(R.string.grams),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Medium,
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
-
-                    // Разделитель
                     VerticalDivider(
                         modifier = Modifier.height(40.dp),
                         color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                     )
 
-                    // Расход
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -128,20 +118,18 @@ fun SingleAlloyBalanceCard(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "${String.format("%.2f", balance.totalOutgoing)} г",
+                            text = String.format("%.2f", balance.totalOutgoing) + stringResource(R.string.grams),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Medium,
                             color = MaterialTheme.colorScheme.error
                         )
                     }
 
-                    // Разделитель
                     VerticalDivider(
                         modifier = Modifier.height(40.dp),
                         color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                     )
 
-                    // Количество транзакций
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -163,14 +151,11 @@ fun SingleAlloyBalanceCard(
     }
 }
 
-/**
- * Функция для вычисления баланса одного сплава
- */
 private fun calculateSingleAlloyBalance(
     transactions: List<Transaction>,
     selectedAlloy: MetalAlloy
 ): SingleAlloyBalance {
-    // Фильтруем транзакции только для выбранного сплава
+
     val alloyTransactions = transactions.filter { it.alloy == selectedAlloy }
 
     val incoming = alloyTransactions

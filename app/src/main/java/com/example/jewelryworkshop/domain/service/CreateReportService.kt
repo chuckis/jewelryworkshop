@@ -30,7 +30,7 @@ class CreateReportService(
         }
 
         // Calculate totals
-        val calculationResult = calculateWeightsAndItems(filteredTransactions)
+        calculateWeightsAndItems(filteredTransactions)
 
         return Report(
             startPeriod = startPeriod,
@@ -62,7 +62,7 @@ class CreateReportService(
 
         // Create a report for each metal alloy group
         return groupedByAlloy.map { (metalAlloy, transactions) ->
-            val calculationResult = calculateWeightsAndItems(transactions)
+            calculateWeightsAndItems(transactions)
 
             Report(
                 startPeriod = startPeriod,

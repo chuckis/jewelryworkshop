@@ -1,13 +1,10 @@
 package com.example.jewelryworkshop.ui.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,10 +19,6 @@ import com.example.jewelryworkshop.domain.Transaction
 import com.example.jewelryworkshop.domain.TransactionType
 import java.time.format.DateTimeFormatter
 
-/**
- * Компонент для отображения одной транзакции в списке
- */
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionItem(
@@ -55,7 +48,6 @@ fun TransactionItem(
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Индикатор типа транзакции (зеленый для "получено", красный для "выдано")
             Box(
                 modifier = Modifier
                     .size(width = 2.dp, height = 48.dp)
@@ -64,7 +56,6 @@ fun TransactionItem(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            // Основная информация о транзакции
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -72,14 +63,13 @@ fun TransactionItem(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    // Дата и время транзакции
+
                     Text(
                         text = dateFormatter.format(transaction.dateTime),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
-                    // Тип транзакции и вес
                     val grams = stringResource(R.string.grams)
                     Text(
                         text = "$typeText ${transaction.weight} $grams",
@@ -91,14 +81,12 @@ fun TransactionItem(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Название сплава
                 Text(
                     text = alloyName,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Light,
                 )
 
-                // Описание
                 Text(
                     text = transaction.description,
                     style = MaterialTheme.typography.bodyLarge,
@@ -108,7 +96,6 @@ fun TransactionItem(
 
                 Spacer(modifier = Modifier.height(2.dp))
 
-                // Количество изделий
                 val quantityString = stringResource(R.string.quantity_of_items)
                 Text(
                     text = "$quantityString : ${transaction.itemsCount}",
@@ -118,15 +105,7 @@ fun TransactionItem(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Кнопки управления
             Row {
-                IconButton(onClick = { onClick(transaction) }) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = stringResource(R.string.edit_transaction),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
 
                 IconButton(onClick = { onDeleteClick(transaction.id) }) {
                     Icon(

@@ -1,5 +1,6 @@
 package com.example.jewelryworkshop
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.content.pm.ApplicationInfo
@@ -20,13 +21,12 @@ class JewelryWorkshopApp : Application(), ViewModelStoreOwner {
     }
 
     companion object {
-        // Временные константы вместо BuildConfig
         private const val DEFAULT_REPOSITORY = "ROOM_DATABASE"
         private val ENABLE_REPOSITORY_SELECTOR = isDebuggable()
 
+        @SuppressLint("PrivateApi")
         private fun isDebuggable(): Boolean {
             return try {
-                // Определяем debug режим через ApplicationInfo
                 val context = Class.forName("android.app.ActivityThread")
                     .getMethod("currentApplication")
                     .invoke(null) as? Application
@@ -34,7 +34,7 @@ class JewelryWorkshopApp : Application(), ViewModelStoreOwner {
                 context?.let {
                     (it.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
                 } ?: false
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 false
             }
         }
@@ -43,7 +43,7 @@ class JewelryWorkshopApp : Application(), ViewModelStoreOwner {
     private fun getDefaultRepositoryType(): RepositoryType {
         return try {
             RepositoryType.valueOf(DEFAULT_REPOSITORY)
-        } catch (e: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             RepositoryType.ROOM_DATABASE
         }
     }
@@ -61,7 +61,7 @@ class JewelryWorkshopApp : Application(), ViewModelStoreOwner {
         val typeName = prefs.getString("repository_type", getDefaultRepositoryType().name)
         return try {
             RepositoryType.valueOf(typeName ?: getDefaultRepositoryType().name)
-        } catch (e: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             getDefaultRepositoryType()
         }
     }

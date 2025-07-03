@@ -1,7 +1,5 @@
 package com.example.jewelryworkshop.ui
 
-import android.R.attr.enabled
-import android.R.attr.type
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -202,7 +200,7 @@ private fun AlloySelectionDropdown(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .menuAnchor(),
+                .exposedDropdownSize(),
             leadingIcon = {
                 Icon(Icons.Default.Build, contentDescription = null)
             }

@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
@@ -18,9 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.jewelryworkshop.domain.MetalAlloy
 
-/**
- * Экран управления сплавами (просмотр, редактирование, удаление)
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlloyManagementScreen(
@@ -29,10 +26,8 @@ fun AlloyManagementScreen(
     onNavigateToAddAlloy: () -> Unit,
     onNavigateToEditAlloy: (MetalAlloy) -> Unit
 ) {
-    // Получаем список сплавов
     val alloys by viewModel.alloys.collectAsState()
 
-    // Состояние для диалога подтверждения удаления
     var alloyToDelete by remember { mutableStateOf<MetalAlloy?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
 
@@ -43,7 +38,7 @@ fun AlloyManagementScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.back)
                         )
                     }
@@ -73,7 +68,6 @@ fun AlloyManagementScreen(
                 .padding(paddingValues)
         ) {
             if (alloys.isEmpty()) {
-                // Показываем заглушку если нет сплавов
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -96,7 +90,6 @@ fun AlloyManagementScreen(
                     }
                 }
             } else {
-                // Показываем список сплавов
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(16.dp),
@@ -144,9 +137,8 @@ fun AlloyManagementScreen(
         }
     }
 
-    // Диалог подтверждения удаления
     if (showDeleteDialog && alloyToDelete != null) {
-        val areYouShureYouDeleteAlloy = stringResource(R.string.are_u_sure_delete)
+        val areYouSureYouDeleteAlloy = stringResource(R.string.are_u_sure_delete)
         AlertDialog(
             onDismissRequest = {
                 showDeleteDialog = false
@@ -154,7 +146,7 @@ fun AlloyManagementScreen(
             },
             title = { Text(stringResource(R.string.delete)) },
             text = {
-                Text("${areYouShureYouDeleteAlloy} \"${alloyToDelete!!.name}\"?!")
+                Text("$areYouSureYouDeleteAlloy \"${alloyToDelete!!.name}\"?!")
             },
             confirmButton = {
                 TextButton(
@@ -181,9 +173,6 @@ fun AlloyManagementScreen(
     }
 }
 
-/**
- * Элемент списка сплавов
- */
 @Composable
 fun AlloyListItem(
     alloy: MetalAlloy,

@@ -4,18 +4,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.jewelryworkshop.R
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 
-/**
- * Экран добавления нового сплава
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlloyAddScreen(
@@ -32,11 +28,8 @@ fun AlloyAddScreen(
 
     val errorMessage by viewModel.errorMessage.collectAsState()
 
-    // Показываем снэкбар при ошибке
     LaunchedEffect(errorMessage) {
         if (errorMessage != null) {
-            // Здесь можно показать снэкбар или другое уведомление
-            // После показа очищаем ошибку
             viewModel.clearErrorMessage()
         }
     }
@@ -45,11 +38,9 @@ fun AlloyAddScreen(
     val nameErrorLesserThanFiftyStr = stringResource(R.string.lesser_than_fifty)
     val nameErrorNotUniqueNameStr = stringResource(R.string.not_unique_name)
 
-    // Функция валидации формы
     fun validateForm(): Boolean {
         var isValid = true
 
-        // Проверка имени сплава
         when {
             alloyName.isBlank() -> {
                 nameError = nameErrorEnterAlloyNameStr
@@ -92,7 +83,7 @@ fun AlloyAddScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.back)
                         )
                     }
@@ -115,7 +106,6 @@ fun AlloyAddScreen(
         ) {
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Информационная карточка
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -139,7 +129,6 @@ fun AlloyAddScreen(
                 }
             }
 
-            // Поле ввода названия сплава
             OutlinedTextField(
                 value = alloyName,
                 onValueChange = {
@@ -167,7 +156,6 @@ fun AlloyAddScreen(
                 enabled = !isLoading
             )
 
-            // Показать список существующих сплавов для справки
             if (existingAlloys.isNotEmpty()) {
                 Card(
                     modifier = Modifier.fillMaxWidth()
@@ -205,7 +193,6 @@ fun AlloyAddScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Кнопки действий
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)

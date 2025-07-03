@@ -1,7 +1,5 @@
 package com.example.jewelryworkshop.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,7 +21,6 @@ import com.example.jewelryworkshop.domain.Transaction
 import com.example.jewelryworkshop.ui.components.TransactionItem
 import com.example.jewelryworkshop.ui.components.SingleAlloyBalanceCard
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
@@ -31,11 +28,9 @@ fun MainScreen(
     navController: NavHostController,
     onNavigateToAddTransaction: () -> Unit,
     onNavigateToTransactionDetail: (Transaction) -> Unit,
-    onNavigateToAlloyManagement: () -> Unit
 ) {
     val transactions by viewModel.transactions.collectAsState()
     val transactionsByAlloy by viewModel.transactionsByAlloy.collectAsState()
-    val alloysWithCounts by viewModel.alloysWithCounts.collectAsState()
     val alloys by viewModel.alloys.collectAsState()
 
     var isLoading by remember { mutableStateOf(true) }
@@ -47,7 +42,6 @@ fun MainScreen(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
 
-    // Состояние для TabRow и Pager
     val allTabs = remember(transactions, alloys, transactionsByAlloy) {
         val allTab = TabInfo(null, allStr, transactions.size)
 
@@ -68,14 +62,12 @@ fun MainScreen(
 
     val pagerState = rememberPagerState(pageCount = { allTabs.size })
 
-    // Проверяем, что текущая страница не выходит за границы после обновления списка вкладок
     LaunchedEffect(allTabs.size) {
         if (pagerState.currentPage >= allTabs.size && allTabs.isNotEmpty()) {
-            pagerState.animateScrollToPage(0) // Переключаемся на первую вкладку
+            pagerState.animateScrollToPage(0)
         }
     }
 
-    // Диалог удаления
     if (showDeleteDialog && transactionToDelete != null) {
         AlertDialog(
             onDismissRequest = {
@@ -206,7 +198,6 @@ fun MainScreen(
                             .fillMaxSize()
                             .padding(paddingValues)
                     ) {
-                        // Вкладки
                         if (allTabs.isNotEmpty() && pagerState.currentPage < allTabs.size) {
                             ScrollableTabRow(
                                 selectedTabIndex = pagerState.currentPage,
@@ -235,13 +226,11 @@ fun MainScreen(
                             HorizontalDivider()
                         }
 
-                        // Контент вкладок
                         if (allTabs.isNotEmpty() && pagerState.currentPage < allTabs.size) {
                             HorizontalPager(
                                 state = pagerState,
                                 modifier = Modifier.fillMaxSize()
                             ) { page ->
-                                // Дополнительная проверка безопасности
                                 if (page < allTabs.size) {
                                     val currentTab = allTabs[page]
                                     val filteredTransactions = when (currentTab.alloyId) {
@@ -251,7 +240,6 @@ fun MainScreen(
                                             ?.value ?: emptyList()
                                     }
 
-                                    // Находим текущий сплав для отображения баланса
                                     val currentAlloy = when (currentTab.alloyId) {
                                         null -> null
                                         else -> alloys.find { it.id == currentTab.alloyId }
@@ -273,10 +261,8 @@ fun MainScreen(
                                             }
                                         }
 
-                                        // Список транзакций
                                         if (filteredTransactions.isEmpty()) {
                                             item {
-                                                // Убираем Box с центрированием, оставляем только Column
                                                 Column(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
@@ -288,7 +274,7 @@ fun MainScreen(
                                                         text = if (currentTab.alloyId == null) {
                                                             stringResource(R.string.theres_no_transactions)
                                                         } else {
-                                                            "Нет транзакций для сплава ${currentTab.title}"
+                                                            stringResource(R.string.no_transactions_for_alloy, currentTab.title)
                                                         },
                                                         style = MaterialTheme.typography.bodyLarge,
                                                         color = MaterialTheme.colorScheme.onSurfaceVariant

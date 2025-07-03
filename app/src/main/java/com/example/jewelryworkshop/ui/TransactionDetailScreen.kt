@@ -1,13 +1,11 @@
 package com.example.jewelryworkshop.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -24,7 +22,7 @@ import java.time.format.DateTimeFormatter
 /**
  * Экран просмотра деталей транзакции
  */
-@RequiresApi(Build.VERSION_CODES.O)
+@SuppressLint("MemberExtensionConflict")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionDetailScreen(
@@ -32,7 +30,7 @@ fun TransactionDetailScreen(
     onNavigateBack: () -> Unit,
     onNavigateToEdit: () -> Unit
 ) {
-    // Форматировщик даты и времени для отображения
+
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
 
     Scaffold(
@@ -76,7 +74,6 @@ fun TransactionDetailScreen(
         ) {
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Карточка с общей информацией
             OutlinedCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -115,7 +112,6 @@ fun TransactionDetailScreen(
                 }
             }
 
-            // Карточка с информацией о материале
             OutlinedCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -133,7 +129,7 @@ fun TransactionDetailScreen(
                     val grams = stringResource(R.string.grams)
                     DetailRow(
                         label = stringResource(R.string.weight_grams),
-                        value = "${transaction.weight} ${grams}"
+                        value = "${transaction.weight} $grams"
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -152,8 +148,7 @@ fun TransactionDetailScreen(
                 }
             }
 
-            // Дополнительная информация (если есть ID)
-            transaction.id?.let { id ->
+            transaction.id.let { id ->
                 OutlinedCard(
                     modifier = Modifier.fillMaxWidth()
                 ) {

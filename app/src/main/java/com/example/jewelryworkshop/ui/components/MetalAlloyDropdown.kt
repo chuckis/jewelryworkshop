@@ -42,7 +42,7 @@ fun MetalAlloyDropdown(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .menuAnchor(),
+                .exposedDropdownSize(), // Changed from .menuAnchor()
             isError = isError,
             supportingText = {
                 if (errorMessage != null) {
@@ -97,7 +97,7 @@ fun <T> GenericDropdown(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .menuAnchor(),
+                .exposedDropdownSize(), // Changed from .menuAnchor()
             isError = isError,
             supportingText = {
                 if (errorMessage != null) {
@@ -122,24 +122,3 @@ fun <T> GenericDropdown(
         }
     }
 }
-
-// Специализированная версия для MetalAlloy
-//@Composable
-//fun MetalAlloyDropdown(
-//    alloys: List<MetalAlloy>,
-//    selectedAlloyId: Long?,
-//    onAlloySelected: (Long?) -> Unit,
-//    isError: Boolean = false,
-//    errorMessage: String? = null
-//) {
-//    GenericDropdown(
-//        items = alloys,
-//        selectedItemId = selectedAlloyId,
-//        onItemSelected = onAlloySelected,
-//        label = stringResource(R.string.alloy),
-//        getItemId = { it.id },
-//        getItemDisplayName = { it.name },
-//        isError = isError,
-//        errorMessage = errorMessage
-//    )
-//}

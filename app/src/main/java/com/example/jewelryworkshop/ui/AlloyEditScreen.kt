@@ -25,13 +25,6 @@ fun AlloyEditScreen(
 
     val errorMessage by mainViewModel.errorMessage.collectAsState()
 
-//    LaunchedEffect(errorMessage) {
-//        if (errorMessage.isNotEmpty()) {
-//            // Сброс ошибки после показа
-//            mainViewModel.clearErrorMessage()
-//        }
-//    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
