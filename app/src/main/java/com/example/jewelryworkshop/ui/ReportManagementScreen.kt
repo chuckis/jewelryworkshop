@@ -495,7 +495,11 @@ private fun exportReportAsCsv(context: Context, report: Report) {
 
         // Create file in app's external files directory
         val file = java.io.File(context.getExternalFilesDir(null), fileName)
-        file.writeText(csvContent)
+
+        file.outputStream().use { outputStream ->
+            outputStream.write(byteArrayOf(0xEF.toByte(), 0xBB.toByte(), 0xBF.toByte()))
+            outputStream.write(csvContent.toByteArray(Charsets.UTF_8))
+        }
 
         // Create URI for sharing
         val uri = androidx.core.content.FileProvider.getUriForFile(
@@ -563,7 +567,6 @@ private fun escapeCsvField(field: String): String {
         field
     }
 }
-
 private fun formatLocalDateTime(dateTime: LocalDateTime): String {
     val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
     return dateTime.format(formatter)
