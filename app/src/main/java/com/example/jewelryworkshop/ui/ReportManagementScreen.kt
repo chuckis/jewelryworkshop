@@ -18,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -43,6 +44,7 @@ import com.example.jewelryworkshop.domain.MetalAlloy
 import java.time.LocalDateTime
 import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
+import com.example.jewelryworkshop.ui.components.CompactDatePickerDialog
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -221,6 +223,7 @@ private fun AlloySelectionDropdown(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ReportConfigurationSection(
     uiState: ReportManagementUiState,
@@ -229,6 +232,9 @@ private fun ReportConfigurationSection(
     onEndPeriodChanged: (LocalDateTime) -> Unit,
     onCreatedByChanged: (String) -> Unit,
 ) {
+    var showStartDatePicker by remember { mutableStateOf(false) }
+    var showEndDatePicker by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -257,17 +263,42 @@ private fun ReportConfigurationSection(
                 fontWeight = FontWeight.Medium
             )
 
-            // Date/Time Pickers (simplified representation)
-            DateTimePicker(
-                label = stringResource(R.string.start_period),
-                dateTime = uiState.startPeriod,
-                onDateTimeChanged = onStartPeriodChanged
+            // Start Date Picker
+            OutlinedTextField(
+                value = formatLocalDateTime(uiState.startPeriod),
+                onValueChange = { },
+                label = { Text(stringResource(R.string.start_period)) },
+                readOnly = true,
+                trailingIcon = {
+                    IconButton(onClick = { showStartDatePicker = true }) {
+                        Icon(
+                            imageVector = Icons.Default.DateRange,
+                            contentDescription = stringResource(R.string.select_date)
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showStartDatePicker = true }
             )
 
-            DateTimePicker(
-                label = stringResource(R.string.end_period),
-                dateTime = uiState.endPeriod,
-                onDateTimeChanged = onEndPeriodChanged
+            // End Date Picker
+            OutlinedTextField(
+                value = formatLocalDateTime(uiState.endPeriod),
+                onValueChange = { },
+                label = { Text(stringResource(R.string.end_period)) },
+                readOnly = true,
+                trailingIcon = {
+                    IconButton(onClick = { showEndDatePicker = true }) {
+                        Icon(
+                            imageVector = Icons.Default.DateRange,
+                            contentDescription = stringResource(R.string.select_date)
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showEndDatePicker = true }
             )
 
             // Created By Field
@@ -282,66 +313,28 @@ private fun ReportConfigurationSection(
             )
         }
     }
-}
 
-@Composable
-private fun DateTimePicker(
-    label: String,
-    dateTime: LocalDateTime,
-    onDateTimeChanged: (LocalDateTime) -> Unit
-) {
-    var showDatePicker by remember { mutableStateOf(false) }
-    var showTimePicker by remember { mutableStateOf(false) }
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        // Date Field
-        OutlinedTextField(
-            value = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-            onValueChange = { },
-            label = { Text("$label ${stringResource(R.string.csv_header_date)}") },
-            modifier = Modifier.weight(1f),
-            readOnly = true,
-            trailingIcon = {
-                IconButton(onClick = { showDatePicker = true }) {
-                    Icon(Icons.Default.DateRange, contentDescription = stringResource(R.string.select_date))
-                }
-            }
-        )
-
-        // Time Field
-        OutlinedTextField(
-            value = dateTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-            onValueChange = { },
-            label = { Text(stringResource(R.string.time)) },
-            modifier = Modifier.weight(1f),
-            readOnly = true,
-            trailingIcon = {
-                IconButton(onClick = { showTimePicker = true }) {
-                    Text(stringResource(R.string.select_time))
-                }
-            }
+    // Date Picker Dialogs
+    if (showStartDatePicker) {
+        CompactDatePickerDialog(
+            initialDate = uiState.startPeriod,
+            onDateSelected = { dateTime ->
+                onStartPeriodChanged(dateTime)
+                showStartDatePicker = false
+            },
+            onDismiss = { showStartDatePicker = false }
         )
     }
 
-    // Note: In a real implementation, you would use proper DatePickerDialog and TimePickerDialog
-    // For now, this provides the UI structure
-    if (showDatePicker) {
-        // DatePickerDialog would go here
-        // For demonstration, we'll just close the picker
-        LaunchedEffect(Unit) {
-            showDatePicker = false
-        }
-    }
-
-    if (showTimePicker) {
-        // TimePickerDialog would go here
-        // For demonstration, we'll just close the picker
-        LaunchedEffect(Unit) {
-            showTimePicker = false
-        }
+    if (showEndDatePicker) {
+        CompactDatePickerDialog(
+            initialDate = uiState.endPeriod,
+            onDateSelected = { dateTime ->
+                onEndPeriodChanged(dateTime)
+                showEndDatePicker = false
+            },
+            onDismiss = { showEndDatePicker = false }
+        )
     }
 }
 
@@ -568,4 +561,9 @@ private fun escapeCsvField(field: String): String {
     } else {
         field
     }
+}
+
+private fun formatLocalDateTime(dateTime: LocalDateTime): String {
+    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+    return dateTime.format(formatter)
 }

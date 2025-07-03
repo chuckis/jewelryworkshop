@@ -103,4 +103,5 @@
     <string name="csv_header_amount">Кількість</string>
     <string name="csv_header_date">Дата</string>
     <string name="csv_header_description">Опис</string>
+    <string name="select">Обрати</string>
 </resources>
