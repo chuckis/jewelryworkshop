@@ -1,5 +1,7 @@
 package com.example.jewelryworkshop.ui
 
+import android.R.attr.enabled
+import android.R.attr.type
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -329,6 +331,7 @@ private fun ReportConfigurationSection(
     if (showEndDatePicker) {
         CompactDatePickerDialog(
             initialDate = uiState.endPeriod,
+            minDate = uiState.startPeriod,
             onDateSelected = { dateTime ->
                 onEndPeriodChanged(dateTime)
                 showEndDatePicker = false
@@ -486,7 +489,7 @@ private fun ReportItem(
 }
 
 // CSV Export function adapted for Report data
-private suspend fun exportReportAsCsv(context: Context, report: Report) {
+private fun exportReportAsCsv(context: Context, report: Report) {
     try {
         val csvContent = createReportCsvContent(context, report)
         val timestamp = java.text.SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(java.util.Date())
@@ -549,7 +552,7 @@ private fun createReportCsvContent(context: Context, report: Report): String {
         csvBuilder.append("${escapeCsvField(item.weight.toString())},")
         csvBuilder.append("${item.itemsCount},")
         csvBuilder.append("${item.dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))},")
-        csvBuilder.append("${escapeCsvField(item.description ?: "")}\n")
+        csvBuilder.append("${escapeCsvField(item.description)}\n")
     }
 
     return csvBuilder.toString()

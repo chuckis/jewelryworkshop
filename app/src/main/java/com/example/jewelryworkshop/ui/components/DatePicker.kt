@@ -7,6 +7,7 @@ import com.example.jewelryworkshop.R
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.Instant
+import java.time.LocalDate
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -14,10 +15,26 @@ import java.time.Instant
 fun CompactDatePickerDialog(
     initialDate: LocalDateTime,
     onDateSelected: (LocalDateTime) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    minDate: LocalDateTime? = null // Добавляем параметр минимальной даты
 ) {
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = initialDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        initialSelectedDateMillis = initialDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                val dateToCheck = Instant.ofEpochMilli(utcTimeMillis)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate()
+
+                val isNotInFuture = !dateToCheck.isAfter(LocalDate.now())
+
+                val isNotBeforeMin = minDate?.let { min ->
+                    !dateToCheck.isBefore(min.toLocalDate())
+                } ?: true
+
+                return isNotInFuture && isNotBeforeMin
+            }
+        }
     )
 
     DatePickerDialog(

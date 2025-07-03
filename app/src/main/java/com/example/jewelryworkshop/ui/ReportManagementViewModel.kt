@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.jewelryworkshop.data.local.CombinedRepository
-import com.example.jewelryworkshop.data.local.CombinedRepositoryMock
 import com.example.jewelryworkshop.domain.MetalAlloy
 import com.example.jewelryworkshop.domain.Report
 import com.example.jewelryworkshop.domain.service.CreateReportService
@@ -12,7 +11,6 @@ import com.example.jewelryworkshop.domain.service.ReportSummary
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
@@ -120,37 +118,6 @@ class ReportManagementViewModel(
                 _uiState.value = _uiState.value.copy(
                     isGeneratingReport = false,
                     errorMessage = "Error of Report creating: ${e.message}"
-                )
-            }
-        }
-    }
-
-    fun generateReportsForAllAlloys() {
-        val currentState = _uiState.value
-
-        if (!validatePeriod()) return
-
-        viewModelScope.launch {
-            try {
-                _uiState.value = _uiState.value.copy(
-                    isGeneratingReport = true,
-                    errorMessage = null
-                )
-
-                val reports = createReportService.createReportsGroupedByAlloy(
-                    startPeriod = currentState.startPeriod,
-                    endPeriod = currentState.endPeriod,
-                    createdBy = currentState.createdBy
-                )
-
-                _uiState.value = _uiState.value.copy(
-                    generatedReports = reports,
-                    isGeneratingReport = false
-                )
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isGeneratingReport = false,
-                    errorMessage = "Error of Reports creation: ${e.message}"
                 )
             }
         }
