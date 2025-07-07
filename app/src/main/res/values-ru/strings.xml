@@ -103,4 +103,5 @@
     <string name="csv_header_date">Дата</string>
     <string name="csv_header_description">Описание</string>
     <string name="select">Выбрать</string>
+    <string name="theres_no_alloys_yet_add_first">Пока нет сплавов, добавьте нажав +</string>
 </resources>

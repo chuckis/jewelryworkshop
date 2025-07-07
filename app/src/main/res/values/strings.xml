@@ -102,4 +102,5 @@
     <string name="csv_header_date">Date</string>
     <string name="csv_header_description">Description</string>
     <string name="select">Select</string>
+    <string name="theres_no_alloys_yet_add_first">There\'s no alloys yet, add first by pressing + button</string>
 </resources>

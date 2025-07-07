@@ -27,6 +27,7 @@ fun MainScreen(
     viewModel: MainViewModel,
     navController: NavHostController,
     onNavigateToAddTransaction: () -> Unit,
+    onNavigateToAddAlloy: () -> Unit,
     onNavigateToTransactionDetail: (Transaction) -> Unit,
 ) {
     val transactions by viewModel.transactions.collectAsState()
@@ -156,6 +157,14 @@ fun MainScreen(
                 )
             },
             floatingActionButton = {
+                if (alloys.isEmpty()) {
+                    MultipleFABs(
+                        onHelpClick = onNavigateToAddAlloy,
+                        onAddClick = onNavigateToAddTransaction,
+                        helpButtonDescription = stringResource(R.string.add_alloy),
+                        addButtonDescription = stringResource(R.string.add_transaction),
+                    )
+                } else{
                 if (!isLoading) {
                     FloatingActionButton(
                         onClick = onNavigateToAddTransaction,
@@ -167,6 +176,7 @@ fun MainScreen(
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
+                }
                 }
             },
             content = { paddingValues ->
@@ -193,6 +203,13 @@ fun MainScreen(
                         }
                     }
                 } else {
+                    if (alloys.isEmpty()) {
+                        Text(
+                            text = stringResource(R.string.theres_no_alloys_yet_add_first),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -226,6 +243,7 @@ fun MainScreen(
                             HorizontalDivider()
                         }
 
+
                         if (allTabs.isNotEmpty() && pagerState.currentPage < allTabs.size) {
                             HorizontalPager(
                                 state = pagerState,
@@ -250,7 +268,6 @@ fun MainScreen(
                                         verticalArrangement = Arrangement.spacedBy(12.dp),
                                         modifier = Modifier.fillMaxSize()
                                     ) {
-
                                         if (currentAlloy != null) {
                                             item {
                                                 SingleAlloyBalanceCard(
@@ -406,6 +423,41 @@ fun DrawerContent(
                 selected = false,
                 onClick = onNavigateToAbout,
                 modifier = Modifier.padding(vertical = 4.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun MultipleFABs(
+    onAddClick: () -> Unit,
+    onHelpClick: () -> Unit,
+    helpButtonDescription: String,
+    addButtonDescription: String
+) {
+    Column {
+        // Help/Tutorial FAB
+        FloatingActionButton(
+            onClick = onHelpClick,
+            modifier = Modifier.padding(bottom = 16.dp),
+            containerColor = MaterialTheme.colorScheme.secondary
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = helpButtonDescription,
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+
+        // Main Add FAB
+        FloatingActionButton(
+            onClick = onAddClick,
+            containerColor = MaterialTheme.colorScheme.primary
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = addButtonDescription,
+                tint = MaterialTheme.colorScheme.onPrimary
             )
         }
     }
