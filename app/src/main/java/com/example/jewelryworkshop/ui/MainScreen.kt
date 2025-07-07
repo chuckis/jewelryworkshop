@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
@@ -164,19 +165,19 @@ fun MainScreen(
                         helpButtonDescription = stringResource(R.string.add_alloy),
                         addButtonDescription = stringResource(R.string.add_transaction),
                     )
-                } else{
-                if (!isLoading) {
-                    FloatingActionButton(
-                        onClick = onNavigateToAddTransaction,
-                        containerColor = MaterialTheme.colorScheme.primary
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = stringResource(R.string.add_transaction),
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
+                } else {
+                    if (!isLoading) {
+                        FloatingActionButton(
+                            onClick = onNavigateToAddTransaction,
+                            containerColor = MaterialTheme.colorScheme.primary
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = stringResource(R.string.add_transaction),
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
                     }
-                }
                 }
             },
             content = { paddingValues ->
@@ -202,14 +203,28 @@ fun MainScreen(
                             )
                         }
                     }
-                } else {
-                    if (alloys.isEmpty()) {
-                        Text(
-                            text = stringResource(R.string.theres_no_alloys_yet_add_first),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                } else if (alloys.isEmpty()) {
+                    // Show "no alloys" message when there are no alloys
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.theres_no_alloys_yet_add_first),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
+                } else {
+                    // Show normal content when there are alloys
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -242,7 +257,6 @@ fun MainScreen(
 
                             HorizontalDivider()
                         }
-
 
                         if (allTabs.isNotEmpty() && pagerState.currentPage < allTabs.size) {
                             HorizontalPager(
@@ -319,8 +333,7 @@ fun MainScreen(
                                 }
                             }
                         } else {
-                            // Показываем пустое состояние, если нет вкладок
-                            // Также убираем центрирование здесь
+                            // Show empty state when there are no tabs
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
