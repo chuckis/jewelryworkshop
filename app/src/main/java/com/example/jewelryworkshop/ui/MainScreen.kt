@@ -159,12 +159,20 @@ fun MainScreen(
             },
             floatingActionButton = {
                 if (alloys.isEmpty()) {
-                    MultipleFABs(
-                        onHelpClick = onNavigateToAddAlloy,
-                        onAddClick = onNavigateToAddTransaction,
-                        helpButtonDescription = stringResource(R.string.add_alloy),
-                        addButtonDescription = stringResource(R.string.add_transaction),
-                    )
+
+                    // here comes ONE button for adding alloy
+                    FloatingActionButton(
+                        onClick = onNavigateToAddAlloy,
+                        modifier = Modifier.padding(bottom = 16.dp),
+                        containerColor = MaterialTheme.colorScheme.secondary
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(R.string.add_alloy),
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+
                 } else {
                     if (!isLoading) {
                         FloatingActionButton(
@@ -436,41 +444,6 @@ fun DrawerContent(
                 selected = false,
                 onClick = onNavigateToAbout,
                 modifier = Modifier.padding(vertical = 4.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun MultipleFABs(
-    onAddClick: () -> Unit,
-    onHelpClick: () -> Unit,
-    helpButtonDescription: String,
-    addButtonDescription: String
-) {
-    Column {
-        // Help/Tutorial FAB
-        FloatingActionButton(
-            onClick = onHelpClick,
-            modifier = Modifier.padding(bottom = 16.dp),
-            containerColor = MaterialTheme.colorScheme.secondary
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = helpButtonDescription,
-                tint = MaterialTheme.colorScheme.onPrimary
-            )
-        }
-
-        // Main Add FAB
-        FloatingActionButton(
-            onClick = onAddClick,
-            containerColor = MaterialTheme.colorScheme.primary
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = addButtonDescription,
-                tint = MaterialTheme.colorScheme.onPrimary
             )
         }
     }
