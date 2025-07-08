@@ -2,6 +2,11 @@
 
 A specialized inventory management application designed for jewelry workshops. The key feature is offline functionality with local data storage on the device.
 
+## Preview
+
+[![DEMO](https://img.youtube.com/vi/l26a5aflyoM/0.jpg)](https://youtu.be/l26a5aflyoM)
+
+
 ## Project Roadmap
 
 - [x] Main screen - list of warehouse operations for receiving and transferring non-ferrous metal scrap
@@ -11,10 +16,10 @@ A specialized inventory management application designed for jewelry workshops. T
 - [x] Alloy CRUD
 - [x] List tabs
 - [x] Metal balance for each tab
-- [ ] Reports
+- [x] Reports
 - [x] Localization
 - [x] Menu
-- [ ] Data export to Excel, etc.
+- [x] Data export to Excel, etc.
 - [ ] CRM functionality
 - [ ] Synchronization
 - [ ] Server-side component
