@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.example.jewelryworkshop.R
@@ -26,11 +27,11 @@ fun TransactionItem(
     onClick: (Transaction) -> Unit,
     onDeleteClick: (Long) -> Unit
 ) {
-    val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+    val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
     val isReceived = transaction.type == TransactionType.RECEIVED
     val recievedLabel = stringResource(R.string.recieved)
     val issuedLabel = stringResource(R.string.issued)
-    val indicatorColor = if (isReceived) Color(0xFF4CAF50) else Color(0xFFE53935)
+    val indicatorColor = if (isReceived) Color(0xFF009688) else Color(0xFFF44336)
     val typeText = if (isReceived) recievedLabel else issuedLabel
     val alloyName = transaction.alloy.name
 
@@ -45,12 +46,12 @@ fun TransactionItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(all = 5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(width = 2.dp, height = 48.dp)
+                    .size(width = 4.dp, height = 64.dp)
                     .background(color = indicatorColor, shape = RoundedCornerShape(2.dp))
             )
 
@@ -70,22 +71,24 @@ fun TransactionItem(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
+                    Spacer(modifier = Modifier.width(2.dp))
+
                     val grams = stringResource(R.string.grams)
                     Text(
                         text = "$typeText ${transaction.weight} $grams",
                         style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         color = indicatorColor
+                    )
+                    Spacer(modifier = Modifier.width(2.dp))
+                    Text(
+                        text = alloyName,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
                     )
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = alloyName,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Light,
-                )
+//                Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
                     text = transaction.description,
@@ -111,7 +114,8 @@ fun TransactionItem(
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = stringResource(R.string.delete),
-                        tint = MaterialTheme.colorScheme.error
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.scale(0.6f)
                     )
                 }
             }
