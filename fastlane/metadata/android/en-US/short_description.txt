@@ -1,0 +1,1 @@
+Jewelry workshop inventory app with offline functionality and local device storage
