@@ -68,7 +68,7 @@ class JewelryWorkshopApp : Application(), ViewModelStoreOwner {
 
     val repository: CombinedRepository by lazy {
         val type = getCurrentRepositoryType()
-        Log.d("JewelryWorkshopApp", "Creating repository of type: $type")
+//        Log.d("JewelryWorkshopApp", "Creating repository of type: $type")
         RepositoryFactory.createJewelryRepository(this, type)
     }
 
@@ -85,8 +85,8 @@ class JewelryWorkshopApp : Application(), ViewModelStoreOwner {
     override fun onCreate() {
         super.onCreate()
         val isDebug = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
-        Log.d("JewelryWorkshopApp", "Application created with repository: ${getCurrentRepositoryType()}")
-        Log.d("JewelryWorkshopApp", "Debug mode: $isDebug")
+//        Log.d("JewelryWorkshopApp", "Application created with repository: ${getCurrentRepositoryType()}")
+//        Log.d("JewelryWorkshopApp", "Debug mode: $isDebug")
     }
 
     override val viewModelStore: ViewModelStore
